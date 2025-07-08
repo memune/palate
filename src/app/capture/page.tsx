@@ -6,13 +6,16 @@ import Camera from '@/components/camera/CameraCapture';
 import OCRProcessor from '@/components/OCRProcessor';
 import TastingForm from '@/components/TastingForm';
 import OCRTestMode from '@/components/OCRTestMode';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { useTastingNotes } from '@/hooks/useTastingNotes';
 import { TastingNote } from '@/types';
 
-export default function CapturePage() {
+function CapturePageContent() {
   const [step, setStep] = useState<'camera' | 'ocr' | 'form'>('camera');
   const [capturedImage, setCapturedImage] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<string>('');
   const router = useRouter();
+  const { saveNote } = useTastingNotes();
 
   const handleCapture = useCallback((file: File) => {
     setCapturedImage(file);
@@ -24,47 +27,30 @@ export default function CapturePage() {
     setStep('form');
   }, []);
 
-  const handleFormSubmit = useCallback((note: Partial<TastingNote>) => {
-    // 로컬 스토리지에 저장
-    const newNote: TastingNote = {
-      id: Date.now().toString(),
-      title: note.title || '새 테이스팅 노트',
-      date: new Date().toISOString(),
-      extractedText,
-      ratings: note.ratings || {
-        aroma: 5,
-        flavor: 5,
-        acidity: 5,
-        sweetness: 5,
-        body: 5,
-        aftertaste: 5,
-        balance: 5,
-        overall: 5,
-      },
-      notes: note.notes,
-      
-      // New coffee fields
-      country: note.country,
-      farm: note.farm,
-      region: note.region,
-      variety: note.variety,
-      altitude: note.altitude,
-      process: note.process,
-      cupNotes: note.cupNotes,
-      storeInfo: note.storeInfo,
-      
-      // Legacy fields
-      origin: note.origin,
-      roastLevel: note.roastLevel,
-      brewery: note.brewery,
-    };
+  const handleFormSubmit = useCallback(async (note: Partial<TastingNote>) => {
+    try {
+      const noteData = {
+        ...note,
+        extractedText,
+        ratings: note.ratings || {
+          aroma: 5,
+          flavor: 5,
+          acidity: 5,
+          sweetness: 5,
+          body: 5,
+          aftertaste: 5,
+          balance: 5,
+          overall: 5,
+        },
+      };
 
-    const existingNotes = JSON.parse(localStorage.getItem('tastingNotes') || '[]');
-    existingNotes.push(newNote);
-    localStorage.setItem('tastingNotes', JSON.stringify(existingNotes));
-
-    router.push('/notes');
-  }, [extractedText, router]);
+      await saveNote(noteData);
+      router.push('/notes');
+    } catch (error) {
+      console.error('노트 저장 실패:', error);
+      alert('노트 저장에 실패했습니다. 다시 시도해주세요.');
+    }
+  }, [extractedText, router, saveNote]);
 
   const handleBack = useCallback(() => {
     if (step === 'ocr') {
@@ -123,5 +109,13 @@ export default function CapturePage() {
       {/* OCR 테스트 버튼 */}
       <OCRTestMode />
     </div>
+  );
+}
+
+export default function CapturePage() {
+  return (
+    <ProtectedRoute>
+      <CapturePageContent />
+    </ProtectedRoute>
   );
 }
