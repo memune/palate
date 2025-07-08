@@ -80,7 +80,22 @@ export default function OCRProcessor({ imageFile, onComplete, onError }: OCRProc
 
       } catch (error) {
         console.error('Gemini OCR Error:', error);
-        setStatus('오류가 발생했습니다.');
+        
+        // 더 구체적인 에러 메시지 제공
+        let errorMessage = '오류가 발생했습니다.';
+        if (error instanceof Error) {
+          if (error.message.includes('API 키')) {
+            errorMessage = 'API 키가 설정되지 않았습니다. 관리자에게 문의하세요.';
+          } else if (error.message.includes('quota')) {
+            errorMessage = 'API 사용량이 초과되었습니다.';
+          } else if (error.message.includes('network')) {
+            errorMessage = '네트워크 연결을 확인해주세요.';
+          } else {
+            errorMessage = `OCR 처리 중 오류: ${error.message}`;
+          }
+        }
+        
+        setStatus(errorMessage);
         onError(error as Error);
       }
     };

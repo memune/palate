@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Camera from '@/components/camera/CameraCapture';
 import OCRProcessor from '@/components/OCRProcessor';
 import TastingForm from '@/components/TastingForm';
+import OCRTestMode from '@/components/OCRTestMode';
 import { TastingNote } from '@/types';
 
 export default function CapturePage() {
@@ -104,6 +105,9 @@ export default function CapturePage() {
           />
         )}
       </main>
+      
+      {/* OCR 테스트 버튼 */}
+      <OCRTestMode />
     </div>
   );
 }
