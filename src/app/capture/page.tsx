@@ -40,6 +40,18 @@ export default function CapturePage() {
         aftertaste: 5,
       },
       notes: note.notes,
+      
+      // New coffee fields
+      country: note.country,
+      farm: note.farm,
+      region: note.region,
+      variety: note.variety,
+      altitude: note.altitude,
+      process: note.process,
+      cupNotes: note.cupNotes,
+      storeInfo: note.storeInfo,
+      
+      // Legacy fields
       origin: note.origin,
       roastLevel: note.roastLevel,
       brewery: note.brewery,
