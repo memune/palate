@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 55, 65, 81;
+  --background-start-rgb: 249, 250, 251;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  .slider::-webkit-slider-thumb {
+    @apply appearance-none w-5 h-5 bg-gray-600 rounded-full cursor-pointer shadow-lg;
+  }
+  
+  .slider::-moz-range-thumb {
+    @apply w-5 h-5 bg-gray-600 rounded-full cursor-pointer border-0 shadow-lg;
+  }
+  
+  .slider::-webkit-slider-track {
+    @apply bg-gray-200 rounded-lg;
+  }
+  
+  .slider::-moz-range-track {
+    @apply bg-gray-200 rounded-lg border-0;
+  }
+  
+  .slider:focus {
+    @apply outline-none;
+  }
+  
+  .slider:focus::-webkit-slider-thumb {
+    @apply ring-2 ring-gray-400 ring-offset-2;
+  }
+}

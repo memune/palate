@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palate - Coffee Tasting Notes</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0; 
+            padding: 20px; 
+            background: #f9fafb;
+            color: #374151;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        h1 { 
+            font-size: 2.5rem; 
+            margin-bottom: 10px;
+            color: #111827;
+        }
+        p { 
+            color: #6b7280; 
+            margin-bottom: 40px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 24px;
+            margin: 16px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #374151;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1f2937;
+        }
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+        .status {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Palate</h1>
+        <p>커피 테이스팅 노트 아카이브</p>
+        
+        <button class="btn btn-primary" onclick="startCamera()">
+            📸 새 테이스팅 노트 촬영
+        </button>
+        
+        <button class="btn btn-secondary" onclick="showNotes()">
+            📝 저장된 노트 보기
+        </button>
+
+        <div class="status">
+            <h3>프로젝트 상태</h3>
+            <p>✅ Next.js 15 + TypeScript 설정 완료</p>
+            <p>✅ Tailwind CSS 설정 완료</p>
+            <p>✅ PWA 설정 완료</p>
+            <p>✅ Tesseract.js OCR 설정 완료</p>
+            <p>✅ 카메라 컴포넌트 구현 완료</p>
+            <p>✅ 평가 슬라이더 컴포넌트 구현 완료</p>
+            <p>✅ 미니멀 그레이 테마 적용 완료</p>
+        </div>
+    </div>
+
+    <script>
+        function startCamera() {
+            alert('카메라 기능은 HTTPS 환경에서만 동작합니다.\n\nNext.js 개발 서버를 사용하려면:\n1. 터미널에서 "npm run dev" 실행\n2. https://localhost:3000 접속');
+        }
+
+        function showNotes() {
+            alert('저장된 노트 기능은 Next.js 앱에서 구현됩니다.\n\n개발 서버를 실행하여 전체 기능을 확인하세요.');
+        }
+    </script>
+</body>
+</html>
