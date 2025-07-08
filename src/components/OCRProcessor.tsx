@@ -12,6 +12,7 @@ interface OCRProcessorProps {
 export default function OCRProcessor({ imageFile, onComplete, onError }: OCRProcessorProps) {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState('준비중...');
+  const [extractedText, setExtractedText] = useState<string>('');
 
   useEffect(() => {
     const processImage = async () => {
@@ -73,6 +74,9 @@ export default function OCRProcessor({ imageFile, onComplete, onError }: OCRProc
         const text = result.response.text();
         setProgress(100);
         
+        // 인식된 텍스트를 상태에 저장
+        setExtractedText(text);
+        
         // 잠시 완료 상태를 보여준 후 콜백 호출
         setTimeout(() => {
           onComplete(text);
@@ -128,6 +132,32 @@ export default function OCRProcessor({ imageFile, onComplete, onError }: OCRProc
           </div>
         )}
       </div>
+      
+      {/* 인식된 텍스트 표시 영역 */}
+      {extractedText && (
+        <div className="mt-6 w-full max-w-2xl mx-auto">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">📝 인식된 텍스트</h3>
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <textarea
+              value={extractedText}
+              readOnly
+              className="w-full h-40 p-3 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              placeholder="인식된 텍스트가 여기에 표시됩니다..."
+            />
+            <div className="mt-2 flex justify-between items-center">
+              <span className="text-xs text-gray-500">
+                {extractedText.length}자 인식됨
+              </span>
+              <button
+                onClick={() => navigator.clipboard.writeText(extractedText)}
+                className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+              >
+                📋 복사
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
