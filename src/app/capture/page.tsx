@@ -33,11 +33,13 @@ export default function CapturePage() {
       extractedText,
       ratings: note.ratings || {
         aroma: 5,
+        flavor: 5,
         acidity: 5,
         sweetness: 5,
         body: 5,
-        flavor: 5,
         aftertaste: 5,
+        balance: 5,
+        overall: 5,
       },
       notes: note.notes,
       

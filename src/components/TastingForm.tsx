@@ -32,11 +32,13 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
     
     ratings: {
       aroma: 5,
+      flavor: 5,
       acidity: 5,
       sweetness: 5,
       body: 5,
-      flavor: 5,
       aftertaste: 5,
+      balance: 5,
+      overall: 5,
     }
   });
 
@@ -224,37 +226,67 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">맛 평가</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-6">☕ 테이스팅 평가 (1-10점)</h3>
           <div className="space-y-4">
             <RatingSlider
-              label="향 (Aroma)"
+              label="1. 향 (Aroma)"
+              description="원두 향과 물을 부었을 때 퍼지는 향. 향이 풍부하고 기분 좋은가요?
+
+예시: 꽃향, 견과류, 과일"
               value={formData.ratings.aroma}
               onChange={(value) => handleRatingChange('aroma', value)}
             />
             <RatingSlider
-              label="산미 (Acidity)"
-              value={formData.ratings.acidity}
-              onChange={(value) => handleRatingChange('acidity', value)}
-            />
-            <RatingSlider
-              label="단맛 (Sweetness)"
-              value={formData.ratings.sweetness}
-              onChange={(value) => handleRatingChange('sweetness', value)}
-            />
-            <RatingSlider
-              label="바디 (Body)"
-              value={formData.ratings.body}
-              onChange={(value) => handleRatingChange('body', value)}
-            />
-            <RatingSlider
-              label="풍미 (Flavor)"
+              label="2. 맛 (Flavor)"
+              description="입 안에 퍼지는 전체적인 맛의 느낌. 어떤 맛이 나는지 구체적으로 표현해보세요.
+
+예시: 복숭아, 초콜릿, 허브"
               value={formData.ratings.flavor}
               onChange={(value) => handleRatingChange('flavor', value)}
             />
             <RatingSlider
-              label="여운 (Aftertaste)"
+              label="3. 산미 (Acidity)"
+              description="새콤한 맛이 나는가요? 너무 날카롭지 않고 상큼하게 느껴지는지 봅니다.
+
+예시: 자몽, 오렌지 같은 느낌"
+              value={formData.ratings.acidity}
+              onChange={(value) => handleRatingChange('acidity', value)}
+            />
+            <RatingSlider
+              label="4. 단맛 (Sweetness)"
+              description="설탕처럼 달다는 의미보다는, 쓴맛 없이 부드럽고 자연스럽게 느껴지는 단맛입니다.
+
+예시: 꿀, 캐러멜"
+              value={formData.ratings.sweetness}
+              onChange={(value) => handleRatingChange('sweetness', value)}
+            />
+            <RatingSlider
+              label="5. 바디 (Body)"
+              description="커피의 무게감이나 질감. 가볍고 맑은지, 무겁고 진한지.
+
+예시: 우유 같은 부드러움, 물처럼 가벼움"
+              value={formData.ratings.body}
+              onChange={(value) => handleRatingChange('body', value)}
+            />
+            <RatingSlider
+              label="6. 여운 (Aftertaste)"
+              description="마신 후 입에 남는 맛이 기분 좋은지, 오래 지속되는지.
+
+예시: 고소함이 오래 감도는지"
               value={formData.ratings.aftertaste}
               onChange={(value) => handleRatingChange('aftertaste', value)}
+            />
+            <RatingSlider
+              label="7. 균형 (Balance)"
+              description="위의 요소들이 서로 잘 어우러져 조화로운지. 어떤 맛이 너무 튀거나 부족하지는 않은지."
+              value={formData.ratings.balance}
+              onChange={(value) => handleRatingChange('balance', value)}
+            />
+            <RatingSlider
+              label="8. 전체 인상 (Overall)"
+              description="다시 마시고 싶을 정도로 마음에 들었나요? 이 커피를 한 문장으로 표현해본다면?"
+              value={formData.ratings.overall}
+              onChange={(value) => handleRatingChange('overall', value)}
             />
           </div>
         </div>

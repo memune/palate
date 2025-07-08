@@ -21,12 +21,14 @@ export interface TastingNote {
   brewery?: string;
   
   ratings: {
-    aroma: number;
-    acidity: number;
-    sweetness: number;
-    body: number;
-    flavor: number;
-    aftertaste: number;
+    aroma: number;        // 향
+    flavor: number;       // 맛
+    acidity: number;      // 산미
+    sweetness: number;    // 단맛
+    body: number;         // 바디
+    aftertaste: number;   // 여운
+    balance: number;      // 균형
+    overall: number;      // 전체 인상
   };
   notes?: string;
 }
