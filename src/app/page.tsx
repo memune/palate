@@ -11,12 +11,37 @@ function HomePage() {
   const [recentNotes, setRecentNotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [showUsernameModal, setShowUsernameModal] = useState(false);
 
   useEffect(() => {
     if (user) {
       fetchRecentNotes();
+      fetchUserProfile();
     }
   }, [user]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user?.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching profile:', error);
+      } else {
+        setUserProfile(data);
+        // If user doesn't have a username, show setup modal
+        if (data && !data.username) {
+          setShowUsernameModal(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  };
 
   const fetchRecentNotes = async () => {
     try {
@@ -77,9 +102,40 @@ function HomePage() {
                 {showUserMenu && (
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                     <div className="px-4 py-3 border-b border-gray-200">
-                      <p className="text-sm text-gray-500">로그인된 계정</p>
-                      <p className="text-sm font-medium text-gray-900 truncate">{user.email}</p>
+                      {userProfile?.username ? (
+                        <>
+                          <p className="text-sm font-medium text-gray-900">@{userProfile.username}</p>
+                          <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-sm text-gray-500">로그인된 계정</p>
+                          <p className="text-sm font-medium text-gray-900 truncate">{user.email}</p>
+                          <p className="text-xs text-amber-600 mt-1">닉네임을 설정해주세요</p>
+                        </>
+                      )}
                     </div>
+                    {userProfile?.username ? (
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          setShowUsernameModal(true);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        닉네임 수정
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          setShowUsernameModal(true);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors"
+                      >
+                        닉네임 설정하기
+                      </button>
+                    )}
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
@@ -188,7 +244,153 @@ function HomePage() {
         </div>
         </div>
       </main>
+
+      {/* Username Setup/Edit Modal */}
+      {showUsernameModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              {userProfile?.username ? '닉네임 변경' : '닉네임 설정'}
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              다른 사용자들이 회원님을 찾을 수 있는 고유한 닉네임을 설정해주세요.
+            </p>
+            
+            <UsernameForm 
+              currentUsername={userProfile?.username || ''}
+              onSuccess={(newUsername) => {
+                setUserProfile({...userProfile, username: newUsername});
+                setShowUsernameModal(false);
+              }}
+              onCancel={() => setShowUsernameModal(false)}
+              isFirstTime={!userProfile?.username}
+            />
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+// Username Form Component
+function UsernameForm({ currentUsername, onSuccess, onCancel, isFirstTime }: {
+  currentUsername: string;
+  onSuccess: (username: string) => void;
+  onCancel: () => void;
+  isFirstTime: boolean;
+}) {
+  const { user } = useAuth();
+  const [username, setUsername] = useState(currentUsername);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const validateUsername = (value: string) => {
+    if (value.length < 3) return '닉네임은 3자 이상이어야 합니다.';
+    if (value.length > 30) return '닉네임은 30자 이하여야 합니다.';
+    if (!/^[a-zA-Z0-9_]+$/.test(value)) return '영문, 숫자, 언더바(_)만 사용 가능합니다.';
+    if (value.startsWith('_') || value.endsWith('_')) return '닉네임은 언더바로 시작하거나 끝날 수 없습니다.';
+    return '';
+  };
+
+  const checkUsernameAvailability = async (value: string) => {
+    if (value === currentUsername) return true;
+    
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('username', value)
+      .single();
+
+    return error?.code === 'PGRST116'; // No rows returned means available
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    const validationError = validateUsername(username);
+    if (validationError) {
+      setError(validationError);
+      setLoading(false);
+      return;
+    }
+
+    const isAvailable = await checkUsernameAvailability(username);
+    if (!isAvailable) {
+      setError('이미 사용 중인 닉네임입니다.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user?.id,
+          username: username,
+          display_name: user?.email,
+        });
+
+      if (error) {
+        console.error('Error updating username:', error);
+        setError('닉네임 설정 중 오류가 발생했습니다.');
+      } else {
+        onSuccess(username);
+      }
+    } catch (error) {
+      console.error('Error updating username:', error);
+      setError('닉네임 설정 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          닉네임
+        </label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">@</span>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value.toLowerCase())}
+            className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            placeholder="coffee_lover"
+            maxLength={30}
+            required
+          />
+        </div>
+        {error && (
+          <p className="text-sm text-red-600 mt-1">{error}</p>
+        )}
+        <p className="text-xs text-gray-500 mt-1">
+          영문, 숫자, 언더바(_)만 사용 가능 (3-30자)
+        </p>
+      </div>
+
+      <div className="flex space-x-3">
+        <button
+          type="submit"
+          disabled={loading || !username.trim()}
+          className="flex-1 bg-emerald-800 text-white py-2 px-4 rounded-lg hover:bg-emerald-900 transition-colors font-medium disabled:opacity-50"
+        >
+          {loading ? '저장 중...' : (isFirstTime ? '설정하기' : '변경하기')}
+        </button>
+        {!isFirstTime && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+          >
+            취소
+          </button>
+        )}
+      </div>
+    </form>
   );
 }
 
