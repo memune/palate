@@ -72,15 +72,24 @@ function HomePage() {
               마신 커피 기록하기
             </h2>
             <p className="text-gray-600 mb-6">
-              커피 포장지나 메뉴를 촬영하면 AI가 자동으로 정보를 추출합니다
+              매장에서 받은 컵노트를 촬영하면 AI가 자동으로 분석해서 내용을 추출합니다
             </p>
-            <Link 
-              href="/capture"
-              className="inline-flex items-center bg-emerald-800 text-white px-8 py-3 rounded-lg hover:bg-emerald-900 transition-colors font-medium"
-            >
-              <span className="mr-2">📷</span>
-              촬영하기
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href="/capture"
+                className="inline-flex items-center bg-emerald-800 text-white px-8 py-3 rounded-lg hover:bg-emerald-900 transition-colors font-medium"
+              >
+                <span className="mr-2">📷</span>
+                사진으로 기록하기
+              </Link>
+              <Link 
+                href="/add-note"
+                className="inline-flex items-center bg-gray-600 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors font-medium"
+              >
+                <span className="mr-2">✏️</span>
+                직접 입력하기
+              </Link>
+            </div>
           </div>
         </div>
 
