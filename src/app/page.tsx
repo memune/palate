@@ -90,39 +90,39 @@ function HomePage() {
   }, [showUserMenu, showUsernameModal]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-stone-50">
       {/* Top Navigation */}
       {user && (
-        <nav className="bg-white border-b border-gray-200">
-          <div className="max-w-6xl mx-auto px-6 py-4">
+        <nav className="bg-stone-50 border-b border-stone-200">
+          <div className="max-w-6xl mx-auto px-6 py-6">
             <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-light text-gray-900 tracking-wide">
+              <h1 className="text-3xl font-light text-stone-900 tracking-tight">
                 Palate
               </h1>
               <div className="relative user-menu-container">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors px-3 py-2 rounded-md hover:bg-gray-50"
+                  className="flex items-center space-x-3 text-stone-600 hover:text-stone-900 transition-colors px-4 py-3 rounded-xl hover:bg-stone-100"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                  <span className="text-sm">마이페이지</span>
+                  <span className="text-sm font-medium">마이페이지</span>
                 </button>
                 
                 {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 user-menu-dropdown">
-                    <div className="px-4 py-3 border-b border-gray-200">
+                  <div className="absolute right-0 mt-3 w-72 bg-white rounded-2xl shadow-xl border border-stone-200 py-3 z-50 user-menu-dropdown backdrop-blur-sm">
+                    <div className="px-6 py-4 border-b border-stone-100">
                       {userProfile?.username ? (
                         <>
-                          <p className="text-sm font-medium text-gray-900">@{userProfile.username}</p>
-                          <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                          <p className="text-base font-medium text-stone-900">@{userProfile.username}</p>
+                          <p className="text-sm text-stone-500 truncate mt-1">{user.email}</p>
                         </>
                       ) : (
                         <>
-                          <p className="text-sm text-gray-500">로그인된 계정</p>
-                          <p className="text-sm font-medium text-gray-900 truncate">{user.email}</p>
-                          <p className="text-xs text-amber-600 mt-1">닉네임을 설정해주세요</p>
+                          <p className="text-sm text-stone-500">로그인된 계정</p>
+                          <p className="text-base font-medium text-stone-900 truncate">{user.email}</p>
+                          <p className="text-sm text-emerald-600 mt-2 font-medium">닉네임을 설정해주세요</p>
                         </>
                       )}
                     </div>
@@ -140,7 +140,7 @@ function HomePage() {
                             console.log('showUsernameModal을 true로 설정함');
                           }, 100);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                        className="w-full text-left px-6 py-3 text-sm text-stone-700 hover:bg-stone-50 transition-colors cursor-pointer font-medium"
                         type="button"
                       >
                         닉네임 수정
@@ -159,7 +159,7 @@ function HomePage() {
                             console.log('showUsernameModal을 true로 설정함');
                           }, 100);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors cursor-pointer"
+                        className="w-full text-left px-6 py-3 text-sm text-emerald-700 hover:bg-emerald-50 transition-colors cursor-pointer font-medium"
                         type="button"
                       >
                         닉네임 설정하기
@@ -170,7 +170,7 @@ function HomePage() {
                         setShowUserMenu(false);
                         signOut();
                       }}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      className="w-full text-left px-6 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium"
                     >
                       로그아웃
                     </button>
@@ -182,31 +182,36 @@ function HomePage() {
         </nav>
       )}
 
-      <main className="py-8 px-4 sm:px-6 lg:px-8">
+      <main className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
 
         {/* Main CTA */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
-          <div className="text-left">
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">
-              커피 노트 작성하기
+        <div className="bg-white rounded-3xl shadow-sm border border-stone-200 p-12 mb-16">
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="text-2xl font-light text-stone-900 mb-4 tracking-tight">
+              커피 테이스팅 노트 작성하기
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-stone-600 mb-10 text-lg leading-relaxed">
               매장에서 받은 컵노트를 촬영하면 AI가 자동으로 분석해서 내용을 추출합니다
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href="/capture"
-                className="inline-flex items-center bg-emerald-800 text-white px-8 py-3 rounded-lg hover:bg-emerald-900 transition-colors font-medium"
+                className="inline-flex items-center justify-center bg-stone-900 text-white px-8 py-4 rounded-2xl hover:bg-stone-800 transition-all duration-200 font-medium text-sm tracking-wide shadow-sm"
               >
-                <span className="mr-2">📷</span>
+                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
                 사진으로 기록하기
               </Link>
               <Link 
                 href="/add-note"
-                className="inline-flex items-center bg-gray-600 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors font-medium"
+                className="inline-flex items-center justify-center bg-stone-100 text-stone-900 px-8 py-4 rounded-2xl hover:bg-stone-200 transition-all duration-200 font-medium text-sm tracking-wide"
               >
-                <span className="mr-2">✏️</span>
+                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
                 직접 입력하기
               </Link>
             </div>
@@ -214,55 +219,76 @@ function HomePage() {
         </div>
 
         {/* Recent Notes */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-semibold text-gray-800">
+        <div className="bg-white rounded-3xl shadow-sm border border-stone-200 p-10 mb-8">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-xl font-light text-stone-900 tracking-tight">
               최근 기록
             </h3>
             <Link 
               href="/notes"
-              className="text-emerald-800 hover:text-emerald-900 transition-colors text-sm font-medium"
+              className="text-stone-600 hover:text-stone-900 transition-colors text-sm font-medium flex items-center"
             >
-              전체 노트 보기 →
+              전체 노트 보기 
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+              </svg>
             </Link>
           </div>
           
           {loading ? (
-            <div className="text-center py-8">
-              <div className="text-gray-500">로딩 중...</div>
+            <div className="text-center py-12">
+              <div className="text-stone-500">로딩 중...</div>
             </div>
           ) : recentNotes.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="text-gray-500 mb-4">
+            <div className="text-center py-12">
+              <div className="text-stone-500 mb-6 text-lg">
                 아직 기록된 노트가 없습니다
               </div>
               <Link 
                 href="/capture"
-                className="text-emerald-800 hover:text-emerald-900 transition-colors text-sm font-medium"
+                className="text-stone-700 hover:text-stone-900 transition-colors text-sm font-medium inline-flex items-center"
               >
-                첫 번째 커피를 기록해보세요 →
+                첫 번째 커피를 기록해보세요
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
             </div>
           ) : (
             <div className="space-y-4">
               {recentNotes.map((note) => (
-                <div key={note.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                <div key={note.id} className="border border-stone-100 rounded-2xl p-6 hover:bg-stone-50 transition-all duration-200">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h4 className="font-medium text-gray-900 mb-1">
+                      <h4 className="font-medium text-stone-900 mb-2 text-lg">
                         {note.title}
                       </h4>
-                      <div className="text-sm text-gray-600 space-y-1">
-                        {note.country && <span className="block">📍 {note.country}</span>}
-                        {note.cup_notes && <span className="block">☕ {note.cup_notes}</span>}
-                        <span className="block text-xs text-gray-500">
+                      <div className="text-sm text-stone-600 space-y-2">
+                        {note.country && (
+                          <div className="flex items-center">
+                            <svg className="w-4 h-4 mr-2 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            {note.country}
+                          </div>
+                        )}
+                        {note.cup_notes && (
+                          <div className="flex items-center">
+                            <svg className="w-4 h-4 mr-2 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                            </svg>
+                            {note.cup_notes}
+                          </div>
+                        )}
+                        <div className="text-xs text-stone-400 mt-3">
                           {new Date(note.created_at).toLocaleDateString('ko-KR')}
-                        </span>
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm font-medium text-emerald-800">
-                        {note.ratings?.overall || 0}/10
+                    <div className="text-right ml-4">
+                      <div className="text-lg font-light text-stone-900">
+                        {note.ratings?.overall || 0}<span className="text-stone-400 text-sm">/10</span>
                       </div>
                     </div>
                   </div>
@@ -276,12 +302,12 @@ function HomePage() {
 
       {/* Username Setup/Edit Modal */}
       {showUsernameModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8">
+            <h3 className="text-2xl font-light text-stone-900 mb-3 tracking-tight">
               {userProfile?.username ? '닉네임 변경' : '닉네임 설정'}
             </h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-stone-600 mb-8 leading-relaxed">
               다른 사용자들이 회원님을 찾을 수 있는 고유한 닉네임을 설정해주세요.
             </p>
             
@@ -380,26 +406,26 @@ function UsernameForm({ currentUsername, onSuccess, onCancel, isFirstTime }: {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-stone-700 mb-3">
           닉네임
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">@</span>
+          <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-stone-400">@</span>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value.toLowerCase())}
-            className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-4 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-stone-300 focus:border-transparent bg-stone-50 focus:bg-white transition-all duration-200 text-stone-900"
             placeholder="coffee_lover"
             maxLength={30}
             required
           />
         </div>
         {error && (
-          <p className="text-sm text-red-600 mt-1">{error}</p>
+          <p className="text-sm text-red-600 mt-2">{error}</p>
         )}
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-stone-500 mt-2">
           영문, 숫자, 언더바(_)만 사용 가능 (3-30자)
         </p>
       </div>
@@ -408,7 +434,7 @@ function UsernameForm({ currentUsername, onSuccess, onCancel, isFirstTime }: {
         <button
           type="submit"
           disabled={loading || !username.trim()}
-          className="flex-1 bg-emerald-800 text-white py-2 px-4 rounded-lg hover:bg-emerald-900 transition-colors font-medium disabled:opacity-50"
+          className="flex-1 bg-stone-900 text-white py-4 px-6 rounded-2xl hover:bg-stone-800 transition-all duration-200 font-medium disabled:opacity-50 text-sm tracking-wide"
         >
           {loading ? '저장 중...' : (isFirstTime ? '설정하기' : '변경하기')}
         </button>
@@ -416,7 +442,7 @@ function UsernameForm({ currentUsername, onSuccess, onCancel, isFirstTime }: {
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+            className="flex-1 bg-stone-100 text-stone-700 py-4 px-6 rounded-2xl hover:bg-stone-200 transition-all duration-200 font-medium text-sm tracking-wide"
           >
             취소
           </button>
