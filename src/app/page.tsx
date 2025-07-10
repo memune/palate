@@ -10,6 +10,7 @@ function HomePage() {
   const { user, signOut } = useAuth();
   const [recentNotes, setRecentNotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -38,6 +39,20 @@ function HomePage() {
     }
   };
 
+  // 외부 클릭시 메뉴 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showUserMenu) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showUserMenu]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navigation */}
@@ -46,16 +61,36 @@ function HomePage() {
           <div className="max-w-6xl mx-auto px-6 py-4">
             <div className="flex justify-between items-center">
               <h1 className="text-2xl font-light text-gray-900 tracking-wide">
-                ☕ Palate
+                Palate
               </h1>
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">{user.email}</span>
+              <div className="relative">
                 <button
-                  onClick={signOut}
-                  className="text-sm text-gray-500 hover:text-gray-700 transition-colors px-3 py-1 rounded-md hover:bg-gray-50"
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors px-3 py-2 rounded-md hover:bg-gray-50"
                 >
-                  로그아웃
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span className="text-sm">마이페이지</span>
                 </button>
+                
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-3 border-b border-gray-200">
+                      <p className="text-sm text-gray-500">로그인된 계정</p>
+                      <p className="text-sm font-medium text-gray-900 truncate">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        signOut();
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      로그아웃
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -67,14 +102,14 @@ function HomePage() {
 
         {/* Main CTA */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
-          <div className="text-center">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              마신 커피 기록하기
+          <div className="text-left">
+            <h2 className="text-xl font-semibold text-gray-800 mb-3">
+              커피 노트 작성하기
             </h2>
             <p className="text-gray-600 mb-6">
               매장에서 받은 컵노트를 촬영하면 AI가 자동으로 분석해서 내용을 추출합니다
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Link 
                 href="/capture"
                 className="inline-flex items-center bg-emerald-800 text-white px-8 py-3 rounded-lg hover:bg-emerald-900 transition-colors font-medium"
@@ -96,7 +131,7 @@ function HomePage() {
         {/* Recent Notes */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-semibold text-gray-800">
+            <h3 className="text-lg font-semibold text-gray-800">
               최근 기록
             </h3>
             <Link 
