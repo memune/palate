@@ -23,23 +23,30 @@ function HomePage() {
 
   const fetchUserProfile = async () => {
     try {
+      console.log('프로필 정보 가져오는 중...', user?.id);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user?.id)
         .single();
 
+      console.log('프로필 조회 결과:', { data, error });
+
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching profile:', error);
+        // profiles 테이블이 없는 경우 빈 프로필로 설정
+        setUserProfile({ username: null });
       } else {
-        setUserProfile(data);
+        setUserProfile(data || { username: null });
         // If user doesn't have a username, show setup modal
-        if (data && !data.username) {
+        if (!data || !data.username) {
+          console.log('닉네임이 없어서 모달을 표시해야 함');
           setShowUsernameModal(true);
         }
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
+      setUserProfile({ username: null });
     }
   };
 
@@ -67,7 +74,7 @@ function HomePage() {
   // 외부 클릭시 메뉴 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (showUserMenu) {
+      if (showUserMenu && !showUsernameModal) {
         setShowUserMenu(false);
       }
     };
@@ -76,7 +83,7 @@ function HomePage() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showUserMenu]);
+  }, [showUserMenu, showUsernameModal]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -128,8 +135,12 @@ function HomePage() {
                     ) : (
                       <button
                         onClick={() => {
+                          console.log('닉네임 설정하기 버튼 클릭됨');
+                          console.log('현재 userProfile:', userProfile);
+                          console.log('현재 showUsernameModal:', showUsernameModal);
                           setShowUserMenu(false);
                           setShowUsernameModal(true);
+                          console.log('showUsernameModal을 true로 설정함');
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors"
                       >
@@ -246,6 +257,7 @@ function HomePage() {
       </main>
 
       {/* Username Setup/Edit Modal */}
+      {console.log('모달 렌더링 체크 - showUsernameModal:', showUsernameModal)}
       {showUsernameModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
