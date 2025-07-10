@@ -128,8 +128,12 @@ function HomePage() {
                     {userProfile?.username ? (
                       <button
                         onClick={() => {
+                          console.log('닉네임 수정 버튼 클릭됨');
+                          console.log('현재 userProfile:', userProfile);
+                          console.log('현재 showUsernameModal:', showUsernameModal);
                           setShowUserMenu(false);
                           setShowUsernameModal(true);
+                          console.log('showUsernameModal을 true로 설정함');
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
@@ -273,8 +277,11 @@ function HomePage() {
             <UsernameForm 
               currentUsername={userProfile?.username || ''}
               onSuccess={(newUsername) => {
+                console.log('닉네임 수정 완료:', newUsername);
                 setUserProfile({...userProfile, username: newUsername});
                 setShowUsernameModal(false);
+                // 프로필 정보 다시 불러오기
+                fetchUserProfile();
               }}
               onCancel={() => setShowUsernameModal(false)}
               isFirstTime={!userProfile?.username}
