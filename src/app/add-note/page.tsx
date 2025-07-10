@@ -328,8 +328,8 @@ function AddNotePage() {
             </button>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 
