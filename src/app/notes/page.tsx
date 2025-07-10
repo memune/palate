@@ -65,7 +65,11 @@ function NotesPageContent() {
     }
   };
 
-  const deleteNote = async (id: string) => {
+  const deleteNote = async (id: string, title: string) => {
+    if (!confirm(`"${title}" 노트를 정말 삭제하시겠습니까?\n삭제된 노트는 복구할 수 없습니다.`)) {
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('tasting_notes')
@@ -83,6 +87,10 @@ function NotesPageContent() {
       console.error('Error deleting note:', error);
       alert('노트 삭제 중 오류가 발생했습니다.');
     }
+  };
+
+  const editNote = (id: string) => {
+    router.push(`/edit-note/${id}`);
   };
 
   const formatDate = (dateString: string) => {
@@ -143,18 +151,36 @@ function NotesPageContent() {
           </div>
         ) : (
           notes.map((note) => (
-            <div key={note.id} className="bg-white rounded-xl shadow-lg p-6">
+            <div 
+              key={note.id} 
+              className="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
+              onClick={() => editNote(note.id)}
+            >
               <div className="flex items-start justify-between mb-4">
-                <div>
+                <div className="flex-1">
                   <h3 className="text-xl font-semibold text-gray-900 mb-1">{note.title}</h3>
                   <p className="text-sm text-gray-500">{formatDate(note.created_at)}</p>
                 </div>
-                <button
-                  onClick={() => deleteNote(note.id)}
-                  className="text-red-500 hover:text-red-700 text-sm font-medium"
-                >
-                  삭제
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      editNote(note.id);
+                    }}
+                    className="text-emerald-600 hover:text-emerald-800 text-sm font-medium px-2 py-1 rounded hover:bg-emerald-50"
+                  >
+                    수정
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteNote(note.id, note.title);
+                    }}
+                    className="text-red-500 hover:text-red-700 text-sm font-medium px-2 py-1 rounded hover:bg-red-50"
+                  >
+                    삭제
+                  </button>
+                </div>
               </div>
 
               {note.country && (

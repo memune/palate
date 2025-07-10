@@ -89,10 +89,6 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">테이스팅 노트 작성</h2>
-        <p className="text-gray-600">커피의 맛과 향을 자세히 기록해보세요</p>
-      </div>
       
       {isExtracting && (
         <div className="bg-white rounded-xl shadow-lg p-6">

@@ -39,31 +39,31 @@ function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        {/* User Header */}
-        {user && (
-          <div className="flex justify-between items-center mb-8">
-            <div className="text-gray-600">
-              <span className="text-sm">{user.email}</span>
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Navigation */}
+      {user && (
+        <nav className="bg-white border-b border-gray-200">
+          <div className="max-w-6xl mx-auto px-6 py-4">
+            <div className="flex justify-between items-center">
+              <h1 className="text-2xl font-light text-gray-900 tracking-wide">
+                ☕ Palate
+              </h1>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-600">{user.email}</span>
+                <button
+                  onClick={signOut}
+                  className="text-sm text-gray-500 hover:text-gray-700 transition-colors px-3 py-1 rounded-md hover:bg-gray-50"
+                >
+                  로그아웃
+                </button>
+              </div>
             </div>
-            <button
-              onClick={signOut}
-              className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              로그아웃
-            </button>
           </div>
-        )}
+        </nav>
+      )}
 
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            ☕ Palate
-          </h1>
-          <p className="text-lg text-gray-600 mb-8">
-            커피 테이스팅 노트를 기록하고 관리하세요
-          </p>
-        </div>
+      <main className="py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
 
         {/* Main CTA */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
@@ -151,8 +151,9 @@ function HomePage() {
             </div>
           )}
         </div>
-      </div>
-    </main>
+        </div>
+      </main>
+    </div>
   );
 }
 

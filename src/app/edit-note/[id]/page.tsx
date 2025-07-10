@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/lib/supabase';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
-function AddNotePage() {
+function EditNotePage() {
   const { user } = useAuth();
   const router = useRouter();
+  const params = useParams();
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const [formData, setFormData] = useState({
     title: '',
     date: new Date().toISOString().split('T')[0],
@@ -33,6 +35,59 @@ function AddNotePage() {
     },
     notes: '',
   });
+
+  useEffect(() => {
+    if (user && params.id) {
+      fetchNote();
+    }
+  }, [user, params.id]);
+
+  const fetchNote = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('tasting_notes')
+        .select('*')
+        .eq('id', params.id)
+        .eq('user_id', user?.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching note:', error);
+        alert('노트를 불러올 수 없습니다.');
+        router.push('/notes');
+      } else if (data) {
+        setFormData({
+          title: data.title || '',
+          date: data.date || new Date().toISOString().split('T')[0],
+          country: data.country || '',
+          farm: data.farm || '',
+          region: data.region || '',
+          variety: data.variety || '',
+          altitude: data.altitude || '',
+          process: data.process || '',
+          cup_notes: data.cup_notes || '',
+          store_info: data.store_info || '',
+          ratings: data.ratings || {
+            aroma: 5,
+            flavor: 5,
+            acidity: 5,
+            sweetness: 5,
+            body: 5,
+            aftertaste: 5,
+            balance: 5,
+            overall: 5,
+          },
+          notes: data.notes || '',
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching note:', error);
+      alert('노트를 불러올 수 없습니다.');
+      router.push('/notes');
+    } finally {
+      setFetchLoading(false);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -60,8 +115,7 @@ function AddNotePage() {
     try {
       const { error } = await supabase
         .from('tasting_notes')
-        .insert({
-          user_id: user.id,
+        .update({
           title: formData.title,
           date: formData.date,
           country: formData.country || null,
@@ -74,17 +128,20 @@ function AddNotePage() {
           store_info: formData.store_info || null,
           ratings: formData.ratings,
           notes: formData.notes || null,
-        });
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', params.id)
+        .eq('user_id', user.id);
 
       if (error) {
-        console.error('Error saving note:', error);
-        alert('노트 저장 중 오류가 발생했습니다.');
+        console.error('Error updating note:', error);
+        alert('노트 수정 중 오류가 발생했습니다.');
       } else {
         router.push('/notes');
       }
     } catch (error) {
-      console.error('Error saving note:', error);
-      alert('노트 저장 중 오류가 발생했습니다.');
+      console.error('Error updating note:', error);
+      alert('노트 수정 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -101,6 +158,17 @@ function AddNotePage() {
     { key: 'overall', label: '전체 (Overall)' },
   ];
 
+  if (fetchLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-800 mx-auto mb-4"></div>
+          <p className="text-gray-600">노트를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -116,7 +184,7 @@ function AddNotePage() {
           </button>
         </div>
 
-        <form id="add-note-form" onSubmit={handleSubmit} className="space-y-8">
+        <form id="edit-note-form" onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information */}
           <div className="bg-white rounded-xl shadow-lg p-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">기본 정보</h2>
@@ -310,11 +378,11 @@ function AddNotePage() {
           <div className="max-w-4xl mx-auto">
             <button
               type="submit"
-              form="add-note-form"
+              form="edit-note-form"
               disabled={loading}
               className="w-full bg-emerald-800 text-white py-4 rounded-lg hover:bg-emerald-900 transition-colors font-medium text-lg shadow-md disabled:opacity-50"
             >
-              {loading ? '저장 중...' : '테이스팅 노트 저장'}
+              {loading ? '수정 중...' : '테이스팅 노트 수정'}
             </button>
           </div>
         </div>
@@ -323,10 +391,10 @@ function AddNotePage() {
   );
 }
 
-export default function AddNote() {
+export default function EditNote() {
   return (
     <ProtectedRoute>
-      <AddNotePage />
+      <EditNotePage />
     </ProtectedRoute>
   );
 }
