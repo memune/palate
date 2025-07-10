@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { CameraProps } from '@/types';
 
 export default function CameraCapture({ onCapture, onClose }: CameraProps) {
@@ -121,6 +121,14 @@ export default function CameraCapture({ onCapture, onClose }: CameraProps) {
     onClose();
   }, [stopCamera, onClose]);
 
+  // 컴포넌트가 마운트되면 자동으로 카메라 시작
+  useEffect(() => {
+    startCamera();
+    return () => {
+      stopCamera();
+    };
+  }, [startCamera, stopCamera]);
+
   return (
     <div className="fixed inset-0 z-50 bg-black">
       <div className="relative w-full h-full">
@@ -143,14 +151,9 @@ export default function CameraCapture({ onCapture, onClose }: CameraProps) {
         {!isStreaming && !error && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center text-white">
-              <p className="mb-4">카메라를 시작하려면 버튼을 클릭하세요</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+              <p className="mb-4">카메라를 시작하는 중...</p>
               {debugInfo && <p className="mb-2 text-yellow-400">{debugInfo}</p>}
-              <button
-                onClick={startCamera}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                카메라 시작
-              </button>
             </div>
           </div>
         )}
