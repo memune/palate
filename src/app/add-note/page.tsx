@@ -124,7 +124,7 @@ function AddNotePage() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form id="add-note-form" onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information */}
           <div className="bg-white rounded-xl shadow-lg p-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">기본 정보</h2>
@@ -309,17 +309,23 @@ function AddNotePage() {
             />
           </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-center">
+          {/* Spacer for floating button */}
+          <div className="h-20"></div>
+        </form>
+        
+        {/* Floating Submit Button */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
+          <div className="max-w-4xl mx-auto">
             <button
               type="submit"
+              form="add-note-form"
               disabled={loading}
-              className="bg-emerald-800 text-white px-12 py-3 rounded-lg hover:bg-emerald-900 transition-colors font-medium disabled:opacity-50"
+              className="w-full bg-emerald-800 text-white py-4 rounded-lg hover:bg-emerald-900 transition-colors font-medium text-lg shadow-md disabled:opacity-50"
             >
               {loading ? '저장 중...' : '테이스팅 노트 저장'}
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </main>
   );

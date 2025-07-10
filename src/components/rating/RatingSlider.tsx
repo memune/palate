@@ -33,6 +33,17 @@ export default function RatingSlider({
     return 'text-blue-600';
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = Number(e.target.value);
+    
+    // 햅틱 피드백 (모바일 디바이스에서만 작동)
+    if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate(10); // 10ms 아주 미세한 진동
+    }
+    
+    onChange(newValue);
+  };
+
   return (
     <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
       <div className="flex justify-between items-center">
@@ -51,7 +62,7 @@ export default function RatingSlider({
           )}
         </div>
         <div className="text-right">
-          <div className="text-lg font-bold text-blue-600">
+          <div className="text-lg font-bold text-emerald-800">
             {value}점
           </div>
           <div className={`text-xs ${getRatingColor(value)}`}>
@@ -67,7 +78,7 @@ export default function RatingSlider({
           max={max}
           step={step}
           value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
+          onChange={handleChange}
           className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
         />
         
@@ -90,7 +101,7 @@ export default function RatingSlider({
           border-radius: 50%;
           background: #ffffff;
           cursor: pointer;
-          border: 3px solid #3b82f6;
+          border: 3px solid #065f46;
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
           transition: all 0.2s ease;
         }
@@ -106,7 +117,7 @@ export default function RatingSlider({
           border-radius: 50%;
           background: #ffffff;
           cursor: pointer;
-          border: 3px solid #3b82f6;
+          border: 3px solid #065f46;
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         }
       `}</style>
