@@ -3,79 +3,144 @@
 import Link from 'next/link';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/components/auth/AuthProvider';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 function HomePage() {
   const { user, signOut } = useAuth();
+  const [recentNotes, setRecentNotes] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      fetchRecentNotes();
+    }
+  }, [user]);
+
+  const fetchRecentNotes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('tasting_notes')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+      if (error) {
+        console.error('Error fetching recent notes:', error);
+      } else {
+        setRecentNotes(data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching recent notes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
-      <div className="container mx-auto px-6 py-12">
+    <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
         {/* User Header */}
         {user && (
-          <div className="flex justify-between items-center mb-16">
+          <div className="flex justify-between items-center mb-8">
             <div className="text-gray-600">
-              <span className="text-sm font-light">{user.email}</span>
+              <span className="text-sm">{user.email}</span>
             </div>
             <button
               onClick={signOut}
-              className="text-sm text-gray-400 hover:text-gray-600 transition-colors font-light"
+              className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
             >
               로그아웃
             </button>
           </div>
         )}
 
-        <div className="text-center mb-20">
-          <h1 className="text-6xl font-thin text-gray-800 mb-6 tracking-wide">
-            Palate
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            ☕ Palate
           </h1>
-          <p className="text-lg text-gray-500 font-light max-w-md mx-auto leading-relaxed">
-            Professional coffee tasting notes
+          <p className="text-lg text-gray-600 mb-8">
+            커피 테이스팅 노트를 기록하고 관리하세요
           </p>
         </div>
 
-        <div className="max-w-2xl mx-auto">
-          <div className="grid gap-6">
-            <Link href="/capture" className="group">
-              <div className="bg-white/70 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-8 hover:bg-white/80 transition-all duration-300 hover:shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-light text-gray-800 mb-2">
-                      Capture
-                    </h2>
-                    <p className="text-gray-500 font-light text-sm">
-                      AI-powered extraction from photos
-                    </p>
-                  </div>
-                  <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5l7 7-7 7"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
-            <Link href="/notes" className="group">
-              <div className="bg-white/70 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-8 hover:bg-white/80 transition-all duration-300 hover:shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-light text-gray-800 mb-2">
-                      Notes
-                    </h2>
-                    <p className="text-gray-500 font-light text-sm">
-                      Curated tasting records
-                    </p>
-                  </div>
-                  <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5l7 7-7 7"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
+        {/* Main CTA */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
+          <div className="text-center">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              마신 커피 기록하기
+            </h2>
+            <p className="text-gray-600 mb-6">
+              커피 포장지나 메뉴를 촬영하면 AI가 자동으로 정보를 추출합니다
+            </p>
+            <Link 
+              href="/capture"
+              className="inline-flex items-center bg-emerald-800 text-white px-8 py-3 rounded-lg hover:bg-emerald-900 transition-colors font-medium"
+            >
+              <span className="mr-2">📷</span>
+              촬영하기
             </Link>
           </div>
+        </div>
+
+        {/* Recent Notes */}
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-semibold text-gray-800">
+              최근 기록
+            </h3>
+            <Link 
+              href="/notes"
+              className="text-emerald-800 hover:text-emerald-900 transition-colors text-sm font-medium"
+            >
+              전체 노트 보기 →
+            </Link>
+          </div>
+          
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="text-gray-500">로딩 중...</div>
+            </div>
+          ) : recentNotes.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-gray-500 mb-4">
+                아직 기록된 노트가 없습니다
+              </div>
+              <Link 
+                href="/capture"
+                className="text-emerald-800 hover:text-emerald-900 transition-colors text-sm font-medium"
+              >
+                첫 번째 커피를 기록해보세요 →
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {recentNotes.map((note) => (
+                <div key={note.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900 mb-1">
+                        {note.title}
+                      </h4>
+                      <div className="text-sm text-gray-600 space-y-1">
+                        {note.country && <span className="block">📍 {note.country}</span>}
+                        {note.cup_notes && <span className="block">☕ {note.cup_notes}</span>}
+                        <span className="block text-xs text-gray-500">
+                          {new Date(note.created_at).toLocaleDateString('ko-KR')}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-medium text-emerald-800">
+                        {note.ratings?.overall || 0}/10
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </main>

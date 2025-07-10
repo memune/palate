@@ -59,7 +59,15 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+      // Clear local state immediately
+      setUser(null);
+      setSession(null);
+      // Since we're using ProtectedRoute, just clearing the state will show the login form
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   const value = {
