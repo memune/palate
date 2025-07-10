@@ -43,6 +43,13 @@ body {
     letter-spacing: -0.025em;
   }
 
+  .brand-font-italic {
+    font-family: 'Grenette Pro', 'Playfair Display', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    font-style: italic;
+  }
+
   .slider::-webkit-slider-thumb {
     @apply appearance-none w-5 h-5 bg-gray-600 rounded-full cursor-pointer shadow-lg;
   }

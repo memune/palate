@@ -189,8 +189,8 @@ function HomePage() {
         {/* Main CTA */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
           <div className="text-left">
-            <h2 className="text-xl font-semibold text-stone-900 mb-3">
-              커피 테이스팅 노트 작성하기
+            <h2 className="text-xl font-semibold text-stone-900 mb-3 brand-font-italic">
+              Brewed Moments, Captured
             </h2>
             <p className="text-stone-600 mb-6">
               매장에서 받은 컵노트를 촬영하면 AI가 자동으로 분석해서 내용을 추출합니다
