@@ -163,37 +163,44 @@ function EditNotePage() {
 
   if (fetchLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-800 mx-auto mb-4"></div>
-          <p className="text-gray-600">노트를 불러오는 중...</p>
+          <p className="text-stone-600">노트를 불러오는 중...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center text-gray-600 hover:text-gray-800 transition-colors mb-6"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            돌아가기
-          </button>
+    <div className="min-h-screen bg-stone-50">
+      <header className="bg-stone-50 border-b border-stone-200">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => router.back()}
+              className="flex items-center text-stone-600 hover:text-stone-900 transition-colors"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+              </svg>
+              뒤로
+            </button>
+            <h1 className="text-xl font-medium text-stone-900 tracking-tight">노트 편집</h1>
+            <div className="w-16" />
+          </div>
         </div>
+      </header>
+      
+      <main className="max-w-4xl mx-auto px-6 py-8">
 
         <form id="edit-note-form" onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">기본 정보</h2>
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
+            <h2 className="text-lg font-semibold text-stone-900 mb-6">기본 정보</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   제목 *
                 </label>
                 <input
@@ -202,12 +209,12 @@ function EditNotePage() {
                   value={formData.title}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="예: 콜롬비아 우일라 더치 워시드"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   날짜
                 </label>
                 <input
@@ -215,18 +222,18 @@ function EditNotePage() {
                   name="date"
                   value={formData.date}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 />
               </div>
             </div>
           </div>
 
           {/* Coffee Information */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">커피 정보</h2>
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
+            <h2 className="text-lg font-semibold text-stone-900 mb-6">커피 정보</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   국가
                 </label>
                 <input
@@ -234,12 +241,12 @@ function EditNotePage() {
                   name="country"
                   value={formData.country}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="예: 콜롬비아"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   농장
                 </label>
                 <input
@@ -247,12 +254,12 @@ function EditNotePage() {
                   name="farm"
                   value={formData.farm}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="예: 라 에스페란자 농장"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   지역
                 </label>
                 <input
@@ -260,12 +267,12 @@ function EditNotePage() {
                   name="region"
                   value={formData.region}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="예: 우일라"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   품종
                 </label>
                 <input
@@ -273,12 +280,12 @@ function EditNotePage() {
                   name="variety"
                   value={formData.variety}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="예: 카투라"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   고도
                 </label>
                 <input
@@ -286,12 +293,12 @@ function EditNotePage() {
                   name="altitude"
                   value={formData.altitude}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="예: 1,500m"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   가공 방법
                 </label>
                 <input
@@ -299,13 +306,13 @@ function EditNotePage() {
                   name="process"
                   value={formData.process}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   placeholder="예: 더치 워시드"
                 />
               </div>
             </div>
             <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-stone-700 mb-2">
                 컵노트 (테이스팅 노트)
               </label>
               <input
@@ -313,12 +320,12 @@ function EditNotePage() {
                 name="cup_notes"
                 value={formData.cup_notes}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="예: 초콜릿, 견과류, 오렌지 산미"
               />
             </div>
             <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-stone-700 mb-2">
                 매장 정보
               </label>
               <input
@@ -326,19 +333,19 @@ function EditNotePage() {
                 name="store_info"
                 value={formData.store_info}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="예: 블루보틀 강남점"
               />
             </div>
           </div>
 
           {/* Ratings */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">평가</h2>
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
+            <h2 className="text-lg font-semibold text-stone-900 mb-6">평가</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {ratingCategories.map((category) => (
                 <div key={category.key}>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-stone-700 mb-2">
                     {category.label}
                   </label>
                   <div className="flex items-center space-x-4">
@@ -348,7 +355,7 @@ function EditNotePage() {
                       max="10"
                       value={formData.ratings[category.key as keyof typeof formData.ratings]}
                       onChange={(e) => handleRatingChange(category.key, parseInt(e.target.value))}
-                      className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      className="flex-1 h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer"
                     />
                     <span className="text-lg font-semibold text-emerald-800 min-w-[3rem] text-center">
                       {formData.ratings[category.key as keyof typeof formData.ratings]}/10
@@ -360,14 +367,14 @@ function EditNotePage() {
           </div>
 
           {/* Notes */}
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">추가 노트</h2>
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
+            <h2 className="text-lg font-semibold text-stone-900 mb-6">추가 노트</h2>
             <textarea
               name="notes"
               value={formData.notes}
               onChange={handleInputChange}
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               placeholder="개인적인 감상이나 추가 메모를 입력하세요..."
             />
           </div>
@@ -377,7 +384,7 @@ function EditNotePage() {
         </form>
         
         {/* Floating Submit Button */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-stone-200 p-4 shadow-lg">
           <div className="max-w-4xl mx-auto">
             <button
               type="submit"
@@ -389,8 +396,8 @@ function EditNotePage() {
             </button>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 

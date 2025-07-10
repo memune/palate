@@ -96,7 +96,7 @@ function HomePage() {
         <nav className="bg-stone-50 border-b border-stone-200">
           <div className="max-w-6xl mx-auto px-6 py-4">
             <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-medium text-stone-900 tracking-tight">
+              <h1 className="text-2xl font-medium text-stone-900 tracking-tight brand-font">
                 Palate
               </h1>
               <div className="relative user-menu-container">
