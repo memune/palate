@@ -108,7 +108,7 @@ function HomePage() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                  <span className="text-sm font-medium">마이페이지</span>
+                  <span className="text-sm font-medium">My</span>
                 </button>
                 
                 {showUserMenu && (
@@ -223,7 +223,7 @@ function HomePage() {
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold text-stone-900">
-              최근 기록
+              Recent
             </h3>
             <Link 
               href="/notes"

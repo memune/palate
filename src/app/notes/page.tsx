@@ -110,15 +110,7 @@ function NotesPageContent() {
               홈
             </button>
             <h1 className="text-xl font-medium text-stone-900 tracking-tight">저장된 노트</h1>
-            <button
-              onClick={() => router.push('/capture')}
-              className="flex items-center bg-emerald-800 text-white px-4 py-2 rounded-xl hover:bg-emerald-900 transition-colors font-medium text-sm"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
-              </svg>
-              추가
-            </button>
+            <div className="w-16" />
           </div>
         </div>
       </header>
