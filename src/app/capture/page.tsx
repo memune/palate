@@ -9,6 +9,9 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { useTastingNotes } from '@/hooks/useTastingNotes';
 import { TastingNote } from '@/types';
 
+// Make this page dynamic to avoid SSR issues
+export const dynamic = 'force-dynamic';
+
 function CapturePageContent() {
   const [step, setStep] = useState<'camera' | 'ocr' | 'form'>('camera');
   const [capturedImage, setCapturedImage] = useState<File | null>(null);

@@ -6,6 +6,9 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/lib/supabase';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
+// Make this page dynamic to avoid SSR issues
+export const dynamic = 'force-dynamic';
+
 function AddNotePage() {
   const { user } = useAuth();
   const router = useRouter();

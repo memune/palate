@@ -29,7 +29,7 @@ export function useTastingNotes() {
       if (error) throw error;
 
       // Transform Supabase data to TastingNote format
-      const transformedNotes: TastingNote[] = data.map(note => ({
+      const transformedNotes: TastingNote[] = data.map((note: any) => ({
         id: note.id,
         title: note.title,
         date: note.date || note.created_at,
