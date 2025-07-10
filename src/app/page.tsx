@@ -77,7 +77,8 @@ function HomePage() {
   // 외부 클릭시 메뉴 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (showUserMenu && !showUsernameModal) {
+      const target = event.target as Element;
+      if (showUserMenu && !showUsernameModal && !target.closest('.user-menu-container')) {
         setShowUserMenu(false);
       }
     };
@@ -98,7 +99,7 @@ function HomePage() {
               <h1 className="text-2xl font-light text-gray-900 tracking-wide">
                 Palate
               </h1>
-              <div className="relative">
+              <div className="relative user-menu-container">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors px-3 py-2 rounded-md hover:bg-gray-50"
@@ -110,7 +111,7 @@ function HomePage() {
                 </button>
                 
                 {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 user-menu-dropdown">
                     <div className="px-4 py-3 border-b border-gray-200">
                       {userProfile?.username ? (
                         <>
@@ -127,29 +128,39 @@ function HomePage() {
                     </div>
                     {userProfile?.username ? (
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           console.log('닉네임 수정 버튼 클릭됨');
                           console.log('현재 userProfile:', userProfile);
                           console.log('현재 showUsernameModal:', showUsernameModal);
                           setShowUserMenu(false);
-                          setShowUsernameModal(true);
-                          console.log('showUsernameModal을 true로 설정함');
+                          setTimeout(() => {
+                            setShowUsernameModal(true);
+                            console.log('showUsernameModal을 true로 설정함');
+                          }, 100);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+                        type="button"
                       >
                         닉네임 수정
                       </button>
                     ) : (
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           console.log('닉네임 설정하기 버튼 클릭됨');
                           console.log('현재 userProfile:', userProfile);
                           console.log('현재 showUsernameModal:', showUsernameModal);
                           setShowUserMenu(false);
-                          setShowUsernameModal(true);
-                          console.log('showUsernameModal을 true로 설정함');
+                          setTimeout(() => {
+                            setShowUsernameModal(true);
+                            console.log('showUsernameModal을 true로 설정함');
+                          }, 100);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors"
+                        className="w-full text-left px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors cursor-pointer"
+                        type="button"
                       >
                         닉네임 설정하기
                       </button>
