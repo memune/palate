@@ -43,6 +43,7 @@ function EditNotePage() {
     if (user && params.id) {
       fetchNote();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, params.id]);
 
   const fetchNote = async () => {
