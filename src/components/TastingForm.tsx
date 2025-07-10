@@ -88,36 +88,44 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">테이스팅 노트 작성</h2>
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div className="text-center">
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">테이스팅 노트 작성</h2>
+        <p className="text-gray-600">커피의 맛과 향을 자세히 기록해보세요</p>
+      </div>
       
       {isExtracting && (
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-center">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
-            <span className="text-blue-700">🤖 AI가 커피 정보를 자동으로 추출하고 있습니다...</span>
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-emerald-800 mr-3"></div>
+            <span className="text-emerald-800 font-medium">🤖 AI가 커피 정보를 자동으로 추출하고 있습니다...</span>
           </div>
         </div>
       )}
       
-      <div className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            제목
-          </label>
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="커피 이름을 입력하세요"
-          />
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Basic Information */}
+        <div className="bg-white rounded-xl shadow-lg p-8">
+          <h3 className="text-xl font-semibold text-gray-800 mb-6">기본 정보</h3>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              제목 *
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              placeholder="커피 이름을 입력하세요"
+              required
+            />
+          </div>
         </div>
 
-        {/* 커피 기본 정보 */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">☕ 커피 정보</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Coffee Information */}
+        <div className="bg-white rounded-xl shadow-lg p-8">
+          <h3 className="text-xl font-semibold text-gray-800 mb-6">커피 정보</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 국가
@@ -126,7 +134,7 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
                 type="text"
                 value={formData.country}
                 onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="예: 에티오피아"
               />
             </div>
@@ -139,7 +147,7 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
                 type="text"
                 value={formData.farm}
                 onChange={(e) => setFormData(prev => ({ ...prev, farm: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="농장명"
               />
             </div>
@@ -152,7 +160,7 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
                 type="text"
                 value={formData.region}
                 onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="예: 예가체프"
               />
             </div>
@@ -165,7 +173,7 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
                 type="text"
                 value={formData.variety}
                 onChange={(e) => setFormData(prev => ({ ...prev, variety: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="예: 게이샤"
               />
             </div>
@@ -178,7 +186,7 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
                 type="text"
                 value={formData.altitude}
                 onChange={(e) => setFormData(prev => ({ ...prev, altitude: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="예: 1800m"
               />
             </div>
@@ -191,12 +199,27 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
                 type="text"
                 value={formData.process}
                 onChange={(e) => setFormData(prev => ({ ...prev, process: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="예: 워시드"
               />
             </div>
-
-            <div className="md:col-span-2">
+          </div>
+          
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                컵노트 (테이스팅 노트)
+              </label>
+              <textarea
+                value={formData.cupNotes}
+                onChange={(e) => setFormData(prev => ({ ...prev, cupNotes: e.target.value }))}
+                rows={3}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder="예: 플로럴, 자스민, 베르가못, 초콜릿..."
+              />
+            </div>
+            
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 매장 정보
               </label>
@@ -204,29 +227,19 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
                 type="text"
                 value={formData.storeInfo}
                 onChange={(e) => setFormData(prev => ({ ...prev, storeInfo: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="로스터리, 카페명 등"
               />
             </div>
           </div>
         </div>
 
-        {/* 컵노트 */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            컵노트 (맛 특성)
-          </label>
-          <textarea
-            value={formData.cupNotes}
-            onChange={(e) => setFormData(prev => ({ ...prev, cupNotes: e.target.value }))}
-            rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="예: 플로럴, 자스민, 베르가못, 초콜릿..."
-          />
-        </div>
-
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-6">☕ 테이스팅 평가 (1-10점)</h3>
+        {/* Ratings */}
+        <div className="bg-white rounded-xl shadow-lg p-8">
+          <h3 className="text-xl font-semibold text-gray-800 mb-6">테이스팅 평가</h3>
+          <div className="text-sm text-gray-600 mb-8">
+            각 항목을 1-10점으로 평가해주세요. 전문적인 지식이 없어도 괜찮습니다. 개인적인 감상으로 평가해보세요.
+          </div>
           <div className="space-y-4">
             <RatingSlider
               label="1. 향 (Aroma)"
@@ -291,26 +304,28 @@ export default function TastingForm({ extractedText, onSubmit }: TastingFormProp
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            메모
-          </label>
+        {/* Notes */}
+        <div className="bg-white rounded-xl shadow-lg p-8">
+          <h3 className="text-xl font-semibold text-gray-800 mb-6">추가 노트</h3>
           <textarea
             value={formData.notes}
             onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-            rows={6}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="테이스팅 노트를 작성하세요..."
+            rows={4}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            placeholder="개인적인 감상이나 추가 메모를 입력하세요..."
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium"
-        >
-          테이스팅 노트 저장
-        </button>
-      </div>
-    </form>
+        {/* Submit Button */}
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="bg-emerald-800 text-white px-12 py-3 rounded-lg hover:bg-emerald-900 transition-colors font-medium"
+          >
+            테이스팅 노트 저장
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

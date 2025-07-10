@@ -82,7 +82,7 @@ function CapturePageContent() {
         </div>
       </header>
 
-      <main className="p-4">
+      <main className="p-4 py-8">
         {step === 'camera' && (
           <Camera onCapture={handleCapture} onClose={() => router.push('/')} />
         )}

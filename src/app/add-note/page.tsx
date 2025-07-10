@@ -107,19 +107,21 @@ function AddNotePage() {
         <div className="mb-8">
           <button
             onClick={() => router.back()}
-            className="flex items-center text-gray-600 hover:text-gray-800 transition-colors mb-4"
+            className="flex items-center text-gray-600 hover:text-gray-800 transition-colors mb-6"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             돌아가기
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">
-            직접 입력하기
-          </h1>
-          <p className="text-gray-600 mt-2">
-            커피 테이스팅 노트를 직접 입력해보세요
-          </p>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              직접 입력하기
+            </h1>
+            <p className="text-gray-600">
+              커피 테이스팅 노트를 직접 입력해보세요
+            </p>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
