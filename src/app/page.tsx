@@ -257,7 +257,11 @@ function HomePage() {
           ) : (
             <div className="space-y-4">
               {recentNotes.map((note) => (
-                <div key={note.id} className="border border-stone-100 rounded-xl p-4 hover:bg-stone-50 transition-colors">
+                <Link 
+                  key={note.id} 
+                  href={`/note/${note.id}`}
+                  className="block border border-stone-100 rounded-xl p-4 hover:bg-stone-50 transition-colors cursor-pointer"
+                >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <h4 className="font-medium text-stone-900 mb-1">
@@ -292,7 +296,7 @@ function HomePage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
