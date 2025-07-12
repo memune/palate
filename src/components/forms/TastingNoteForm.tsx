@@ -277,16 +277,13 @@ const TastingNoteForm = memo(function TastingNoteForm({
               value={formData.farm}
               onChange={(e) => {
                 console.log('🔥 FARM INPUT CHANGED:', e.target.value);
-                alert('농장 입력됨: ' + e.target.value);
                 setFormData(prev => ({ ...prev, farm: e.target.value }));
               }}
               onClick={() => {
                 console.log('🔥 FARM INPUT CLICKED');
-                alert('농장 필드 클릭됨!');
               }}
               onFocus={() => {
                 console.log('🔥 FARM INPUT FOCUSED');
-                alert('농장 필드 포커스됨!');
               }}
               placeholder="농장을 입력하세요 (테스트)"
               className="w-full px-4 py-2 border-2 border-red-500 rounded-lg bg-yellow-100"
