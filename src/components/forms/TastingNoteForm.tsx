@@ -309,21 +309,35 @@ const TastingNoteForm = memo(function TastingNoteForm({
             <label className="block text-sm font-medium text-stone-700 mb-2">
               농장{matchedData.region ? ` (${matchedData.region.name})` : ''}
             </label>
-            {farmSuggestions.length > 0 && (
-              <div className="mb-2">
+            
+            {/* 디버깅용 상태 표시 */}
+            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
+              <div><strong>🔍 농장 필드 디버깅:</strong></div>
+              <div>현재 농장 값: <strong>&ldquo;{formData.farm}&rdquo;</strong></div>
+              <div>농장 값 길이: {formData.farm.length}</div>
+              <div>지역 매칭: {matchedData.region?.name || '미선택'}</div>
+              <div>농장 suggestions: {farmSuggestions.length}개</div>
+              <div>지역 ID: {matchedData.region?.id || '없음'}</div>
+            </div>
+
+            {farmSuggestions.length > 0 ? (
+              <div className="space-y-2">
                 <select
                   value={formData.farm}
                   onChange={(e) => {
                     const newValue = e.target.value;
-                    console.log('🔥 FARM SELECT CHANGED:', newValue);
-                    console.log('🔥 Before update:', formData.farm);
+                    console.log('🔥 FARM SELECT EVENT TRIGGERED');
+                    console.log('🔥 Selected value:', newValue);
+                    console.log('🔥 Event target:', e.target);
+                    console.log('🔥 Before state update - formData.farm:', formData.farm);
+                    
                     setFormData(prev => {
                       const updated = { ...prev, farm: newValue };
-                      console.log('🔥 After update:', updated.farm);
+                      console.log('🔥 State update - new farm value:', updated.farm);
                       return updated;
                     });
                   }}
-                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border-2 border-blue-400 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-blue-50"
                 >
                   <option value="">🏡 농장을 선택하세요</option>
                   {farmSuggestions.map((farm) => (
@@ -332,28 +346,27 @@ const TastingNoteForm = memo(function TastingNoteForm({
                     </option>
                   ))}
                 </select>
-                <div className="text-xs text-stone-500 mt-1">
-                  {farmSuggestions.length}개의 {matchedData.region?.name} 농장
+                <div className="text-xs text-stone-500">
+                  {farmSuggestions.length}개의 {matchedData.region?.name} 농장 중 선택
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={formData.farm}
+                  onChange={(e) => {
+                    console.log('🔥 FARM INPUT CHANGED:', e.target.value);
+                    setFormData(prev => ({ ...prev, farm: e.target.value }));
+                  }}
+                  placeholder="농장을 직접 입력하세요"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                />
+                <div className="text-xs text-stone-500">
+                  지역을 먼저 선택하면 농장 목록을 볼 수 있습니다
                 </div>
               </div>
             )}
-            
-            <input
-              type="text"
-              value={formData.farm}
-              onChange={(e) => {
-                console.log('🔥 FARM INPUT CHANGED:', e.target.value);
-                setFormData(prev => ({ ...prev, farm: e.target.value }));
-              }}
-              placeholder={farmSuggestions.length > 0 ? "또는 직접 입력하세요" : "농장을 입력하세요"}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-            />
-            <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
-              <div>현재 농장 값: <strong>&ldquo;{formData.farm}&rdquo;</strong></div>
-              <div>농장 값 길이: {formData.farm.length}</div>
-              <div>지역: {matchedData.region?.name || '미선택'}</div>
-              <div>농장 suggestions: {farmSuggestions.length}개</div>
-            </div>
           </div>
           
           <AutoCompleteInput
