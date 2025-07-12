@@ -284,51 +284,29 @@ const TastingNoteForm = memo(function TastingNoteForm({
             }
           />
           
-          <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              농장{matchedData.region ? ` (${matchedData.region.name})` : ''}
-            </label>
-            
-
-            {farmSuggestions.length > 0 ? (
-              <div className="space-y-2">
-                <select
-                  key={`farm-select-${matchedData.region?.name || 'no-region'}`}
-                  defaultValue={formData.farm}
-                  onChange={(e) => {
-                    setFormData(prev => ({ ...prev, farm: e.target.value }));
-                  }}
-                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                >
-                  <option value="">🏡 농장을 선택하세요</option>
-                  {farmSuggestions.map((farm) => (
-                    <option key={farm.id} value={farm.name}>
-                      {farm.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="text-xs text-stone-500">
-                  {farmSuggestions.length}개의 {matchedData.region?.name} 농장 중 선택
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <input
-                  type="text"
-                  value={formData.farm}
-                  onChange={(e) => {
-                    console.log('🔥 FARM INPUT CHANGED:', e.target.value);
-                    setFormData(prev => ({ ...prev, farm: e.target.value }));
-                  }}
-                  placeholder="농장을 직접 입력하세요"
-                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                />
-                <div className="text-xs text-stone-500">
-                  지역을 먼저 선택하면 농장 목록을 볼 수 있습니다
-                </div>
-              </div>
-            )}
-          </div>
+          <AutoCompleteInput
+            label={`농장${matchedData.region ? ` (${matchedData.region.name})` : ''}`}
+            name="farm"
+            value={formData.farm}
+            onChange={handleFarmChange}
+            onMatch={handleFarmMatch}
+            placeholder={
+              farmSuggestions.length > 0
+                ? `${matchedData.region?.name}의 주요 농장 또는 직접 입력...`
+                : matchedData.region
+                ? "농장을 직접 입력해주세요..."
+                : "먼저 지역을 선택해주세요..."
+            }
+            matcher={(input) => matchFarm(input, matchedData.region?.name)}
+            suggestions={farmSuggestions}
+            dropdownHeader={
+              farmSuggestions.length > 0
+                ? `🏡 ${matchedData.region?.name} 주요 농장:`
+                : matchedData.region
+                ? "📝 직접 입력 가능:"
+                : "🌍 먼저 지역을 선택하세요"
+            }
+          />
           
           <AutoCompleteInput
             label="품종"
