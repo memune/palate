@@ -80,12 +80,12 @@ export default function AutoCompleteInput({
         item.id !== match.id
       );
       setFilteredSuggestions(otherSuggestions);
-      setIsOpen(otherSuggestions.length > 0 && value.length >= 2);
+      setIsOpen(otherSuggestions.length > 0 && currentValue.length >= 2);
     } else {
       setFilteredSuggestions(filtered);
       setIsOpen(filtered.length > 0 && currentValue.length >= 1);
     }
-  }, [currentValue, matcher, suggestions, onMatch, hasFocused]);
+  }, [currentValue, matcher, suggestions, onMatch, hasFocused, uncontrolled]);
 
   // suggestions prop이 변경될 때 filteredSuggestions 업데이트
   useEffect(() => {
@@ -193,7 +193,7 @@ export default function AutoCompleteInput({
       setFilteredSuggestions(suggestions);
       setIsOpen(suggestions.length > 0);
     }
-  }, [currentValue, suggestions, matchResult]);
+  }, [currentValue, suggestions, matchResult, name]);
 
   // 매칭 상태에 따른 스타일
   const getInputStyle = () => {
