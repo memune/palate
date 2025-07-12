@@ -222,6 +222,27 @@ const TastingNoteForm = memo(function TastingNoteForm({
   }, [submitButtonText, loading, mode]);
 
   return (
+    <div className="space-y-8">
+      {/* Form 바깥 테스트 영역 */}
+      <div className="bg-red-100 p-4 border-2 border-red-500 rounded">
+        <h3 className="font-bold text-red-700 mb-2">🚨 FORM 바깥 테스트 영역</h3>
+        <select
+          value={formData.farm}
+          onChange={(e) => {
+            console.log('🚨 OUTSIDE FORM SELECT:', e.target.value);
+            alert('Form 바깥 선택: ' + e.target.value);
+            setFormData(prev => ({ ...prev, farm: e.target.value }));
+          }}
+          className="w-full px-4 py-2 border border-red-500 rounded"
+        >
+          <option value="">테스트용 농장 선택</option>
+          <option value="테스트농장1">테스트농장1</option>
+          <option value="테스트농장2">테스트농장2</option>
+          <option value="테스트농장3">테스트농장3</option>
+        </select>
+        <div className="mt-2 text-sm">현재 값: {formData.farm}</div>
+      </div>
+      
     <form id="tasting-note-form" onSubmit={handleSubmit} className="space-y-8">
       {/* Coffee Information */}
       <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
@@ -272,23 +293,34 @@ const TastingNoteForm = memo(function TastingNoteForm({
             <label className="block text-sm font-medium text-stone-700 mb-2">
               농장{matchedData.region ? ` (${matchedData.region.name})` : ''}
             </label>
-            {farmSuggestions.length > 0 ? (
-              <select
-                value={formData.farm}
-                onChange={(e) => {
-                  console.log('🔥 FARM SELECT CHANGED:', e.target.value);
-                  setFormData(prev => ({ ...prev, farm: e.target.value }));
-                }}
-                className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              >
-                <option value="">농장을 선택하세요</option>
-                {farmSuggestions.map((farm) => (
-                  <option key={farm.id} value={farm.name}>
-                    {farm.name}
-                  </option>
-                ))}
-              </select>
-            ) : null}
+            {farmSuggestions.length > 0 && (
+              <div className="mb-2">
+                <select
+                  value={formData.farm}
+                  onChange={(e) => {
+                    const newValue = e.target.value;
+                    console.log('🔥 FARM SELECT CHANGED:', newValue);
+                    console.log('🔥 Before update:', formData.farm);
+                    setFormData(prev => {
+                      const updated = { ...prev, farm: newValue };
+                      console.log('🔥 After update:', updated.farm);
+                      return updated;
+                    });
+                  }}
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                >
+                  <option value="">🏡 농장을 선택하세요</option>
+                  {farmSuggestions.map((farm) => (
+                    <option key={farm.id} value={farm.name}>
+                      {farm.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="text-xs text-stone-500 mt-1">
+                  {farmSuggestions.length}개의 {matchedData.region?.name} 농장
+                </div>
+              </div>
+            )}
             
             <input
               type="text"
@@ -300,11 +332,12 @@ const TastingNoteForm = memo(function TastingNoteForm({
               placeholder={farmSuggestions.length > 0 ? "또는 직접 입력하세요" : "농장을 입력하세요"}
               className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
-            {formData.farm && (
-              <p className="text-sm text-emerald-600 mt-1">
-                ✓ 선택된 농장: {formData.farm}
-              </p>
-            )}
+            <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
+              <div>현재 농장 값: <strong>&ldquo;{formData.farm}&rdquo;</strong></div>
+              <div>농장 값 길이: {formData.farm.length}</div>
+              <div>지역: {matchedData.region?.name || '미선택'}</div>
+              <div>농장 suggestions: {farmSuggestions.length}개</div>
+            </div>
           </div>
           
           <AutoCompleteInput
@@ -446,6 +479,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
       {/* Spacer for floating button */}
       <div className="h-20"></div>
     </form>
+    </div>
   );
 });
 
