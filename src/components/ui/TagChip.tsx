@@ -81,8 +81,7 @@ export function CupNoteTagSelector({
       {selectedTags.length > 0 && (
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-medium text-gray-800 flex items-center">
-              <span className="mr-1">✅</span>
+            <h4 className="text-sm font-medium text-gray-800">
               선택된 컵노트 ({selectedTags.length}/{maxTags})
             </h4>
             <button
@@ -121,18 +120,15 @@ export function CupNoteTagSelector({
           placeholder="컵노트 검색..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
         />
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-          🔍
-        </div>
         {searchTerm && (
           <button
             type="button"
             onClick={() => setSearchTerm('')}
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center text-sm"
           >
-            ✕
+            ×
           </button>
         )}
       </div>
@@ -147,14 +143,13 @@ export function CupNoteTagSelector({
                 type="button"
                 onClick={() => setActiveCategory(key)}
                 className={`
-                  flex items-center px-3 py-2 text-xs font-medium rounded-full whitespace-nowrap transition-all border
+                  px-3 py-2 text-xs font-medium rounded-full whitespace-nowrap transition-all border
                   ${activeCategory === key
                     ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
                     : 'text-gray-600 hover:text-gray-800 border-gray-200 hover:border-gray-300'
                   }
                 `}
               >
-                <span className="mr-1">{category.icon}</span>
                 {category.name}
               </button>
             ))}
@@ -185,7 +180,6 @@ export function CupNoteTagSelector({
           </div>
         ) : (
           <div className="text-center py-8 text-gray-500">
-            <div className="text-4xl mb-2">🔍</div>
             <div className="text-sm">
               {searchTerm ? `"${searchTerm}"에 대한 검색 결과가 없습니다.` : '태그가 없습니다.'}
             </div>
@@ -194,8 +188,8 @@ export function CupNoteTagSelector({
       </div>
 
       {/* Usage Hint */}
-      <div className="text-xs text-gray-500 text-center mt-4 italic">
-        💡 최대 {maxTags}개까지 선택 가능하며, 선택된 태그를 다시 클릭하면 제거됩니다.
+      <div className="text-xs text-gray-500 text-center mt-4">
+        최대 {maxTags}개까지 선택 가능하며, 선택된 태그를 다시 클릭하면 제거됩니다.
       </div>
     </div>
   );

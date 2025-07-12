@@ -317,18 +317,17 @@ const TastingNoteForm = memo(function TastingNoteForm({
     <form id="tasting-note-form" onSubmit={handleSubmit} className="space-y-8">
       {/* Page Header */}
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center justify-center">
-          <span className="mr-2">☕</span>
-          커피 테이스팅 노트
+        <h1 className="text-2xl font-bold text-gray-900">
+          테이스팅 노트
         </h1>
+        <p className="text-sm text-gray-500 mt-2">커피의 풍미를 기록해보세요</p>
       </div>
 
       {/* Coffee Information - No Box */}
       <div className="space-y-8">
           {/* Location Fields */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <span className="mr-2">📍</span>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
               산지 정보
             </h2>
             <div className="grid grid-cols-1 gap-4">
@@ -402,8 +401,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
           {/* Coffee Characteristics */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <span className="mr-2">🌱</span>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
               커피 특성
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -435,8 +433,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
           {/* Altitude Section */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <span className="mr-2">⛰️</span>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
               고도
             </h2>
             <div className="space-y-4">
@@ -539,8 +536,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
           {/* Store Info */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <span className="mr-2">🏪</span>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
               매장 정보
             </h2>
             <input
@@ -556,9 +552,8 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
         {/* Cup Notes Section - Full Width */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <span className="mr-2">🍯</span>
-            컵노트 (테이스팅 노트)
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
+            컵노트
           </h2>
           <CupNoteTagSelector
             selectedTags={selectedCupNoteTags}
@@ -570,8 +565,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
       {/* Ratings */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-          <span className="mr-2">⭐</span>
+        <h2 className="text-lg font-semibold text-gray-900 mb-6 border-b border-gray-200 pb-2">
           평가
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -604,8 +598,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
       {/* Notes */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-          <span className="mr-2">📝</span>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
           추가 노트
         </h2>
         <textarea
@@ -620,8 +613,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
       {/* Basic Information */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-          <span className="mr-2">📋</span>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
           기본 정보
         </h2>
         <div className="space-y-4">
