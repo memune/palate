@@ -21,12 +21,19 @@ interface TastingNoteFormData {
   farm: string;
   region: string;
   variety: string;
-  altitude: string;
+  altitude: string; // 백엔드 호환성을 위해 유지, 내부적으로 구조화
   process: string;
   cup_notes: string;
   store_info: string;
   ratings: typeof DEFAULT_RATINGS;
   notes: string;
+}
+
+interface AltitudeData {
+  type: 'single' | 'range';
+  single?: number;
+  min?: number;
+  max?: number;
 }
 
 interface TastingNoteFormProps {
@@ -176,6 +183,9 @@ const TastingNoteForm = memo(function TastingNoteForm({
   const [selectedRegionForFarm, setSelectedRegionForFarm] = useState<string>('');
   const [farmSuggestions, setFarmSuggestions] = useState<{ id: string; name: string; englishName: string }[]>([]);
   
+  // 고도 관리
+  const [altitudeData, setAltitudeData] = useState<AltitudeData>({ type: 'single' });
+  
   // 지역이 변경될 때만 농장 업데이트 (국가와 무관)
   useEffect(() => {
     const regionName = formData.region;
@@ -205,6 +215,47 @@ const TastingNoteForm = memo(function TastingNoteForm({
       setFormData(prev => ({ ...prev, farm: '' }));
     }
   }, [formData.region, selectedRegionForFarm]);
+  
+  // 고도 데이터를 formData.altitude에 동기화
+  useEffect(() => {
+    let altitudeString = '';
+    if (altitudeData.type === 'single' && altitudeData.single) {
+      altitudeString = `${altitudeData.single}m`;
+    } else if (altitudeData.type === 'range' && altitudeData.min && altitudeData.max) {
+      altitudeString = `${altitudeData.min}-${altitudeData.max}m`;
+    }
+    
+    if (formData.altitude !== altitudeString) {
+      setFormData(prev => ({ ...prev, altitude: altitudeString }));
+    }
+  }, [altitudeData, formData.altitude]);
+  
+  // 초기 데이터를 altitudeData로 파싱 (edit 모드용)
+  useEffect(() => {
+    if (initialData?.altitude && formData.altitude && !altitudeData.single && !altitudeData.min) {
+      const altStr = formData.altitude;
+      if (altStr.includes('-')) {
+        // 범위 고도 파싱
+        const match = altStr.match(/(\d+)-(\d+)/);
+        if (match) {
+          setAltitudeData({
+            type: 'range',
+            min: parseInt(match[1]),
+            max: parseInt(match[2])
+          });
+        }
+      } else {
+        // 단일 고도 파싱
+        const match = altStr.match(/(\d+)/);
+        if (match) {
+          setAltitudeData({
+            type: 'single',
+            single: parseInt(match[1])
+          });
+        }
+      }
+    }
+  }, [initialData?.altitude, formData.altitude, altitudeData.single, altitudeData.min]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -326,14 +377,96 @@ const TastingNoteForm = memo(function TastingNoteForm({
             <label className="block text-sm font-medium text-stone-700 mb-2">
               고도
             </label>
-            <input
-              type="text"
-              name="altitude"
-              value={formData.altitude}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="예: 1,500m"
-            />
+            
+            {/* 고도 타입 선택 */}
+            <div className="mb-3 space-y-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="altitudeType"
+                  value="single"
+                  checked={altitudeData.type === 'single'}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setAltitudeData({ type: 'single' });
+                    }
+                  }}
+                  className="text-emerald-600 focus:ring-emerald-500"
+                />
+                <span className="text-sm text-stone-700">단일 고도</span>
+              </label>
+              
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="altitudeType"
+                  value="range"
+                  checked={altitudeData.type === 'range'}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setAltitudeData({ type: 'range' });
+                    }
+                  }}
+                  className="text-emerald-600 focus:ring-emerald-500"
+                />
+                <span className="text-sm text-stone-700">범위 고도</span>
+              </label>
+            </div>
+            
+            {/* 조건부 입력 필드 */}
+            {altitudeData.type === 'single' ? (
+              <div className="flex items-center space-x-2">
+                <input
+                  type="number"
+                  value={altitudeData.single || ''}
+                  onChange={(e) => {
+                    const value = e.target.value ? parseInt(e.target.value) : undefined;
+                    setAltitudeData(prev => ({ ...prev, single: value }));
+                  }}
+                  className="flex-1 px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  placeholder="1500"
+                  min="0"
+                  max="5000"
+                />
+                <span className="text-sm text-stone-500">m</span>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <input
+                  type="number"
+                  value={altitudeData.min || ''}
+                  onChange={(e) => {
+                    const value = e.target.value ? parseInt(e.target.value) : undefined;
+                    setAltitudeData(prev => ({ ...prev, min: value }));
+                  }}
+                  className="flex-1 px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  placeholder="1200"
+                  min="0"
+                  max="5000"
+                />
+                <span className="text-sm text-stone-500">m ~</span>
+                <input
+                  type="number"
+                  value={altitudeData.max || ''}
+                  onChange={(e) => {
+                    const value = e.target.value ? parseInt(e.target.value) : undefined;
+                    setAltitudeData(prev => ({ ...prev, max: value }));
+                  }}
+                  className="flex-1 px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  placeholder="1800"
+                  min="0"
+                  max="5000"
+                />
+                <span className="text-sm text-stone-500">m</span>
+              </div>
+            )}
+            
+            {/* 미리보기 */}
+            {formData.altitude && (
+              <div className="mt-2 text-xs text-stone-500">
+                저장될 값: <strong>{formData.altitude}</strong>
+              </div>
+            )}
           </div>
           <AutoCompleteInput
             label="가공 방법"
