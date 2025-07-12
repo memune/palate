@@ -313,20 +313,24 @@ const TastingNoteForm = memo(function TastingNoteForm({
   }, [submitButtonText, loading, mode]);
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
-    <form id="tasting-note-form" onSubmit={handleSubmit} className="space-y-6">
-      {/* Coffee Information */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-emerald-50 to-green-50 px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-            <span className="mr-2">☕</span>
-            커피 정보
-          </h2>
-        </div>
-        <div className="p-6 space-y-6">
-          {/* Location Fields - Mobile Optimized Grid */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-medium text-gray-700 mb-3">📍 산지 정보</h3>
+    <div className="max-w-4xl mx-auto p-4 space-y-8">
+    <form id="tasting-note-form" onSubmit={handleSubmit} className="space-y-8">
+      {/* Page Header */}
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-gray-900 flex items-center justify-center">
+          <span className="mr-2">☕</span>
+          커피 테이스팅 노트
+        </h1>
+      </div>
+
+      {/* Coffee Information - No Box */}
+      <div className="space-y-8">
+          {/* Location Fields */}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <span className="mr-2">📍</span>
+              산지 정보
+            </h2>
             <div className="grid grid-cols-1 gap-4">
               <AutoCompleteInput
                 label="국가"
@@ -397,8 +401,11 @@ const TastingNoteForm = memo(function TastingNoteForm({
           </div>
 
           {/* Coffee Characteristics */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-medium text-gray-700 mb-3">🌱 커피 특성</h3>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <span className="mr-2">🌱</span>
+              커피 특성
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <AutoCompleteInput
                 label="품종"
@@ -427,9 +434,12 @@ const TastingNoteForm = memo(function TastingNoteForm({
           </div>
 
           {/* Altitude Section */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-medium text-gray-700 mb-3">⛰️ 고도</h3>
-            <div className="bg-gray-50 rounded-xl p-4 space-y-4">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <span className="mr-2">⛰️</span>
+              고도
+            </h2>
+            <div className="space-y-4">
               {/* 고도 타입 선택 */}
               <div className="flex space-x-6">
                 <label className="flex items-center space-x-2">
@@ -520,7 +530,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
               
               {/* 미리보기 */}
               {formData.altitude && (
-                <div className="text-xs text-gray-500 bg-white rounded-lg px-3 py-2">
+                <div className="text-xs text-gray-500 italic">
                   저장될 값: <span className="font-medium text-gray-700">{formData.altitude}</span>
                 </div>
               )}
@@ -528,8 +538,11 @@ const TastingNoteForm = memo(function TastingNoteForm({
           </div>
 
           {/* Store Info */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-medium text-gray-700 mb-3">🏪 매장 정보</h3>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <span className="mr-2">🏪</span>
+              매장 정보
+            </h2>
             <input
               type="text"
               name="store_info"
@@ -541,9 +554,12 @@ const TastingNoteForm = memo(function TastingNoteForm({
           </div>
         </div>
 
-        {/* Cup Notes Section - Separate for visual emphasis */}
-        <div className="border-t border-gray-100 bg-gray-50 p-6">
-          <h3 className="text-sm font-medium text-gray-700 mb-4">🍯 컵노트 (테이스팅 노트)</h3>
+        {/* Cup Notes Section - Full Width */}
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <span className="mr-2">🍯</span>
+            컵노트 (테이스팅 노트)
+          </h2>
           <CupNoteTagSelector
             selectedTags={selectedCupNoteTags}
             onTagsChange={setSelectedCupNoteTags}
@@ -551,75 +567,64 @@ const TastingNoteForm = memo(function TastingNoteForm({
             maxTags={8}
           />
         </div>
-      </div>
 
       {/* Ratings */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-            <span className="mr-2">⭐</span>
-            평가
-          </h2>
-        </div>
-        <div className="p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {RATING_CATEGORIES.map((category) => (
-              <div key={category.key} className="space-y-3">
-                <label className="block text-sm font-medium text-gray-700">
-                  {category.label}
-                </label>
-                <div className="space-y-2">
-                  <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    value={formData.ratings[category.key as keyof typeof formData.ratings]}
-                    onChange={(e) => handleRatingChange(category.key, parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
-                  />
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500">1</span>
-                    <span className="text-lg font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
-                      {formData.ratings[category.key as keyof typeof formData.ratings]}/10
-                    </span>
-                    <span className="text-xs text-gray-500">10</span>
-                  </div>
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+          <span className="mr-2">⭐</span>
+          평가
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {RATING_CATEGORIES.map((category) => (
+            <div key={category.key} className="space-y-3">
+              <label className="block text-sm font-medium text-gray-700">
+                {category.label}
+              </label>
+              <div className="space-y-2">
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={formData.ratings[category.key as keyof typeof formData.ratings]}
+                  onChange={(e) => handleRatingChange(category.key, parseInt(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
+                />
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">1</span>
+                  <span className="text-lg font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+                    {formData.ratings[category.key as keyof typeof formData.ratings]}/10
+                  </span>
+                  <span className="text-xs text-gray-500">10</span>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Notes */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-            <span className="mr-2">📝</span>
-            추가 노트
-          </h2>
-        </div>
-        <div className="p-6">
-          <textarea
-            name="notes"
-            value={formData.notes}
-            onChange={handleInputChange}
-            rows={4}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
-            placeholder="개인적인 감상이나 추가 메모를 입력하세요..."
-          />
-        </div>
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="mr-2">📝</span>
+          추가 노트
+        </h2>
+        <textarea
+          name="notes"
+          value={formData.notes}
+          onChange={handleInputChange}
+          rows={4}
+          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
+          placeholder="개인적인 감상이나 추가 메모를 입력하세요..."
+        />
       </div>
 
       {/* Basic Information */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-gray-50 to-slate-50 px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900 flex items-center">
-            <span className="mr-2">📋</span>
-            기본 정보
-          </h2>
-        </div>
-        <div className="p-6 space-y-4">
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <span className="mr-2">📋</span>
+          기본 정보
+        </h2>
+        <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               제목 
