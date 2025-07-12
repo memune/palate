@@ -552,7 +552,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
             selectedTags={selectedCupNoteTags}
             onTagsChange={setSelectedCupNoteTags}
             categories={CUP_NOTE_CATEGORIES}
-            maxTags={8}
+            maxTags={20}
           />
         </div>
 
@@ -652,7 +652,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:cursor-not-allowed"
+          className="w-full bg-emerald-800 hover:bg-emerald-900 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:cursor-not-allowed"
         >
           {getSubmitButtonText()}
         </button>

@@ -22,7 +22,7 @@ export function TagChip({ tag, category, selected, onClick }: TagChipProps) {
         inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium 
         transition-all duration-200 border cursor-pointer
         ${selected 
-          ? `${category.color} shadow-md transform scale-105` 
+          ? 'bg-emerald-800 text-white border-emerald-800 shadow-md transform scale-105' 
           : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
         }
       `}
