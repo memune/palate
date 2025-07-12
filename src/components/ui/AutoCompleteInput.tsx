@@ -79,6 +79,15 @@ export default function AutoCompleteInput({
     }
   }, [value, matcher, suggestions, onMatch, hasFocused]);
 
+  // suggestions prop이 변경될 때 filteredSuggestions 업데이트
+  useEffect(() => {
+    setFilteredSuggestions(suggestions);
+    // 포커스된 상태이고 입력이 비어있으면 새로운 suggestions로 드롭다운 열기
+    if (hasFocused && value.trim().length === 0 && suggestions.length > 0) {
+      setIsOpen(true);
+    }
+  }, [suggestions, hasFocused, value]);
+
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
