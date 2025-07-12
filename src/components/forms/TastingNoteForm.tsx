@@ -10,6 +10,8 @@ import {
   matchRegion,
   MatchResult 
 } from '@/lib/coffee-data-matcher';
+import { generateUniqueTitleFromData } from '@/lib/title-generator';
+import { useTastingNotes } from '@/hooks/useTastingNotesQuery';
 
 interface TastingNoteFormData {
   title: string;
@@ -41,6 +43,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
   loading = false,
   submitButtonText 
 }: TastingNoteFormProps) {
+  const { data: existingNotes = [] } = useTastingNotes();
   const [formData, setFormData] = useState<TastingNoteFormData>({
     title: '',
     date: new Date().toISOString().split('T')[0],
@@ -74,6 +77,33 @@ const TastingNoteForm = memo(function TastingNoteForm({
       }));
     }
   }, [initialData]);
+
+  // 자동 제목 생성 (국가, 지역, 농장 정보가 변경될 때)
+  useEffect(() => {
+    // 편집 모드이거나 사용자가 이미 제목을 입력한 경우 자동 생성하지 않음
+    if (mode === 'edit' || (initialData?.title && formData.title !== '')) {
+      return;
+    }
+
+    // 국가, 지역, 농장 중 하나라도 있으면 제목 자동 생성
+    if (formData.country || formData.region || formData.farm) {
+      const autoTitle = generateUniqueTitleFromData(
+        {
+          country: formData.country,
+          region: formData.region,
+          farm: formData.farm,
+        },
+        existingNotes
+      );
+
+      if (autoTitle && autoTitle !== formData.title) {
+        setFormData(prev => ({
+          ...prev,
+          title: autoTitle
+        }));
+      }
+    }
+  }, [formData.country, formData.region, formData.farm, existingNotes, mode, initialData?.title, formData.title]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -128,10 +158,29 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title.trim()) return;
     
-    await onSubmit(formData);
-  }, [formData, onSubmit]);
+    // 제목이 비어있으면 자동 생성 시도
+    let finalData = { ...formData };
+    if (!finalData.title.trim()) {
+      const autoTitle = generateUniqueTitleFromData(
+        {
+          country: finalData.country,
+          region: finalData.region,
+          farm: finalData.farm,
+        },
+        existingNotes
+      );
+      
+      if (autoTitle) {
+        finalData.title = autoTitle;
+      } else {
+        // 자동 생성도 실패하면 기본 제목 사용
+        finalData.title = '새 테이스팅 노트';
+      }
+    }
+    
+    await onSubmit(finalData);
+  }, [formData, onSubmit, existingNotes]);
 
   const getSubmitButtonText = useCallback(() => {
     if (submitButtonText) return submitButtonText;
@@ -147,16 +196,15 @@ const TastingNoteForm = memo(function TastingNoteForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              제목 *
+              제목 <span className="text-sm text-stone-500">(선택사항 - 자동 생성됨)</span>
             </label>
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              required
               className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="예: 콜롬비아 우일라 더치 워시드"
+              placeholder="커피 정보 입력시 자동 생성됩니다"
             />
           </div>
           <div>
@@ -189,20 +237,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
             suggestions={COFFEE_COUNTRIES}
           />
           
-          <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              농장
-            </label>
-            <input
-              type="text"
-              name="farm"
-              value={formData.farm}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="예: 라 에스페란자 농장"
-            />
-          </div>
-          
           <AutoCompleteInput
             label="지역"
             name="region"
@@ -218,6 +252,20 @@ const TastingNoteForm = memo(function TastingNoteForm({
                 englishName: region
               })) || [] : []}
           />
+          
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-2">
+              농장
+            </label>
+            <input
+              type="text"
+              name="farm"
+              value={formData.farm}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              placeholder="예: 라 에스페란자 농장"
+            />
+          </div>
           
           <AutoCompleteInput
             label="품종"
