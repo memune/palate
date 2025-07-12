@@ -284,29 +284,72 @@ const TastingNoteForm = memo(function TastingNoteForm({
             }
           />
           
-          <AutoCompleteInput
-            label={`농장${matchedData.region ? ` (${matchedData.region.name})` : ''}`}
-            name="farm"
-            value={formData.farm}
-            onChange={handleFarmChange}
-            onMatch={handleFarmMatch}
-            placeholder={
-              farmSuggestions.length > 0
-                ? `${matchedData.region?.name}의 주요 농장 또는 직접 입력...`
-                : matchedData.region
-                ? "농장을 직접 입력해주세요..."
-                : "먼저 지역을 선택해주세요..."
-            }
-            matcher={(input) => matchFarm(input, matchedData.region?.name)}
-            suggestions={farmSuggestions}
-            dropdownHeader={
-              farmSuggestions.length > 0
-                ? `🏡 ${matchedData.region?.name} 주요 농장:`
-                : matchedData.region
-                ? "📝 직접 입력 가능:"
-                : "🌍 먼저 지역을 선택하세요"
-            }
-          />
+          <div className="relative">
+            <label className="block text-sm font-medium text-stone-700 mb-2">
+              농장{matchedData.region ? ` (${matchedData.region.name})` : ''}
+            </label>
+            
+            {farmSuggestions.length > 0 ? (
+              <div className="relative">
+                <select
+                  key={`farm-select-${matchedData.region?.name || 'no-region'}`}
+                  defaultValue={formData.farm}
+                  onChange={(e) => {
+                    setFormData(prev => ({ ...prev, farm: e.target.value }));
+                  }}
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
+                >
+                  <option value="">🏡 농장을 선택하세요</option>
+                  {farmSuggestions.map((farm) => (
+                    <option key={farm.id} value={farm.name}>
+                      {farm.name}
+                    </option>
+                  ))}
+                </select>
+                
+                {/* 매칭 상태 표시 (다른 AutoCompleteInput과 비슷하게) */}
+                {formData.farm && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <div className="flex items-center text-emerald-600">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
+                
+                {/* 매칭 결과 표시 */}
+                {formData.farm && (
+                  <div className="mt-1 text-sm">
+                    <span className="text-emerald-600">✓ {formData.farm} 선택됨</span>
+                  </div>
+                )}
+                
+                <div className="mt-1 text-xs text-stone-500">
+                  🏡 {matchedData.region?.name} 주요 농장: {farmSuggestions.length}개 옵션
+                </div>
+              </div>
+            ) : (
+              <div>
+                <input
+                  type="text"
+                  value={formData.farm}
+                  onChange={(e) => {
+                    setFormData(prev => ({ ...prev, farm: e.target.value }));
+                  }}
+                  placeholder={
+                    matchedData.region
+                      ? "농장을 직접 입력해주세요..."
+                      : "먼저 지역을 선택해주세요..."
+                  }
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
+                />
+                <div className="mt-1 text-xs text-stone-500">
+                  📝 직접 입력 가능: 지역을 먼저 선택하면 농장 목록을 볼 수 있습니다
+                </div>
+              </div>
+            )}
+          </div>
           
           <AutoCompleteInput
             label="품종"
