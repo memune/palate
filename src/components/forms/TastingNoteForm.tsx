@@ -274,10 +274,16 @@ const TastingNoteForm = memo(function TastingNoteForm({
             </label>
             <input
               type="text"
-              value={formData.farm}
+              defaultValue=""
               onChange={(e) => {
                 console.log('🔥 FARM INPUT CHANGED:', e.target.value);
                 setFormData(prev => ({ ...prev, farm: e.target.value }));
+              }}
+              onInput={(e) => {
+                console.log('🔥 FARM INPUT EVENT:', (e.target as HTMLInputElement).value);
+              }}
+              onKeyDown={(e) => {
+                console.log('🔥 FARM KEY DOWN:', e.key);
               }}
               onClick={() => {
                 console.log('🔥 FARM INPUT CLICKED');
@@ -288,10 +294,24 @@ const TastingNoteForm = memo(function TastingNoteForm({
               placeholder="농장을 입력하세요 (테스트)"
               className="w-full px-4 py-2 border-2 border-red-500 rounded-lg bg-yellow-100"
               style={{ zIndex: 9999, position: 'relative' }}
+              disabled={false}
+              readOnly={false}
             />
             <p className="text-sm text-red-600 mt-1">
               현재 농장 값: &ldquo;{formData.farm}&rdquo;
             </p>
+            
+            <div className="mt-4 p-4 bg-blue-100 border-2 border-blue-500">
+              <label className="block text-sm font-medium text-blue-700 mb-2">
+                비교용 테스트 input (React와 무관):
+              </label>
+              <input
+                type="text"
+                placeholder="이 필드는 입력되나요?"
+                className="w-full px-4 py-2 border-2 border-blue-500 rounded-lg"
+                onInput={(e) => console.log('📝 Test input:', (e.target as HTMLInputElement).value)}
+              />
+            </div>
           </div>
           
           <AutoCompleteInput
