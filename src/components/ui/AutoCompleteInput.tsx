@@ -149,6 +149,7 @@ export default function AutoCompleteInput({
   }, [onChange]);
 
   const handleFocus = useCallback(() => {
+    console.log('Field focused, name:', name, 'suggestions count:', suggestions.length);
     setHasFocused(true); // 포커스 상태 설정
     
     // 포커스시 항상 드롭다운 보여주기
@@ -250,10 +251,15 @@ export default function AutoCompleteInput({
       )}
 
       {/* 드롭다운 제안 목록 */}
+      {(() => {
+        console.log('Dropdown render check - name:', name, 'isOpen:', isOpen, 'suggestions:', filteredSuggestions.length);
+        return null;
+      })()}
       {isOpen && filteredSuggestions.length > 0 && (
         <div
           ref={dropdownRef}
           className="absolute z-50 w-full mt-1 bg-white border border-stone-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+          onClick={() => console.log('Dropdown clicked')}
         >
           {/* 헤더 - 매칭 상태에 따라 다르게 표시 */}
           {matchResult && matchResult.confidence >= 85 && (
