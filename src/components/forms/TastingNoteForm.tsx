@@ -315,20 +315,13 @@ const TastingNoteForm = memo(function TastingNoteForm({
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-8">
     <form id="tasting-note-form" onSubmit={handleSubmit} className="space-y-8">
-      {/* Page Header */}
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900">
-          테이스팅 노트
-        </h1>
-        <p className="text-sm text-gray-500 mt-2">커피의 풍미를 기록해보세요</p>
-      </div>
 
       {/* Coffee Information - No Box */}
       <div className="space-y-8">
           {/* Location Fields */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
-              산지 정보
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+              Origin
             </h2>
             <div className="grid grid-cols-1 gap-4">
               <AutoCompleteInput
@@ -401,8 +394,8 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
           {/* Coffee Characteristics */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
-              커피 특성
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+              Characteristics
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <AutoCompleteInput
@@ -433,8 +426,8 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
           {/* Altitude Section */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
-              고도
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+              Altitude
             </h2>
             <div className="space-y-4">
               {/* 고도 타입 선택 */}
@@ -536,8 +529,8 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
           {/* Store Info */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
-              매장 정보
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+              Store
             </h2>
             <input
               type="text"
@@ -552,8 +545,8 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
         {/* Cup Notes Section - Full Width */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
-            컵노트
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+            Tasting Notes
           </h2>
           <CupNoteTagSelector
             selectedTags={selectedCupNoteTags}
@@ -565,31 +558,39 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
       {/* Ratings */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-6 border-b border-gray-200 pb-2">
-          평가
+        <h2 className="text-lg font-semibold text-gray-900 mb-6 border-b border-gray-200 pb-2 font-inter">
+          Rating
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {RATING_CATEGORIES.map((category) => (
-            <div key={category.key} className="space-y-3">
-              <label className="block text-sm font-medium text-gray-700">
-                {category.label}
-              </label>
-              <div className="space-y-2">
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  value={formData.ratings[category.key as keyof typeof formData.ratings]}
-                  onChange={(e) => handleRatingChange(category.key, parseInt(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
-                />
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">1</span>
-                  <span className="text-lg font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
-                    {formData.ratings[category.key as keyof typeof formData.ratings]}/10
-                  </span>
-                  <span className="text-xs text-gray-500">10</span>
-                </div>
+            <div key={category.key} className="space-y-4">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-gray-900">
+                  {category.label}
+                </label>
+                <span className="text-lg font-semibold text-gray-900">
+                  {formData.ratings[category.key as keyof typeof formData.ratings]}
+                </span>
+              </div>
+              
+              {/* 점수 선택 버튼들 */}
+              <div className="grid grid-cols-10 gap-1">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
+                  <button
+                    key={score}
+                    type="button"
+                    onClick={() => handleRatingChange(category.key, score)}
+                    className={`
+                      aspect-square flex items-center justify-center text-xs font-medium rounded transition-all
+                      ${formData.ratings[category.key as keyof typeof formData.ratings] >= score
+                        ? 'bg-gray-900 text-white shadow-sm'
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                      }
+                    `}
+                  >
+                    {score}
+                  </button>
+                ))}
               </div>
             </div>
           ))}
@@ -598,8 +599,8 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
       {/* Notes */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
-          추가 노트
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+          Notes
         </h2>
         <textarea
           name="notes"
@@ -613,8 +614,8 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
       {/* Basic Information */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">
-          기본 정보
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+          Details
         </h2>
         <div className="space-y-4">
           <div>

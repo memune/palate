@@ -98,18 +98,25 @@ export default function AutoCompleteInput({
 
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event: Event) {
+      const target = event.target as Node;
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        !inputRef.current?.contains(event.target as Node)
+        !dropdownRef.current.contains(target) &&
+        !inputRef.current?.contains(target)
       ) {
         setIsOpen(false);
+        setHighlightedIndex(-1);
       }
     }
 
+    // mousedown과 touchstart 모두 처리
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, []);
 
   const handleSelect = useCallback((item: { id: string; name: string; englishName: string }) => {
@@ -292,38 +299,68 @@ export default function AutoCompleteInput({
           )}
           
           {filteredSuggestions.length > 0 ? (
-            filteredSuggestions.map((item, index) => (
+            <>
+              {filteredSuggestions.map((item, index) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={(e) => {
+                    console.log('Button clicked!', item.name);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleSelect(item);
+                  }}
+                  onMouseDown={(e) => {
+                    console.log('Button mouse down!', item.name);
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  style={{ pointerEvents: 'auto', zIndex: 100 }}
+                  className={`w-full px-4 py-3 text-left hover:bg-stone-50 border-b border-stone-100 transition-colors cursor-pointer ${
+                    index === highlightedIndex ? 'bg-emerald-50 border-emerald-200' : ''
+                  }`}
+                >
+                  <div className="font-medium text-stone-900">{item.name}</div>
+                  {item.englishName !== item.name && (
+                    <div className="text-sm text-stone-500">{item.englishName}</div>
+                  )}
+                </button>
+              ))}
+              {/* 직접 입력하기 옵션 */}
               <button
-                key={item.id}
                 type="button"
                 onClick={(e) => {
-                  console.log('Button clicked!', item.name);
                   e.preventDefault();
                   e.stopPropagation();
-                  handleSelect(item);
+                  // 현재 입력값을 그대로 사용
+                  onChange(currentValue);
+                  setIsOpen(false);
+                  setHighlightedIndex(-1);
+                  inputRef.current?.blur();
                 }}
-                onMouseDown={(e) => {
-                  console.log('Button mouse down!', item.name);
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                style={{ pointerEvents: 'auto', zIndex: 100 }}
-                className={`w-full px-4 py-3 text-left hover:bg-stone-50 border-b border-stone-100 last:border-b-0 transition-colors cursor-pointer ${
-                  index === highlightedIndex ? 'bg-emerald-50 border-emerald-200' : ''
-                }`}
+                className="w-full px-4 py-3 text-left bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer border-t border-gray-200"
               >
-                <div className="font-medium text-stone-900">{item.name}</div>
-                {item.englishName !== item.name && (
-                  <div className="text-sm text-stone-500">{item.englishName}</div>
-                )}
+                <div className="font-medium text-gray-700">직접 입력하기</div>
+                <div className="text-xs text-gray-500">&ldquo;{currentValue}&rdquo; 사용</div>
               </button>
-            ))
+            </>
           ) : (
-            (!matchResult || matchResult.confidence < 85) && currentValue.trim() && (
-              <div className="px-4 py-3 text-center text-stone-500">
-                <div className="text-sm">&ldquo;{currentValue}&rdquo; 직접 사용 가능</div>
-                <div className="text-xs text-stone-400 mt-1">Enter 키를 눌러 입력을 완료하세요</div>
-              </div>
+            currentValue.trim() && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onChange(currentValue);
+                  setIsOpen(false);
+                  setHighlightedIndex(-1);
+                  inputRef.current?.blur();
+                }}
+                className="w-full px-4 py-3 text-left bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+              >
+                <div className="font-medium text-gray-700">직접 입력하기</div>
+                <div className="text-xs text-gray-500">&ldquo;{currentValue}&rdquo; 사용</div>
+              </button>
             )
           )}
         </div>

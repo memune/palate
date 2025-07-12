@@ -160,29 +160,65 @@ export function CupNoteTagSelector({
       {/* Tags Grid */}
       <div className="max-h-64 overflow-y-auto">
         {filteredTags.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {filteredTags.map(tag => {
-              const categoryKey = searchTerm 
-                ? Object.keys(categories).find(key => categories[key].tags.includes(tag))
-                : activeCategory;
-              const category = categoryKey ? categories[categoryKey] : categories.others;
-              
-              return (
-                <TagChip
-                  key={tag}
-                  tag={tag}
-                  category={category}
-                  selected={selectedTags.includes(tag)}
-                  onClick={handleTagToggle}
-                />
-              );
-            })}
+          <div className="space-y-3">
+            <div className="flex flex-wrap gap-2">
+              {filteredTags.map(tag => {
+                const categoryKey = searchTerm 
+                  ? Object.keys(categories).find(key => categories[key].tags.includes(tag))
+                  : activeCategory;
+                const category = categoryKey ? categories[categoryKey] : categories.others;
+                
+                return (
+                  <TagChip
+                    key={tag}
+                    tag={tag}
+                    category={category}
+                    selected={selectedTags.includes(tag)}
+                    onClick={handleTagToggle}
+                  />
+                );
+              })}
+            </div>
+            {/* 직접 입력하기 옵션 */}
+            {searchTerm && selectedTags.length < maxTags && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (searchTerm && !selectedTags.includes(searchTerm)) {
+                    handleTagToggle(searchTerm);
+                    setSearchTerm('');
+                  }
+                }}
+                className="w-full py-2 px-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors text-left"
+              >
+                <div className="text-sm font-medium text-gray-700">직접 입력하기</div>
+                <div className="text-xs text-gray-500">&ldquo;{searchTerm}&rdquo; 태그 추가</div>
+              </button>
+            )}
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-500">
-            <div className="text-sm">
-              {searchTerm ? `"${searchTerm}"에 대한 검색 결과가 없습니다.` : '태그가 없습니다.'}
+          <div className="space-y-4">
+            <div className="text-center py-4 text-gray-500">
+              <div className="text-sm">
+                {searchTerm ? `"${searchTerm}"에 대한 검색 결과가 없습니다.` : '태그가 없습니다.'}
+              </div>
             </div>
+            {/* 검색결과 없을 때 직접 입력 옵션 */}
+            {searchTerm && selectedTags.length < maxTags && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (searchTerm && !selectedTags.includes(searchTerm)) {
+                    handleTagToggle(searchTerm);
+                    setSearchTerm('');
+                  }
+                }}
+                className="w-full py-3 px-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors"
+              >
+                <div className="text-sm font-medium text-emerald-700">직접 입력하기</div>
+                <div className="text-xs text-emerald-600">&ldquo;{searchTerm}&rdquo; 태그 추가</div>
+              </button>
+            )}
           </div>
         )}
       </div>
