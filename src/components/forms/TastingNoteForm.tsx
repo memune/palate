@@ -1,7 +1,15 @@
 'use client';
 
 import { useState, useEffect, useCallback, memo } from 'react';
-import { DEFAULT_RATINGS, RATING_CATEGORIES } from '@/constants/defaults';
+import { DEFAULT_RATINGS, RATING_CATEGORIES, COFFEE_COUNTRIES, COFFEE_VARIETIES, PROCESSING_METHODS, COFFEE_REGIONS } from '@/constants/defaults';
+import AutoCompleteInput from '@/components/ui/AutoCompleteInput';
+import { 
+  matchCountry, 
+  matchVariety, 
+  matchProcessingMethod,
+  matchRegion,
+  MatchResult 
+} from '@/lib/coffee-data-matcher';
 
 interface TastingNoteFormData {
   title: string;
@@ -49,6 +57,14 @@ const TastingNoteForm = memo(function TastingNoteForm({
     ...initialData,
   });
 
+  // 매칭된 값들을 저장하는 상태
+  const [matchedData, setMatchedData] = useState<{
+    country?: MatchResult;
+    variety?: MatchResult;
+    process?: MatchResult;
+    region?: MatchResult;
+  }>({});
+
   // Update form data when initialData changes (for edit mode)
   useEffect(() => {
     if (initialData) {
@@ -75,6 +91,39 @@ const TastingNoteForm = memo(function TastingNoteForm({
         [category]: value
       }
     }));
+  }, []);
+
+  // AutoComplete 핸들러들
+  const handleCountryChange = useCallback((value: string) => {
+    setFormData(prev => ({ ...prev, country: value }));
+  }, []);
+
+  const handleCountryMatch = useCallback((match: MatchResult | null) => {
+    setMatchedData(prev => ({ ...prev, country: match || undefined }));
+  }, []);
+
+  const handleVarietyChange = useCallback((value: string) => {
+    setFormData(prev => ({ ...prev, variety: value }));
+  }, []);
+
+  const handleVarietyMatch = useCallback((match: MatchResult | null) => {
+    setMatchedData(prev => ({ ...prev, variety: match || undefined }));
+  }, []);
+
+  const handleProcessChange = useCallback((value: string) => {
+    setFormData(prev => ({ ...prev, process: value }));
+  }, []);
+
+  const handleProcessMatch = useCallback((match: MatchResult | null) => {
+    setMatchedData(prev => ({ ...prev, process: match || undefined }));
+  }, []);
+
+  const handleRegionChange = useCallback((value: string) => {
+    setFormData(prev => ({ ...prev, region: value }));
+  }, []);
+
+  const handleRegionMatch = useCallback((match: MatchResult | null) => {
+    setMatchedData(prev => ({ ...prev, region: match || undefined }));
   }, []);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
@@ -129,19 +178,17 @@ const TastingNoteForm = memo(function TastingNoteForm({
       <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
         <h2 className="text-lg font-semibold text-stone-900 mb-6">커피 정보</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              국가
-            </label>
-            <input
-              type="text"
-              name="country"
-              value={formData.country}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="예: 콜롬비아"
-            />
-          </div>
+          <AutoCompleteInput
+            label="국가"
+            name="country"
+            value={formData.country}
+            onChange={handleCountryChange}
+            onMatch={handleCountryMatch}
+            placeholder="예: 콜롬비아, 브라질, 에티오피아..."
+            matcher={matchCountry}
+            suggestions={COFFEE_COUNTRIES}
+          />
+          
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
               농장
@@ -155,32 +202,33 @@ const TastingNoteForm = memo(function TastingNoteForm({
               placeholder="예: 라 에스페란자 농장"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              지역
-            </label>
-            <input
-              type="text"
-              name="region"
-              value={formData.region}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="예: 우일라"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              품종
-            </label>
-            <input
-              type="text"
-              name="variety"
-              value={formData.variety}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="예: 카투라"
-            />
-          </div>
+          
+          <AutoCompleteInput
+            label="지역"
+            name="region"
+            value={formData.region}
+            onChange={handleRegionChange}
+            onMatch={handleRegionMatch}
+            placeholder="예: 우일라, 시다모, 안티구아..."
+            matcher={(input) => matchRegion(input, matchedData.country?.id)}
+            suggestions={matchedData.country?.id ? 
+              (COFFEE_REGIONS as any)[matchedData.country.id]?.map((region: string) => ({
+                id: region.toLowerCase().replace(/\s+/g, '_'),
+                name: region,
+                englishName: region
+              })) || [] : []}
+          />
+          
+          <AutoCompleteInput
+            label="품종"
+            name="variety"
+            value={formData.variety}
+            onChange={handleVarietyChange}
+            onMatch={handleVarietyMatch}
+            placeholder="예: 게이샤, 부르봉, 티피카..."
+            matcher={matchVariety}
+            suggestions={COFFEE_VARIETIES}
+          />
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
               고도
@@ -194,19 +242,16 @@ const TastingNoteForm = memo(function TastingNoteForm({
               placeholder="예: 1,500m"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              가공 방법
-            </label>
-            <input
-              type="text"
-              name="process"
-              value={formData.process}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="예: 더치 워시드"
-            />
-          </div>
+          <AutoCompleteInput
+            label="가공 방법"
+            name="process"
+            value={formData.process}
+            onChange={handleProcessChange}
+            onMatch={handleProcessMatch}
+            placeholder="예: 워시드, 내추럴, 허니..."
+            matcher={matchProcessingMethod}
+            suggestions={PROCESSING_METHODS}
+          />
         </div>
         <div className="mt-6">
           <label className="block text-sm font-medium text-stone-700 mb-2">
