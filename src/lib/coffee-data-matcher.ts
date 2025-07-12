@@ -9,6 +9,7 @@ import {
   PROCESSING_METHODS,
   ROASTING_LEVELS,
   COFFEE_REGIONS,
+  COFFEE_FARMS,
 } from '@/constants/defaults';
 
 export interface MatchResult {
@@ -147,11 +148,48 @@ export function matchRegion(input: string, countryId?: string): MatchResult | nu
 }
 
 /**
+ * 농장 매칭 (지역별)
+ */
+export function matchFarm(input: string, regionName?: string): MatchResult | null {
+  if (!input || input.trim().length === 0) return null;
+  
+  let farmsToSearch: readonly string[] = [];
+  
+  if (regionName && regionName in COFFEE_FARMS) {
+    // 특정 지역의 농장만 검색
+    farmsToSearch = COFFEE_FARMS[regionName as keyof typeof COFFEE_FARMS];
+  } else {
+    // 모든 농장에서 검색
+    farmsToSearch = Object.values(COFFEE_FARMS).flat();
+  }
+  
+  let bestMatch: MatchResult | null = null;
+  let highestConfidence = 0;
+  
+  for (const farm of farmsToSearch) {
+    const confidence = calculateSimilarity(input, farm);
+    
+    if (confidence > highestConfidence && confidence >= 70) {
+      highestConfidence = confidence;
+      bestMatch = {
+        id: farm.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+        name: farm,
+        englishName: farm,
+        confidence,
+      };
+    }
+  }
+  
+  return bestMatch;
+}
+
+/**
  * 모든 필드에 대한 통합 매칭
  */
 export interface CoffeeDataSuggestions {
   country?: MatchResult | null;
   region?: MatchResult | null;
+  farm?: MatchResult | null;
   variety?: MatchResult | null;
   process?: MatchResult | null;
   roastLevel?: MatchResult | null;

@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect, useCallback, memo } from 'react';
-import { DEFAULT_RATINGS, RATING_CATEGORIES, COFFEE_COUNTRIES, COFFEE_VARIETIES, PROCESSING_METHODS, COFFEE_REGIONS } from '@/constants/defaults';
+import { DEFAULT_RATINGS, RATING_CATEGORIES, COFFEE_COUNTRIES, COFFEE_VARIETIES, PROCESSING_METHODS, COFFEE_REGIONS, COFFEE_FARMS } from '@/constants/defaults';
 import AutoCompleteInput from '@/components/ui/AutoCompleteInput';
 import { 
   matchCountry, 
   matchVariety, 
   matchProcessingMethod,
   matchRegion,
+  matchFarm,
   MatchResult 
 } from '@/lib/coffee-data-matcher';
 import { generateUniqueTitleFromData } from '@/lib/title-generator';
@@ -66,6 +67,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
     variety?: MatchResult;
     process?: MatchResult;
     region?: MatchResult;
+    farm?: MatchResult;
   }>({});
 
   // Update form data when initialData changes (for edit mode)
@@ -125,14 +127,14 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
   // AutoComplete 핸들러들
   const handleCountryChange = useCallback((value: string) => {
-    setFormData(prev => ({ ...prev, country: value, region: '' })); // 국가 변경시 지역 초기화
+    setFormData(prev => ({ ...prev, country: value, region: '', farm: '' })); // 국가 변경시 지역, 농장 초기화
   }, []);
 
   const handleCountryMatch = useCallback((match: MatchResult | null) => {
     setMatchedData(prev => ({ ...prev, country: match || undefined }));
-    // 국가 매칭이 변경되면 지역도 초기화
+    // 국가 매칭이 변경되면 지역, 농장도 초기화
     if (match) {
-      setFormData(prev => ({ ...prev, region: '' }));
+      setFormData(prev => ({ ...prev, region: '', farm: '' }));
     }
   }, []);
 
@@ -153,11 +155,23 @@ const TastingNoteForm = memo(function TastingNoteForm({
   }, []);
 
   const handleRegionChange = useCallback((value: string) => {
-    setFormData(prev => ({ ...prev, region: value }));
+    setFormData(prev => ({ ...prev, region: value, farm: '' })); // 지역 변경시 농장 초기화
   }, []);
 
   const handleRegionMatch = useCallback((match: MatchResult | null) => {
     setMatchedData(prev => ({ ...prev, region: match || undefined }));
+    // 지역 매칭이 변경되면 농장도 초기화
+    if (match) {
+      setFormData(prev => ({ ...prev, farm: '' }));
+    }
+  }, []);
+
+  const handleFarmChange = useCallback((value: string) => {
+    setFormData(prev => ({ ...prev, farm: value }));
+  }, []);
+
+  const handleFarmMatch = useCallback((match: MatchResult | null) => {
+    setMatchedData(prev => ({ ...prev, farm: match || undefined }));
   }, []);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
@@ -271,19 +285,34 @@ const TastingNoteForm = memo(function TastingNoteForm({
             }
           />
           
-          <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              농장
-            </label>
-            <input
-              type="text"
-              name="farm"
-              value={formData.farm}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="예: 라 에스페란자 농장"
-            />
-          </div>
+          <AutoCompleteInput
+            label={`농장${matchedData.region ? ` (${matchedData.region.name})` : ''}`}
+            name="farm"
+            value={formData.farm}
+            onChange={handleFarmChange}
+            onMatch={handleFarmMatch}
+            placeholder={
+              matchedData.region?.name && (COFFEE_FARMS as any)[matchedData.region.name]?.length > 0
+                ? `${matchedData.region.name}의 주요 농장 또는 직접 입력...`
+                : matchedData.region
+                ? "농장을 직접 입력해주세요..."
+                : "먼저 지역을 선택해주세요..."
+            }
+            matcher={(input) => matchFarm(input, matchedData.region?.name)}
+            suggestions={matchedData.region?.name ? 
+              (COFFEE_FARMS as any)[matchedData.region.name]?.map((farm: string) => ({
+                id: farm.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+                name: farm,
+                englishName: farm
+              })) || [] : []}
+            dropdownHeader={
+              matchedData.region?.name && (COFFEE_FARMS as any)[matchedData.region.name]?.length > 0
+                ? `🏡 ${matchedData.region.name} 주요 농장:`
+                : matchedData.region
+                ? "📝 직접 입력 가능:"
+                : "🏔️ 먼저 지역을 선택하세요"
+            }
+          />
           
           <AutoCompleteInput
             label="품종"
