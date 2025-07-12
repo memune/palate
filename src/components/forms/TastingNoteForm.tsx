@@ -324,85 +324,31 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
             {farmSuggestions.length > 0 ? (
               <div className="space-y-2">
-                {/* UNCONTROLLED SELECT 테스트 */}
                 <select
+                  key={`farm-select-${matchedData.region?.name || 'no-region'}`}
                   defaultValue={formData.farm}
                   onChange={(e) => {
                     const newValue = e.target.value;
-                    console.log('🔥 UNCONTROLLED FARM SELECT EVENT TRIGGERED');
-                    console.log('🔥 Selected value:', newValue);
+                    console.log('🔥 FARM SELECT CHANGED:', newValue);
                     
                     setFormData(prev => {
                       const updated = { ...prev, farm: newValue };
-                      console.log('🔥 State update - new farm value:', updated.farm);
+                      console.log('🔥 Farm state updated to:', updated.farm);
                       return updated;
                     });
                   }}
-                  onClick={() => console.log('🔥 FARM SELECT CLICKED')}
-                  onFocus={() => console.log('🔥 FARM SELECT FOCUSED')}
-                  onBlur={() => console.log('🔥 FARM SELECT BLURRED')}
-                  onMouseDown={() => console.log('🔥 FARM SELECT MOUSE DOWN')}
-                  onMouseUp={() => console.log('🔥 FARM SELECT MOUSE UP')}
-                  className="w-full px-4 py-2 border-2 border-red-400 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-red-50"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 >
                   <option value="">🏡 농장을 선택하세요</option>
                   {farmSuggestions.map((farm) => (
-                    <option 
-                      key={farm.id} 
-                      value={farm.name}
-                      onClick={() => console.log('🔥 OPTION CLICKED:', farm.name)}
-                    >
+                    <option key={farm.id} value={farm.name}>
                       {farm.name}
                     </option>
                   ))}
                 </select>
-                <div className="text-xs text-red-600 font-bold">
-                  🔴 UNCONTROLLED SELECT 테스트 - {farmSuggestions.length}개의 {matchedData.region?.name} 농장
+                <div className="text-xs text-stone-500">
+                  {farmSuggestions.length}개의 {matchedData.region?.name} 농장 중 선택
                 </div>
-                
-                {/* CONTROLLED SELECT (ORIGINAL) */}
-                <select
-                  value={formData.farm}
-                  onChange={(e) => {
-                    const newValue = e.target.value;
-                    console.log('🔥 CONTROLLED FARM SELECT EVENT TRIGGERED');
-                    console.log('🔥 Selected value:', newValue);
-                    
-                    setFormData(prev => {
-                      const updated = { ...prev, farm: newValue };
-                      console.log('🔥 State update - new farm value:', updated.farm);
-                      return updated;
-                    });
-                  }}
-                  onClick={() => console.log('🔥 CONTROLLED SELECT CLICKED')}
-                  onFocus={() => console.log('🔥 CONTROLLED SELECT FOCUSED')}
-                  onBlur={() => console.log('🔥 CONTROLLED SELECT BLURRED')}
-                  className="w-full px-4 py-2 border-2 border-blue-400 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-blue-50"
-                >
-                  <option value="">🏡 CONTROLLED - 농장을 선택하세요</option>
-                  {farmSuggestions.map((farm) => (
-                    <option 
-                      key={farm.id} 
-                      value={farm.name}
-                      onClick={() => console.log('🔥 CONTROLLED OPTION CLICKED:', farm.name)}
-                    >
-                      {farm.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="text-xs text-blue-600 font-bold">
-                  🔵 CONTROLLED SELECT (기존) - 현재 값: {formData.farm}
-                </div>
-                <button 
-                  type="button"
-                  onClick={() => {
-                    console.log('🔥 TEST BUTTON CLICKED');
-                    setFormData(prev => ({ ...prev, farm: 'TEST FARM' }));
-                  }}
-                  className="px-3 py-1 bg-red-500 text-white rounded text-xs"
-                >
-                  테스트 버튼 (농장 값 강제 변경)
-                </button>
               </div>
             ) : (
               <div className="space-y-2">
