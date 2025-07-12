@@ -311,13 +311,15 @@ const TastingNoteForm = memo(function TastingNoteForm({
             </label>
             
             {/* 디버깅용 상태 표시 */}
-            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
+            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs space-y-1">
               <div><strong>🔍 농장 필드 디버깅:</strong></div>
               <div>현재 농장 값: <strong>&ldquo;{formData.farm}&rdquo;</strong></div>
               <div>농장 값 길이: {formData.farm.length}</div>
               <div>지역 매칭: {matchedData.region?.name || '미선택'}</div>
               <div>농장 suggestions: {farmSuggestions.length}개</div>
               <div>지역 ID: {matchedData.region?.id || '없음'}</div>
+              <div>렌더링 시간: {new Date().toLocaleTimeString()}</div>
+              <div>농장 suggestions 목록: {farmSuggestions.map(f => f.name).join(', ')}</div>
             </div>
 
             {farmSuggestions.length > 0 ? (
@@ -337,11 +339,20 @@ const TastingNoteForm = memo(function TastingNoteForm({
                       return updated;
                     });
                   }}
+                  onClick={() => console.log('🔥 FARM SELECT CLICKED')}
+                  onFocus={() => console.log('🔥 FARM SELECT FOCUSED')}
+                  onBlur={() => console.log('🔥 FARM SELECT BLURRED')}
+                  onMouseDown={() => console.log('🔥 FARM SELECT MOUSE DOWN')}
+                  onMouseUp={() => console.log('🔥 FARM SELECT MOUSE UP')}
                   className="w-full px-4 py-2 border-2 border-blue-400 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-blue-50"
                 >
                   <option value="">🏡 농장을 선택하세요</option>
                   {farmSuggestions.map((farm) => (
-                    <option key={farm.id} value={farm.name}>
+                    <option 
+                      key={farm.id} 
+                      value={farm.name}
+                      onClick={() => console.log('🔥 OPTION CLICKED:', farm.name)}
+                    >
                       {farm.name}
                     </option>
                   ))}
@@ -349,6 +360,16 @@ const TastingNoteForm = memo(function TastingNoteForm({
                 <div className="text-xs text-stone-500">
                   {farmSuggestions.length}개의 {matchedData.region?.name} 농장 중 선택
                 </div>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    console.log('🔥 TEST BUTTON CLICKED');
+                    setFormData(prev => ({ ...prev, farm: 'TEST FARM' }));
+                  }}
+                  className="px-3 py-1 bg-red-500 text-white rounded text-xs"
+                >
+                  테스트 버튼 (농장 값 강제 변경)
+                </button>
               </div>
             ) : (
               <div className="space-y-2">
