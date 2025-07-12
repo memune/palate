@@ -196,7 +196,7 @@ export default function AutoCompleteInput({
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} style={{ zIndex: isOpen ? 1000 : 'auto' }}>
       <label className="block text-sm font-medium text-stone-700 mb-2">
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
@@ -258,7 +258,8 @@ export default function AutoCompleteInput({
       {isOpen && filteredSuggestions.length > 0 && (
         <div
           ref={dropdownRef}
-          className="absolute z-50 w-full mt-1 bg-white border border-stone-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+          className="absolute w-full mt-1 bg-white border border-stone-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+          style={{ zIndex: 9999, pointerEvents: 'auto' }}
           onClick={() => console.log('Dropdown clicked')}
         >
           {/* 헤더 - 매칭 상태에 따라 다르게 표시 */}
@@ -284,15 +285,18 @@ export default function AutoCompleteInput({
                 key={item.id}
                 type="button"
                 onClick={(e) => {
+                  console.log('Button clicked!', item.name);
                   e.preventDefault();
                   e.stopPropagation();
                   handleSelect(item);
                 }}
                 onMouseDown={(e) => {
+                  console.log('Button mouse down!', item.name);
                   e.preventDefault();
                   e.stopPropagation();
                 }}
-                className={`w-full px-4 py-3 text-left hover:bg-stone-50 border-b border-stone-100 last:border-b-0 transition-colors ${
+                style={{ pointerEvents: 'auto', zIndex: 100 }}
+                className={`w-full px-4 py-3 text-left hover:bg-stone-50 border-b border-stone-100 last:border-b-0 transition-colors cursor-pointer ${
                   index === highlightedIndex ? 'bg-emerald-50 border-emerald-200' : ''
                 }`}
               >
