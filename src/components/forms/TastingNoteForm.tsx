@@ -125,11 +125,15 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
   // AutoComplete 핸들러들
   const handleCountryChange = useCallback((value: string) => {
-    setFormData(prev => ({ ...prev, country: value }));
+    setFormData(prev => ({ ...prev, country: value, region: '' })); // 국가 변경시 지역 초기화
   }, []);
 
   const handleCountryMatch = useCallback((match: MatchResult | null) => {
     setMatchedData(prev => ({ ...prev, country: match || undefined }));
+    // 국가 매칭이 변경되면 지역도 초기화
+    if (match) {
+      setFormData(prev => ({ ...prev, region: '' }));
+    }
   }, []);
 
   const handleVarietyChange = useCallback((value: string) => {
@@ -235,15 +239,22 @@ const TastingNoteForm = memo(function TastingNoteForm({
             placeholder="예: 콜롬비아, 브라질, 에티오피아..."
             matcher={matchCountry}
             suggestions={COFFEE_COUNTRIES}
+            dropdownHeader="🌍 추천 국가:"
           />
           
           <AutoCompleteInput
-            label="지역"
+            label={`지역${matchedData.country ? ` (${matchedData.country.name})` : ''}`}
             name="region"
             value={formData.region}
             onChange={handleRegionChange}
             onMatch={handleRegionMatch}
-            placeholder="예: 우일라, 시다모, 안티구아..."
+            placeholder={
+              matchedData.country?.id && (COFFEE_REGIONS as any)[matchedData.country.id]?.length > 0
+                ? `${matchedData.country.name}의 주요 산지 또는 직접 입력...`
+                : matchedData.country
+                ? "지역을 직접 입력해주세요..."
+                : "먼저 국가를 선택해주세요..."
+            }
             matcher={(input) => matchRegion(input, matchedData.country?.id)}
             suggestions={matchedData.country?.id ? 
               (COFFEE_REGIONS as any)[matchedData.country.id]?.map((region: string) => ({
@@ -251,6 +262,13 @@ const TastingNoteForm = memo(function TastingNoteForm({
                 name: region,
                 englishName: region
               })) || [] : []}
+            dropdownHeader={
+              matchedData.country?.id && (COFFEE_REGIONS as any)[matchedData.country.id]?.length > 0
+                ? `🏔️ ${matchedData.country.name} 주요 산지:`
+                : matchedData.country
+                ? "📝 직접 입력 가능:"
+                : "🌍 먼저 국가를 선택하세요"
+            }
           />
           
           <div>
@@ -276,6 +294,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
             placeholder="예: 게이샤, 부르봉, 티피카..."
             matcher={matchVariety}
             suggestions={COFFEE_VARIETIES}
+            dropdownHeader="🌱 추천 품종:"
           />
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
@@ -299,6 +318,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
             placeholder="예: 워시드, 내추럴, 허니..."
             matcher={matchProcessingMethod}
             suggestions={PROCESSING_METHODS}
+            dropdownHeader="⚙️ 추천 가공 방법:"
           />
         </div>
         <div className="mt-6">

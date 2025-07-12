@@ -14,6 +14,7 @@ interface AutoCompleteInputProps {
   matcher: (input: string) => MatchResult | null;
   suggestions: readonly { id: string; name: string; englishName: string }[];
   className?: string;
+  dropdownHeader?: string; // 드롭다운 헤더 텍스트
 }
 
 export default function AutoCompleteInput({
@@ -26,7 +27,8 @@ export default function AutoCompleteInput({
   required = false,
   matcher,
   suggestions,
-  className = ''
+  className = '',
+  dropdownHeader
 }: AutoCompleteInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
@@ -249,25 +251,36 @@ export default function AutoCompleteInput({
           )}
           {(!matchResult || matchResult.confidence < 85) && (
             <div className="px-4 py-2 bg-blue-50 border-b border-blue-200 text-sm">
-              <span className="text-blue-700 font-medium">💡 추천 국가:</span>
+              <span className="text-blue-700 font-medium">
+                {dropdownHeader || (filteredSuggestions.length > 0 ? `💡 추천 ${name}:` : `💡 직접 입력 가능:`)}
+              </span>
             </div>
           )}
           
-          {filteredSuggestions.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => handleSelect(item)}
-              className={`w-full px-4 py-3 text-left hover:bg-stone-50 border-b border-stone-100 last:border-b-0 transition-colors ${
-                index === highlightedIndex ? 'bg-emerald-50 border-emerald-200' : ''
-              }`}
-            >
-              <div className="font-medium text-stone-900">{item.name}</div>
-              {item.englishName !== item.name && (
-                <div className="text-sm text-stone-500">{item.englishName}</div>
-              )}
-            </button>
-          ))}
+          {filteredSuggestions.length > 0 ? (
+            filteredSuggestions.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => handleSelect(item)}
+                className={`w-full px-4 py-3 text-left hover:bg-stone-50 border-b border-stone-100 last:border-b-0 transition-colors ${
+                  index === highlightedIndex ? 'bg-emerald-50 border-emerald-200' : ''
+                }`}
+              >
+                <div className="font-medium text-stone-900">{item.name}</div>
+                {item.englishName !== item.name && (
+                  <div className="text-sm text-stone-500">{item.englishName}</div>
+                )}
+              </button>
+            ))
+          ) : (
+            (!matchResult || matchResult.confidence < 85) && value.trim() && (
+              <div className="px-4 py-3 text-center text-stone-500">
+                <div className="text-sm">&ldquo;{value}&rdquo; 직접 사용 가능</div>
+                <div className="text-xs text-stone-400 mt-1">Enter 키를 눌러 입력을 완료하세요</div>
+              </div>
+            )
+          )}
         </div>
       )}
     </div>
