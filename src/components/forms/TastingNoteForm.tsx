@@ -564,13 +564,10 @@ const TastingNoteForm = memo(function TastingNoteForm({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {RATING_CATEGORIES.map((category) => (
             <div key={category.key} className="space-y-4">
-              <div className="flex justify-between items-center">
+              <div>
                 <label className="text-sm font-medium text-gray-900">
                   {category.label}
                 </label>
-                <span className="text-lg font-semibold text-gray-900">
-                  {formData.ratings[category.key as keyof typeof formData.ratings]}
-                </span>
               </div>
               
               {/* 점수 선택 버튼들 */}

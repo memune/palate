@@ -223,10 +223,6 @@ export function CupNoteTagSelector({
         )}
       </div>
 
-      {/* Usage Hint */}
-      <div className="text-xs text-gray-500 text-center mt-4">
-        최대 {maxTags}개까지 선택 가능하며, 선택된 태그를 다시 클릭하면 제거됩니다.
-      </div>
     </div>
   );
 }
