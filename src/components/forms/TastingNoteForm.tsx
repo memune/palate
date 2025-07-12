@@ -159,13 +159,8 @@ const TastingNoteForm = memo(function TastingNoteForm({
   }, []);
 
   const handleRegionMatch = useCallback((match: MatchResult | null) => {
-    console.log('🌍 지역 매칭 변경:', match?.name);
     setMatchedData(prev => ({ ...prev, region: match || undefined }));
-    // 지역 매칭이 변경되면 농장도 초기화
-    if (match) {
-      console.log('🌍 농장 필드 초기화');
-      setFormData(prev => ({ ...prev, farm: '' }));
-    }
+    // 지역 매칭이 변경되어도 농장은 formData.region 변경으로 따로 처리됨
   }, []);
 
   const handleFarmChange = useCallback((value: string) => {
@@ -177,20 +172,39 @@ const TastingNoteForm = memo(function TastingNoteForm({
     setMatchedData(prev => ({ ...prev, farm: match || undefined }));
   }, []);
 
-  // 농장 suggestions - 리렌더링 최소화
-  const farmSuggestions = useMemo(() => {
-    const regionName = matchedData.region?.name;
-    if (!regionName) return [];
+  // 농장 suggestions - 지역과 독립적으로 관리
+  const [selectedRegionForFarm, setSelectedRegionForFarm] = useState<string>('');
+  const [farmSuggestions, setFarmSuggestions] = useState<{ id: string; name: string; englishName: string }[]>([]);
+  
+  // 지역이 변경될 때만 농장 업데이트 (국가와 무관)
+  useEffect(() => {
+    const regionName = formData.region;
+    if (!regionName) {
+      setFarmSuggestions([]);
+      setSelectedRegionForFarm('');
+      return;
+    }
     
-    const farms = (COFFEE_FARMS as any)[regionName];
-    if (!farms || !Array.isArray(farms)) return [];
-    
-    return farms.map((farm: string) => ({
-      id: farm.toLowerCase().replace(/[^a-z0-9]/g, '_'),
-      name: farm,
-      englishName: farm
-    }));
-  }, [matchedData.region?.name]);
+    // 지역명이 변경되었을 때만 농장 목록 업데이트
+    if (regionName !== selectedRegionForFarm) {
+      setSelectedRegionForFarm(regionName);
+      
+      const farms = (COFFEE_FARMS as any)[regionName];
+      if (farms && Array.isArray(farms)) {
+        const farmOptions = farms.map((farm: string) => ({
+          id: farm.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+          name: farm,
+          englishName: farm
+        }));
+        setFarmSuggestions(farmOptions);
+      } else {
+        setFarmSuggestions([]);
+      }
+      
+      // 지역이 바뀌면 농장 초기화
+      setFormData(prev => ({ ...prev, farm: '' }));
+    }
+  }, [formData.region, selectedRegionForFarm]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
