@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { CameraProps } from '@/types';
+import { compressImage, validateImageSize } from '@/lib/image-utils';
 
 export default function CameraCapture({ onCapture, onClose }: CameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -94,7 +95,7 @@ export default function CameraCapture({ onCapture, onClose }: CameraProps) {
     }
   }, []);
 
-  const capturePhoto = useCallback(() => {
+  const capturePhoto = useCallback(async () => {
     if (!videoRef.current || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
@@ -103,17 +104,56 @@ export default function CameraCapture({ onCapture, onClose }: CameraProps) {
 
     if (!context) return;
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0);
+    try {
+      setDebugInfo('사진 캡처 중...');
+      
+      // 최적 해상도로 캡처 (OCR을 위해 충분한 화질 유지)
+      const captureWidth = Math.min(video.videoWidth, 1920);
+      const captureHeight = Math.min(video.videoHeight, 1080);
+      
+      canvas.width = captureWidth;
+      canvas.height = captureHeight;
+      
+      // 고화질 렌더링 설정
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = 'high';
+      
+      // 비디오에서 최적화된 크기로 캡처
+      context.drawImage(video, 0, 0, captureWidth, captureHeight);
 
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const file = new File([blob], 'capture.jpg', { type: 'image/jpeg' });
-        onCapture(file);
-        stopCamera();
-      }
-    }, 'image/jpeg', 0.8);
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          try {
+            setDebugInfo('이미지 최적화 중...');
+            const originalFile = new File([blob], 'capture.jpg', { type: 'image/jpeg' });
+            
+            // 파일 크기 검증
+            if (!validateImageSize(originalFile, 10)) {
+              setError('파일 크기가 10MB를 초과합니다');
+              return;
+            }
+
+            // 이미지 압축 및 최적화 (OCR을 위해 품질 유지)
+            const optimizedFile = await compressImage(originalFile, {
+              maxWidth: 1920,
+              maxHeight: 1080,
+              quality: 0.9, // OCR을 위해 높은 품질 유지
+              format: 'jpeg'
+            });
+
+            setDebugInfo('캡처 완료');
+            onCapture(optimizedFile);
+            stopCamera();
+          } catch (error) {
+            console.error('Image optimization error:', error);
+            setError('이미지 최적화 중 오류가 발생했습니다');
+          }
+        }
+      }, 'image/jpeg', 0.95); // 초기 캡처는 높은 품질로
+    } catch (error) {
+      console.error('Capture error:', error);
+      setError('사진 캡처 중 오류가 발생했습니다');
+    }
   }, [onCapture, stopCamera]);
 
   const handleClose = useCallback(() => {

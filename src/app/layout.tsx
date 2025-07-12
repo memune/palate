@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import AuthProvider from '@/components/auth/AuthProvider';
+import QueryProvider from '@/components/providers/QueryProvider';
 
 // Make this layout dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
@@ -31,9 +32,11 @@ export default function RootLayout({
       <head>
       </head>
       <body className={`${inter.className} antialiased`}>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

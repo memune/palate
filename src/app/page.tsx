@@ -5,13 +5,15 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { TastingNote } from '@/types';
+import { transformSupabaseToTastingNote } from '@/lib/data-transformers';
 
 // Make this page dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
 
 function HomePage() {
   const { user, signOut } = useAuth();
-  const [recentNotes, setRecentNotes] = useState<any[]>([]);
+  const [recentNotes, setRecentNotes] = useState<TastingNote[]>([]);
   const [loading, setLoading] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -66,7 +68,8 @@ function HomePage() {
       if (error) {
         console.error('Error fetching recent notes:', error);
       } else {
-        setRecentNotes(data || []);
+        const transformedNotes = (data || []).map(transformSupabaseToTastingNote);
+        setRecentNotes(transformedNotes);
       }
     } catch (error) {
       console.error('Error fetching recent notes:', error);

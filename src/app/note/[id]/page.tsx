@@ -6,36 +6,13 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/lib/supabase';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import Link from 'next/link';
+import { TastingNote } from '@/types';
+import { formatDate, getRatingColor } from '@/lib/formatters';
+import { transformSupabaseToTastingNote } from '@/lib/data-transformers';
 
 // Make this page dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
 
-interface TastingNote {
-  id: string;
-  title: string;
-  date: string;
-  country?: string;
-  farm?: string;
-  region?: string;
-  variety?: string;
-  altitude?: string;
-  process?: string;
-  cup_notes?: string;
-  store_info?: string;
-  ratings: {
-    aroma: number;
-    flavor: number;
-    acidity: number;
-    sweetness: number;
-    body: number;
-    aftertaste: number;
-    balance: number;
-    overall: number;
-  };
-  notes?: string;
-  extracted_text?: string;
-  created_at: string;
-}
 
 function NotePageContent() {
   const [note, setNote] = useState<TastingNote | null>(null);
@@ -68,23 +45,7 @@ function NotePageContent() {
       }
 
       if (data) {
-        setNote({
-          id: data.id,
-          title: data.title,
-          date: data.date || data.created_at,
-          country: data.country,
-          farm: data.farm,
-          region: data.region,
-          variety: data.variety,
-          altitude: data.altitude,
-          process: data.process,
-          cup_notes: data.cup_notes,
-          store_info: data.store_info,
-          ratings: data.ratings,
-          notes: data.notes,
-          extracted_text: data.extracted_text,
-          created_at: data.created_at,
-        });
+        setNote(transformSupabaseToTastingNote(data));
       }
     } catch (error) {
       console.error('Error fetching note:', error);
@@ -118,19 +79,6 @@ function NotePageContent() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
-  const getRatingColor = (rating: number) => {
-    if (rating >= 8) return 'bg-emerald-500';
-    if (rating >= 6) return 'bg-yellow-500';
-    return 'bg-red-500';
-  };
 
   if (loading) {
     return (

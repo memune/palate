@@ -1,95 +1,49 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
-import { supabase } from '@/lib/supabase';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { formatDate, getRatingColor } from '@/lib/formatters';
+import { useTastingNotes, useDeleteTastingNote } from '@/hooks/useTastingNotesQuery';
 
 // Make this page dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
 
-interface TastingNote {
-  id: string;
-  title: string;
-  date: string;
-  country?: string;
-  farm?: string;
-  region?: string;
-  variety?: string;
-  altitude?: string;
-  process?: string;
-  cup_notes?: string;
-  store_info?: string;
-  ratings: {
-    aroma: number;
-    flavor: number;
-    acidity: number;
-    sweetness: number;
-    body: number;
-    aftertaste: number;
-    balance: number;
-    overall: number;
-  };
-  notes?: string;
-  extracted_text?: string;
-  created_at: string;
-}
 
 function NotesPageContent() {
-  const [notes, setNotes] = useState<TastingNote[]>([]);
-  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const router = useRouter();
+  const { data: notes = [], isLoading, error } = useTastingNotes();
+  const deleteNoteMutation = useDeleteTastingNote();
 
-  useEffect(() => {
-    if (user) {
-      fetchNotes();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
 
-  const fetchNotes = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('tasting_notes')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching notes:', error);
-      } else {
-        setNotes(data || []);
+  const handleDeleteNote = async (noteId: string) => {
+    if (confirm('정말로 이 노트를 삭제하시겠습니까?')) {
+      try {
+        await deleteNoteMutation.mutateAsync(noteId);
+      } catch (error) {
+        console.error('Failed to delete note:', error);
       }
-    } catch (error) {
-      console.error('Error fetching notes:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
+  if (isLoading) {
+    return <LoadingSpinner message="노트를 불러오는 중..." />;
+  }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
-  const getRatingColor = (rating: number) => {
-    if (rating >= 8) return 'bg-green-500';
-    if (rating >= 6) return 'bg-yellow-500';
-    return 'bg-red-500';
-  };
-
-  if (loading) {
+  if (error) {
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-800 mx-auto mb-4"></div>
-          <p className="text-stone-600">노트를 불러오는 중...</p>
+          <p className="text-red-600">노트를 불러오는 중 오류가 발생했습니다.</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-emerald-800 text-white rounded-lg"
+          >
+            다시 시도
+          </button>
         </div>
       </div>
     );

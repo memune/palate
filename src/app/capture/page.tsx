@@ -1,13 +1,16 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, lazy, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
-import Camera from '@/components/camera/CameraCapture';
-import OCRProcessor from '@/components/OCRProcessor';
-import TastingForm from '@/components/TastingForm';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { useTastingNotes } from '@/hooks/useTastingNotes';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { useCreateTastingNote } from '@/hooks/useTastingNotesQuery';
 import { TastingNote } from '@/types';
+
+// Lazy load heavy components
+const Camera = lazy(() => import('@/components/camera/CameraCapture'));
+const OCRProcessor = lazy(() => import('@/components/OCRProcessor'));
+const TastingForm = lazy(() => import('@/components/TastingForm'));
 
 // Make this page dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
@@ -17,7 +20,7 @@ function CapturePageContent() {
   const [capturedImage, setCapturedImage] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<string>('');
   const router = useRouter();
-  const { saveNote } = useTastingNotes();
+  const createNoteMutation = useCreateTastingNote();
 
   const handleCapture = useCallback((file: File) => {
     setCapturedImage(file);
@@ -33,7 +36,7 @@ function CapturePageContent() {
     try {
       const noteData = {
         ...note,
-        extractedText,
+        extracted_text: extractedText,
         ratings: note.ratings || {
           aroma: 5,
           flavor: 5,
@@ -46,13 +49,13 @@ function CapturePageContent() {
         },
       };
 
-      await saveNote(noteData);
+      await createNoteMutation.mutateAsync(noteData);
       router.push('/notes');
     } catch (error) {
       console.error('노트 저장 실패:', error);
       alert('노트 저장에 실패했습니다. 다시 시도해주세요.');
     }
-  }, [extractedText, router, saveNote]);
+  }, [extractedText, router, createNoteMutation]);
 
   const handleBack = useCallback(() => {
     if (step === 'ocr') {
@@ -91,25 +94,31 @@ function CapturePageContent() {
 
       <main className="max-w-4xl mx-auto px-6 py-8">
         {step === 'camera' && (
-          <Camera onCapture={handleCapture} onClose={() => router.push('/')} />
+          <Suspense fallback={<LoadingSpinner message="카메라 로딩 중..." />}>
+            <Camera onCapture={handleCapture} onClose={() => router.push('/')} />
+          </Suspense>
         )}
         
         {step === 'ocr' && capturedImage && (
-          <OCRProcessor 
-            imageFile={capturedImage} 
-            onComplete={handleOCRComplete}
-            onError={(error) => {
-              console.error('OCR Error:', error);
-              setStep('form');
-            }}
-          />
+          <Suspense fallback={<LoadingSpinner message="OCR 처리기 로딩 중..." />}>
+            <OCRProcessor 
+              imageFile={capturedImage} 
+              onComplete={handleOCRComplete}
+              onError={(error) => {
+                console.error('OCR Error:', error);
+                setStep('form');
+              }}
+            />
+          </Suspense>
         )}
         
         {step === 'form' && (
-          <TastingForm 
-            extractedText={extractedText}
-            onSubmit={handleFormSubmit}
-          />
+          <Suspense fallback={<LoadingSpinner message="폼 로딩 중..." />}>
+            <TastingForm 
+              extractedText={extractedText}
+              onSubmit={handleFormSubmit}
+            />
+          </Suspense>
         )}
       </main>
     </div>
