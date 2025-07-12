@@ -268,29 +268,60 @@ const TastingNoteForm = memo(function TastingNoteForm({
             }
           />
           
-          <AutoCompleteInput
-            label={`농장${matchedData.region ? ` (${matchedData.region.name})` : ''}`}
-            name="farm"
-            value={formData.farm}
-            onChange={handleFarmChange}
-            onMatch={handleFarmMatch}
-            placeholder={
-              matchedData.region?.name && (COFFEE_FARMS as any)[matchedData.region.name]?.length > 0
-                ? `${matchedData.region.name}의 주요 농장 또는 직접 입력...`
-                : matchedData.region
-                ? "농장을 직접 입력해주세요..."
-                : "먼저 지역을 선택해주세요..."
-            }
-            matcher={(input) => matchFarm(input, matchedData.region?.name)}
-            suggestions={farmSuggestions}
-            dropdownHeader={
-              matchedData.region?.name && (COFFEE_FARMS as any)[matchedData.region.name]?.length > 0
-                ? `🏡 ${matchedData.region.name} 주요 농장:`
-                : matchedData.region
-                ? "📝 직접 입력 가능:"
-                : "🏔️ 먼저 지역을 선택하세요"
-            }
-          />
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-2">
+              농장{matchedData.region ? ` (${matchedData.region.name})` : ''}
+            </label>
+            {farmSuggestions.length > 0 ? (
+              <div className="space-y-2">
+                <select
+                  name="farm"
+                  value={formData.farm}
+                  onChange={(e) => {
+                    console.log('Select changed:', e.target.value);
+                    handleFarmChange(e.target.value);
+                  }}
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                >
+                  <option value="">농장을 선택하세요</option>
+                  {farmSuggestions.map((farm) => (
+                    <option key={farm.id} value={farm.name}>
+                      {farm.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="text-xs text-stone-500">
+                  또는 직접 입력:
+                </div>
+                <input
+                  type="text"
+                  value={formData.farm}
+                  onChange={(e) => {
+                    console.log('Input changed:', e.target.value);
+                    handleFarmChange(e.target.value);
+                  }}
+                  placeholder="직접 농장명을 입력하세요"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                />
+              </div>
+            ) : (
+              <input
+                type="text"
+                name="farm"
+                value={formData.farm}
+                onChange={(e) => {
+                  console.log('Text input changed:', e.target.value);
+                  handleFarmChange(e.target.value);
+                }}
+                className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder={
+                  matchedData.region
+                    ? "농장을 직접 입력해주세요..."
+                    : "먼저 지역을 선택해주세요..."
+                }
+              />
+            )}
+          </div>
           
           <AutoCompleteInput
             label="품종"
