@@ -270,57 +270,31 @@ const TastingNoteForm = memo(function TastingNoteForm({
           
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              농장{matchedData.region ? ` (${matchedData.region.name})` : ''}
+              농장 (테스트)
             </label>
-            {farmSuggestions.length > 0 ? (
-              <div className="space-y-2">
-                <select
-                  name="farm"
-                  value={formData.farm}
-                  onChange={(e) => {
-                    console.log('Select changed:', e.target.value);
-                    handleFarmChange(e.target.value);
-                  }}
-                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                >
-                  <option value="">농장을 선택하세요</option>
-                  {farmSuggestions.map((farm) => (
-                    <option key={farm.id} value={farm.name}>
-                      {farm.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="text-xs text-stone-500">
-                  또는 직접 입력:
-                </div>
-                <input
-                  type="text"
-                  value={formData.farm}
-                  onChange={(e) => {
-                    console.log('Input changed:', e.target.value);
-                    handleFarmChange(e.target.value);
-                  }}
-                  placeholder="직접 농장명을 입력하세요"
-                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                />
-              </div>
-            ) : (
-              <input
-                type="text"
-                name="farm"
-                value={formData.farm}
-                onChange={(e) => {
-                  console.log('Text input changed:', e.target.value);
-                  handleFarmChange(e.target.value);
-                }}
-                className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                placeholder={
-                  matchedData.region
-                    ? "농장을 직접 입력해주세요..."
-                    : "먼저 지역을 선택해주세요..."
-                }
-              />
-            )}
+            <input
+              type="text"
+              value={formData.farm}
+              onChange={(e) => {
+                console.log('🔥 FARM INPUT CHANGED:', e.target.value);
+                alert('농장 입력됨: ' + e.target.value);
+                setFormData(prev => ({ ...prev, farm: e.target.value }));
+              }}
+              onClick={() => {
+                console.log('🔥 FARM INPUT CLICKED');
+                alert('농장 필드 클릭됨!');
+              }}
+              onFocus={() => {
+                console.log('🔥 FARM INPUT FOCUSED');
+                alert('농장 필드 포커스됨!');
+              }}
+              placeholder="농장을 입력하세요 (테스트)"
+              className="w-full px-4 py-2 border-2 border-red-500 rounded-lg bg-yellow-100"
+              style={{ zIndex: 9999, position: 'relative' }}
+            />
+            <p className="text-sm text-red-600 mt-1">
+              현재 농장 값: &ldquo;{formData.farm}&rdquo;
+            </p>
           </div>
           
           <AutoCompleteInput
