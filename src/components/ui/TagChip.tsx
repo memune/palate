@@ -27,7 +27,6 @@ export function TagChip({ tag, category, selected, onClick }: TagChipProps) {
         }
       `}
     >
-      <span className="mr-1.5 text-xs">{category.icon}</span>
       {tag}
       {selected && (
         <span className="ml-1.5 text-xs">✓</span>
