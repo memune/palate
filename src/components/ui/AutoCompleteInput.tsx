@@ -49,16 +49,29 @@ export default function AutoCompleteInput({
     setMatchResult(match);
     onMatch?.(match);
 
-    // 신뢰도가 낮거나 매칭되지 않으면 드롭다운 표시
-    if (!match || match.confidence < 85) {
-      const filtered = suggestions.filter(item =>
-        item.name.toLowerCase().includes(value.toLowerCase()) ||
-        item.englishName.toLowerCase().includes(value.toLowerCase())
+    // 항상 관련 추천을 보여줌 (입력이 있을 때)
+    const filtered = suggestions.filter(item => {
+      const lowerValue = value.toLowerCase();
+      const lowerName = item.name.toLowerCase();
+      const lowerEnglish = item.englishName.toLowerCase();
+      
+      return lowerName.includes(lowerValue) || 
+             lowerEnglish.includes(lowerValue) ||
+             lowerName.startsWith(lowerValue) ||
+             lowerEnglish.startsWith(lowerValue);
+    });
+
+    // 매칭된 항목이 있어도 다른 관련 옵션들 보여주기
+    if (match && match.confidence >= 85) {
+      // 매칭된 항목을 제외하고 관련 항목들 보여주기
+      const otherSuggestions = filtered.filter(item => 
+        item.id !== match.id
       );
-      setFilteredSuggestions(filtered);
-      setIsOpen(filtered.length > 0);
+      setFilteredSuggestions(otherSuggestions);
+      setIsOpen(otherSuggestions.length > 0 && value.length >= 2);
     } else {
-      setIsOpen(false);
+      setFilteredSuggestions(filtered);
+      setIsOpen(filtered.length > 0 && value.length >= 1);
     }
   }, [value, matcher, suggestions, onMatch]);
 
@@ -121,10 +134,36 @@ export default function AutoCompleteInput({
   }, [onChange]);
 
   const handleFocus = useCallback(() => {
-    if (filteredSuggestions.length > 0 && (!matchResult || matchResult.confidence < 85)) {
+    // 포커스시 항상 관련 추천 보여주기
+    if (value.length >= 1) {
+      const filtered = suggestions.filter(item => {
+        const lowerValue = value.toLowerCase();
+        const lowerName = item.name.toLowerCase();
+        const lowerEnglish = item.englishName.toLowerCase();
+        
+        return lowerName.includes(lowerValue) || 
+               lowerEnglish.includes(lowerValue) ||
+               lowerName.startsWith(lowerValue) ||
+               lowerEnglish.startsWith(lowerValue);
+      });
+      
+      if (matchResult && matchResult.confidence >= 85) {
+        // 매칭된 항목 제외하고 보여주기
+        const otherSuggestions = filtered.filter(item => 
+          item.id !== matchResult.id
+        );
+        setFilteredSuggestions(otherSuggestions);
+        setIsOpen(otherSuggestions.length > 0);
+      } else {
+        setFilteredSuggestions(filtered);
+        setIsOpen(filtered.length > 0);
+      }
+    } else {
+      // 빈 입력시에는 모든 옵션 보여주기
+      setFilteredSuggestions(suggestions);
       setIsOpen(true);
     }
-  }, [filteredSuggestions.length, matchResult]);
+  }, [value, suggestions, matchResult]);
 
   // 매칭 상태에 따른 스타일
   const getInputStyle = () => {
@@ -199,6 +238,21 @@ export default function AutoCompleteInput({
           ref={dropdownRef}
           className="absolute z-50 w-full mt-1 bg-white border border-stone-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
         >
+          {/* 헤더 - 매칭 상태에 따라 다르게 표시 */}
+          {matchResult && matchResult.confidence >= 85 && (
+            <div className="px-4 py-2 bg-emerald-50 border-b border-emerald-200 text-sm">
+              <span className="text-emerald-700 font-medium">
+                ✓ &ldquo;{matchResult.name}&rdquo; 인식됨
+              </span>
+              <span className="text-emerald-600 ml-2">다른 옵션:</span>
+            </div>
+          )}
+          {(!matchResult || matchResult.confidence < 85) && (
+            <div className="px-4 py-2 bg-blue-50 border-b border-blue-200 text-sm">
+              <span className="text-blue-700 font-medium">💡 추천 국가:</span>
+            </div>
+          )}
+          
           {filteredSuggestions.map((item, index) => (
             <button
               key={item.id}
