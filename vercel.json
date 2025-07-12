@@ -8,18 +8,5 @@
     "app/**/*.{js,ts,tsx}": {
       "maxDuration": 30
     }
-  },
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@supabase_url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase_anon_key", 
-    "NEXT_PUBLIC_GOOGLE_AI_API_KEY": "@google_ai_api_key"
-  },
-  "git": {
-    "deploymentEnabled": true,
-    "silent": false
-  },
-  "github": {
-    "autoAlias": false,
-    "autoJobCancelation": false
   }
 }
