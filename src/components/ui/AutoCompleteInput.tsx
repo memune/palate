@@ -42,7 +42,8 @@ export default function AutoCompleteInput({
     if (value.trim().length === 0) {
       setMatchResult(null);
       setFilteredSuggestions(suggestions);
-      setIsOpen(false);
+      // 입력이 비어있어도 suggestions가 있으면 드롭다운 열기 (지역 필드의 경우)
+      setIsOpen(suggestions.length > 0);
       onMatch?.(null);
       return;
     }
