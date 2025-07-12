@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback, memo, useMemo } from 'react';
 import { DEFAULT_RATINGS, RATING_CATEGORIES, COFFEE_COUNTRIES, COFFEE_VARIETIES, PROCESSING_METHODS, COFFEE_REGIONS, COFFEE_FARMS } from '@/constants/defaults';
 import AutoCompleteInput from '@/components/ui/AutoCompleteInput';
 import { 
@@ -175,6 +175,20 @@ const TastingNoteForm = memo(function TastingNoteForm({
     setMatchedData(prev => ({ ...prev, farm: match || undefined }));
   }, []);
 
+  // 농장 suggestions 메모이제이션
+  const farmSuggestions = useMemo(() => {
+    if (!matchedData.region?.name) return [];
+    
+    const farms = (COFFEE_FARMS as any)[matchedData.region.name];
+    if (!farms || !Array.isArray(farms)) return [];
+    
+    return farms.map((farm: string) => ({
+      id: farm.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+      name: farm,
+      englishName: farm
+    }));
+  }, [matchedData.region?.name]);
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -268,12 +282,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
                 : "먼저 지역을 선택해주세요..."
             }
             matcher={(input) => matchFarm(input, matchedData.region?.name)}
-            suggestions={matchedData.region?.name ? 
-              (COFFEE_FARMS as any)[matchedData.region.name]?.map((farm: string) => ({
-                id: farm.toLowerCase().replace(/[^a-z0-9]/g, '_'),
-                name: farm,
-                englishName: farm
-              })) || [] : []}
+            suggestions={farmSuggestions}
             dropdownHeader={
               matchedData.region?.name && (COFFEE_FARMS as any)[matchedData.region.name]?.length > 0
                 ? `🏡 ${matchedData.region.name} 주요 농장:`
