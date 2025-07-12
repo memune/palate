@@ -134,7 +134,7 @@ export default function AutoCompleteInput({
   }, [onChange]);
 
   const handleFocus = useCallback(() => {
-    // 포커스시 항상 관련 추천 보여주기
+    // 포커스시 항상 드롭다운 보여주기
     if (value.length >= 1) {
       const filtered = suggestions.filter(item => {
         const lowerValue = value.toLowerCase();
