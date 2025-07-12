@@ -238,6 +238,21 @@ const TastingNoteForm = memo(function TastingNoteForm({
   }, [submitButtonText, loading, mode]);
 
   return (
+    <div className="space-y-8">
+      {/* FORM 바깥 테스트 */}
+      <div className="bg-green-100 p-4 border border-green-400 rounded">
+        <h3 className="font-bold text-green-800 mb-2">🌍 FORM 바깥 테스트</h3>
+        <input
+          type="text"
+          onChange={(e) => {
+            console.log('🌍 FORM 바깥 onChange:', e.target.value);
+            alert('FORM 바깥 onChange: ' + e.target.value);
+          }}
+          className="w-full px-2 py-1 border border-green-400 rounded"
+          placeholder="Form 밖부에서 onChange 테스트"
+        />
+      </div>
+      
     <form id="tasting-note-form" onSubmit={handleSubmit} className="space-y-8">
       {/* Coffee Information */}
       <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
@@ -289,29 +304,38 @@ const TastingNoteForm = memo(function TastingNoteForm({
             <div className="bg-yellow-100 p-4 border border-yellow-400 rounded">
               <h3 className="font-bold text-yellow-800 mb-2">🔍 진단: 어떤 요소가 onChange를 차단하나?</h3>
               
-              {/* 1. 기본 input */}
+              {/* 1. 기본 input - 다양한 이벤트 테스트 */}
               <div className="mb-3">
-                <label className="text-sm font-bold text-yellow-800">1. 기본 INPUT</label>
+                <label className="text-sm font-bold text-yellow-800">1. 기본 INPUT - 다양한 이벤트 테스트</label>
                 <input
                   type="text"
                   defaultValue={formData.farm}
                   onChange={(e) => {
-                    console.log('🔴 기본 INPUT onChange:', e.target.value);
-                    alert('기본 INPUT 변경: ' + e.target.value);
-                    setFormData(prev => ({ ...prev, farm: e.target.value }));
+                    console.log('🔴 onChange:', e.target.value);
+                    alert('onChange: ' + e.target.value);
+                  }}
+                  onInput={(e) => {
+                    console.log('🟠 onInput:', (e.target as HTMLInputElement).value);
+                    alert('onInput: ' + (e.target as HTMLInputElement).value);
+                    setFormData(prev => ({ ...prev, farm: (e.target as HTMLInputElement).value }));
+                  }}
+                  onKeyUp={(e) => {
+                    console.log('🟡 onKeyUp:', (e.target as HTMLInputElement).value);
+                    alert('onKeyUp: ' + (e.target as HTMLInputElement).value);
                   }}
                   onClick={() => {
-                    console.log('🔴 기본 INPUT 클릭');
-                    alert('기본 INPUT 클릭');
+                    console.log('🔴 onClick');
+                    alert('onClick');
                   }}
                   onFocus={() => {
-                    console.log('🔴 기본 INPUT 포커스');
-                    alert('기본 INPUT 포커스');
+                    console.log('🔴 onFocus');
+                    alert('onFocus');
                   }}
                   className="w-full px-2 py-1 border border-yellow-400 rounded"
-                  placeholder="기본 input 테스트"
+                  placeholder="다양한 이벤트 테스트"
                 />
               </div>
+              
               
               {/* 2. AutoCompleteInput 기본 */}
               <div className="mb-3">
@@ -546,6 +570,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
       {/* Spacer for floating button */}
       <div className="h-20"></div>
     </form>
+    </div>
   );
 });
 
