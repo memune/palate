@@ -177,32 +177,19 @@ const TastingNoteForm = memo(function TastingNoteForm({
     setMatchedData(prev => ({ ...prev, farm: match || undefined }));
   }, []);
 
-  // 농장 suggestions 단순화
+  // 농장 suggestions - 리렌더링 최소화
   const farmSuggestions = useMemo(() => {
-    console.log('🔄 farmSuggestions 재계산 중...');
-    console.log('🔄 지역 이름:', matchedData.region?.name);
+    const regionName = matchedData.region?.name;
+    if (!regionName) return [];
     
-    if (!matchedData.region?.name) {
-      console.log('🔄 지역 없음 - 빈 배열 반환');
-      return [];
-    }
+    const farms = (COFFEE_FARMS as any)[regionName];
+    if (!farms || !Array.isArray(farms)) return [];
     
-    const farms = (COFFEE_FARMS as any)[matchedData.region.name];
-    console.log('🔄 찾은 농장들:', farms);
-    
-    if (!farms || !Array.isArray(farms)) {
-      console.log('🔄 농장 데이터 없음 - 빈 배열 반환');
-      return [];
-    }
-    
-    const result = farms.map((farm: string) => ({
+    return farms.map((farm: string) => ({
       id: farm.toLowerCase().replace(/[^a-z0-9]/g, '_'),
       name: farm,
       englishName: farm
     }));
-    
-    console.log('🔄 최종 suggestions:', result);
-    return result;
   }, [matchedData.region?.name]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
