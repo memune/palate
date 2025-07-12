@@ -137,22 +137,42 @@ export function CupNoteTagSelector({
       {!searchTerm && (
         <div className="mb-4">
           <nav className="flex space-x-1 overflow-x-auto scrollbar-hide pb-2">
-            {Object.entries(categories).map(([key, category]) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setActiveCategory(key)}
-                className={`
-                  px-3 py-2 text-xs font-medium rounded-full whitespace-nowrap transition-all border
-                  ${activeCategory === key
-                    ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
-                    : 'text-gray-600 hover:text-gray-800 border-gray-200 hover:border-gray-300'
-                  }
-                `}
-              >
-                {category.name}
-              </button>
-            ))}
+            {Object.entries(categories).map(([key, category]) => {
+              // 현재 카테고리에서 선택된 태그 수 계산
+              const selectedInCategory = selectedTags.filter(tag => 
+                category.tags.includes(tag)
+              ).length;
+              
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setActiveCategory(key)}
+                  className={`
+                    flex items-center px-3 py-2 text-xs font-medium rounded-full whitespace-nowrap transition-all border
+                    ${activeCategory === key
+                      ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                      : 'text-gray-600 hover:text-gray-800 border-gray-200 hover:border-gray-300'
+                    }
+                  `}
+                >
+                  <span>{category.name}</span>
+                  {selectedInCategory > 0 && (
+                    <span 
+                      className={`
+                        ml-1.5 px-1.5 py-0.5 text-xs rounded-full font-semibold
+                        ${activeCategory === key
+                          ? 'bg-emerald-700 text-white'
+                          : 'bg-emerald-800 text-white'
+                        }
+                      `}
+                    >
+                      {selectedInCategory}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </nav>
         </div>
       )}
