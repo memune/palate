@@ -304,44 +304,21 @@ const TastingNoteForm = memo(function TastingNoteForm({
             <div className="bg-yellow-100 p-4 border border-yellow-400 rounded">
               <h3 className="font-bold text-yellow-800 mb-2">🔍 진단: 어떤 요소가 onChange를 차단하나?</h3>
               
-              {/* 1. 기본 input - STATE 업데이트 없이 */}
+              {/* 기본 input - alert 없이 */}
               <div className="mb-3">
-                <label className="text-sm font-bold text-yellow-800">1. STATE 업데이트 없는 INPUT</label>
+                <label className="text-sm font-bold text-yellow-800">기본 INPUT (alert 없음)</label>
                 <input
                   type="text"
-                  defaultValue={formData.farm}
+                  defaultValue=""
                   onChange={(e) => {
-                    console.log('🔴 onChange (NO STATE UPDATE):', e.target.value);
-                    alert('onChange (STATE 업데이트 없음): ' + e.target.value);
-                    // setFormData 호출 없음!
-                  }}
-                  onFocus={() => {
-                    console.log('🔴 onFocus (NO STATE)');
-                    alert('onFocus (NO STATE)');
+                    console.log('🔴 onChange 작동:', e.target.value);
                   }}
                   className="w-full px-2 py-1 border border-yellow-400 rounded"
-                  placeholder="State 업데이트 없이 테스트"
+                  placeholder="기본 input 테스트 (alert 없음)"
                 />
-              </div>
-              
-              {/* 2. 기본 input - STATE 업데이트 있음 */}
-              <div className="mb-3">
-                <label className="text-sm font-bold text-yellow-800">2. STATE 업데이트 있는 INPUT</label>
-                <input
-                  type="text"
-                  defaultValue={formData.farm}
-                  onChange={(e) => {
-                    console.log('🟠 onChange (WITH STATE UPDATE):', e.target.value);
-                    alert('onChange (STATE 업데이트 있음): ' + e.target.value);
-                    setFormData(prev => ({ ...prev, farm: e.target.value })); // 이것이 리렌더링 유발!
-                  }}
-                  onFocus={() => {
-                    console.log('🟠 onFocus (WITH STATE)');
-                    alert('onFocus (WITH STATE)');
-                  }}
-                  className="w-full px-2 py-1 border border-blue-400 rounded"
-                  placeholder="State 업데이트 있음 테스트"
-                />
+                <div className="text-xs text-yellow-700 mt-1">
+                  콘솔에서 onChange 로그 확인하세요 (alert 대신)
+                </div>
               </div>
               
               
