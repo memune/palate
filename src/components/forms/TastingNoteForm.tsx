@@ -159,9 +159,11 @@ const TastingNoteForm = memo(function TastingNoteForm({
   }, []);
 
   const handleRegionMatch = useCallback((match: MatchResult | null) => {
+    console.log('🌍 지역 매칭 변경:', match?.name);
     setMatchedData(prev => ({ ...prev, region: match || undefined }));
     // 지역 매칭이 변경되면 농장도 초기화
     if (match) {
+      console.log('🌍 농장 필드 초기화');
       setFormData(prev => ({ ...prev, farm: '' }));
     }
   }, []);
@@ -175,18 +177,32 @@ const TastingNoteForm = memo(function TastingNoteForm({
     setMatchedData(prev => ({ ...prev, farm: match || undefined }));
   }, []);
 
-  // 농장 suggestions 메모이제이션
+  // 농장 suggestions 단순화
   const farmSuggestions = useMemo(() => {
-    if (!matchedData.region?.name) return [];
+    console.log('🔄 farmSuggestions 재계산 중...');
+    console.log('🔄 지역 이름:', matchedData.region?.name);
+    
+    if (!matchedData.region?.name) {
+      console.log('🔄 지역 없음 - 빈 배열 반환');
+      return [];
+    }
     
     const farms = (COFFEE_FARMS as any)[matchedData.region.name];
-    if (!farms || !Array.isArray(farms)) return [];
+    console.log('🔄 찾은 농장들:', farms);
     
-    return farms.map((farm: string) => ({
+    if (!farms || !Array.isArray(farms)) {
+      console.log('🔄 농장 데이터 없음 - 빈 배열 반환');
+      return [];
+    }
+    
+    const result = farms.map((farm: string) => ({
       id: farm.toLowerCase().replace(/[^a-z0-9]/g, '_'),
       name: farm,
       englishName: farm
     }));
+    
+    console.log('🔄 최종 suggestions:', result);
+    return result;
   }, [matchedData.region?.name]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
