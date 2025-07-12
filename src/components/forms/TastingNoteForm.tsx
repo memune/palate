@@ -167,6 +167,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
   }, []);
 
   const handleFarmChange = useCallback((value: string) => {
+    console.log('handleFarmChange called with:', value);
     setFormData(prev => ({ ...prev, farm: value }));
   }, []);
 

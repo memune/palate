@@ -105,6 +105,8 @@ export default function AutoCompleteInput({
   }, []);
 
   const handleSelect = useCallback((item: { id: string; name: string; englishName: string }) => {
+    console.log('handleSelect called with:', item);
+    console.log('onChange function:', onChange);
     onChange(item.name);
     setIsOpen(false);
     setHighlightedIndex(-1);
@@ -275,7 +277,15 @@ export default function AutoCompleteInput({
               <button
                 key={item.id}
                 type="button"
-                onClick={() => handleSelect(item)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleSelect(item);
+                }}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
                 className={`w-full px-4 py-3 text-left hover:bg-stone-50 border-b border-stone-100 last:border-b-0 transition-colors ${
                   index === highlightedIndex ? 'bg-emerald-50 border-emerald-200' : ''
                 }`}
