@@ -10,7 +10,6 @@ import { useTastingNote, useUpdateTastingNote } from '@/hooks/useTastingNotesQue
 
 // Lazy load form components
 const TastingNoteForm = lazy(() => import('@/components/forms/TastingNoteForm'));
-const FloatingSubmitButton = lazy(() => import('@/components/ui/FloatingSubmitButton'));
 
 // Make this page dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
@@ -100,13 +99,6 @@ function EditNotePage() {
               onSubmit={handleSubmit}
               loading={updateNoteMutation.isPending}
             />
-            
-            <FloatingSubmitButton
-              formId="tasting-note-form"
-              loading={updateNoteMutation.isPending}
-            >
-              {updateNoteMutation.isPending ? '수정 중...' : '테이스팅 노트 수정'}
-            </FloatingSubmitButton>
           </Suspense>
         )}
       </main>

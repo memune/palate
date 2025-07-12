@@ -10,7 +10,6 @@ import { useCreateTastingNote } from '@/hooks/useTastingNotesQuery';
 
 // Lazy load form components
 const TastingNoteForm = lazy(() => import('@/components/forms/TastingNoteForm'));
-const FloatingSubmitButton = lazy(() => import('@/components/ui/FloatingSubmitButton'));
 
 // Make this page dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
@@ -45,7 +44,6 @@ function AddNotePage() {
               </svg>
               뒤로
             </button>
-            <h1 className="text-xl font-medium text-stone-900 tracking-tight">직접 입력하기</h1>
             <div className="w-16" />
           </div>
         </div>
@@ -58,13 +56,6 @@ function AddNotePage() {
             onSubmit={handleSubmit}
             loading={createNoteMutation.isPending}
           />
-          
-          <FloatingSubmitButton
-            formId="tasting-note-form"
-            loading={createNoteMutation.isPending}
-          >
-            {createNoteMutation.isPending ? '저장 중...' : '테이스팅 노트 저장'}
-          </FloatingSubmitButton>
         </Suspense>
       </main>
     </div>

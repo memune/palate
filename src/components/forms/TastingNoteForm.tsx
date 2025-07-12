@@ -320,7 +320,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
       <div className="space-y-8">
           {/* Location Fields */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 brand-font">
               Origin
             </h2>
             <div className="grid grid-cols-1 gap-4">
@@ -394,7 +394,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
           {/* Coffee Characteristics */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 brand-font">
               Characteristics
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -426,7 +426,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
           {/* Altitude Section */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 brand-font">
               Altitude
             </h2>
             <div className="space-y-4">
@@ -529,7 +529,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
           {/* Store Info */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 brand-font">
               Store
             </h2>
             <input
@@ -545,7 +545,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
         {/* Cup Notes Section - Full Width */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 brand-font">
             Tasting Notes
           </h2>
           <CupNoteTagSelector
@@ -558,7 +558,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
       {/* Ratings */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-6 border-b border-gray-200 pb-2 font-inter">
+        <h2 className="text-lg font-semibold text-gray-900 mb-6 border-b border-gray-200 pb-2 brand-font">
           Rating
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -583,7 +583,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
                     className={`
                       aspect-square flex items-center justify-center text-xs font-medium rounded transition-all
                       ${formData.ratings[category.key as keyof typeof formData.ratings] >= score
-                        ? 'bg-gray-900 text-white shadow-sm'
+                        ? 'bg-emerald-800 text-white shadow-sm'
                         : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                       }
                     `}
@@ -599,7 +599,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
       {/* Notes */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 brand-font">
           Notes
         </h2>
         <textarea
@@ -614,7 +614,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
       {/* Basic Information */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 font-inter">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2 brand-font">
           Details
         </h2>
         <div className="space-y-4">
