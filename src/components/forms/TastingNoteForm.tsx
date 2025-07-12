@@ -270,48 +270,41 @@ const TastingNoteForm = memo(function TastingNoteForm({
           
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              농장 (테스트)
+              농장{matchedData.region ? ` (${matchedData.region.name})` : ''}
             </label>
+            {farmSuggestions.length > 0 ? (
+              <select
+                value={formData.farm}
+                onChange={(e) => {
+                  console.log('🔥 FARM SELECT CHANGED:', e.target.value);
+                  setFormData(prev => ({ ...prev, farm: e.target.value }));
+                }}
+                className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              >
+                <option value="">농장을 선택하세요</option>
+                {farmSuggestions.map((farm) => (
+                  <option key={farm.id} value={farm.name}>
+                    {farm.name}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+            
             <input
               type="text"
-              defaultValue=""
+              value={formData.farm}
               onChange={(e) => {
                 console.log('🔥 FARM INPUT CHANGED:', e.target.value);
                 setFormData(prev => ({ ...prev, farm: e.target.value }));
               }}
-              onInput={(e) => {
-                console.log('🔥 FARM INPUT EVENT:', (e.target as HTMLInputElement).value);
-              }}
-              onKeyDown={(e) => {
-                console.log('🔥 FARM KEY DOWN:', e.key);
-              }}
-              onClick={() => {
-                console.log('🔥 FARM INPUT CLICKED');
-              }}
-              onFocus={() => {
-                console.log('🔥 FARM INPUT FOCUSED');
-              }}
-              placeholder="농장을 입력하세요 (테스트)"
-              className="w-full px-4 py-2 border-2 border-red-500 rounded-lg bg-yellow-100"
-              style={{ zIndex: 9999, position: 'relative' }}
-              disabled={false}
-              readOnly={false}
+              placeholder={farmSuggestions.length > 0 ? "또는 직접 입력하세요" : "농장을 입력하세요"}
+              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
-            <p className="text-sm text-red-600 mt-1">
-              현재 농장 값: &ldquo;{formData.farm}&rdquo;
-            </p>
-            
-            <div className="mt-4 p-4 bg-blue-100 border-2 border-blue-500">
-              <label className="block text-sm font-medium text-blue-700 mb-2">
-                비교용 테스트 input (React와 무관):
-              </label>
-              <input
-                type="text"
-                placeholder="이 필드는 입력되나요?"
-                className="w-full px-4 py-2 border-2 border-blue-500 rounded-lg"
-                onInput={(e) => console.log('📝 Test input:', (e.target as HTMLInputElement).value)}
-              />
-            </div>
+            {formData.farm && (
+              <p className="text-sm text-emerald-600 mt-1">
+                ✓ 선택된 농장: {formData.farm}
+              </p>
+            )}
           </div>
           
           <AutoCompleteInput
