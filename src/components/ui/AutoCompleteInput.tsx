@@ -6,7 +6,8 @@ import { MatchResult } from '@/lib/coffee-data-matcher';
 interface AutoCompleteInputProps {
   label: string;
   name: string;
-  value: string;
+  value?: string; // optional for uncontrolled mode
+  defaultValue?: string; // for uncontrolled mode
   onChange: (value: string) => void;
   onMatch?: (match: MatchResult | null) => void;
   placeholder?: string;
@@ -15,12 +16,14 @@ interface AutoCompleteInputProps {
   suggestions: readonly { id: string; name: string; englishName: string }[];
   className?: string;
   dropdownHeader?: string; // 드롭다운 헤더 텍스트
+  uncontrolled?: boolean; // 새로운 prop
 }
 
 export default function AutoCompleteInput({
   label,
   name,
   value,
+  defaultValue,
   onChange,
   onMatch,
   placeholder,
@@ -28,19 +31,24 @@ export default function AutoCompleteInput({
   matcher,
   suggestions,
   className = '',
-  dropdownHeader
+  dropdownHeader,
+  uncontrolled = false
 }: AutoCompleteInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
   const [filteredSuggestions, setFilteredSuggestions] = useState(suggestions);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [hasFocused, setHasFocused] = useState(false); // 포커스 여부 추적
+  const [internalValue, setInternalValue] = useState(defaultValue || ''); // uncontrolled 모드용 내부 상태
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // controlled vs uncontrolled 모드에 따른 현재 값
+  const currentValue = uncontrolled ? internalValue : (value || '');
 
   // 입력값 변경 시 매칭 시도
   useEffect(() => {
-    if (value.trim().length === 0) {
+    if (currentValue.trim().length === 0) {
       setMatchResult(null);
       setFilteredSuggestions(suggestions);
       // 포커스된 상태에서만 드롭다운 열기 (새로고침 시 자동으로 열리지 않도록)
@@ -49,13 +57,13 @@ export default function AutoCompleteInput({
       return;
     }
 
-    const match = matcher(value);
+    const match = matcher(currentValue);
     setMatchResult(match);
     onMatch?.(match);
 
     // 항상 관련 추천을 보여줌 (입력이 있을 때)
     const filtered = suggestions.filter(item => {
-      const lowerValue = value.toLowerCase();
+      const lowerValue = currentValue.toLowerCase();
       const lowerName = item.name.toLowerCase();
       const lowerEnglish = item.englishName.toLowerCase();
       
@@ -75,18 +83,18 @@ export default function AutoCompleteInput({
       setIsOpen(otherSuggestions.length > 0 && value.length >= 2);
     } else {
       setFilteredSuggestions(filtered);
-      setIsOpen(filtered.length > 0 && value.length >= 1);
+      setIsOpen(filtered.length > 0 && currentValue.length >= 1);
     }
-  }, [value, matcher, suggestions, onMatch, hasFocused]);
+  }, [currentValue, matcher, suggestions, onMatch, hasFocused]);
 
   // suggestions prop이 변경될 때 filteredSuggestions 업데이트
   useEffect(() => {
     setFilteredSuggestions(suggestions);
     // 포커스된 상태이고 입력이 비어있으면 새로운 suggestions로 드롭다운 열기
-    if (hasFocused && value.trim().length === 0 && suggestions.length > 0) {
+    if (hasFocused && currentValue.trim().length === 0 && suggestions.length > 0) {
       setIsOpen(true);
     }
-  }, [suggestions, hasFocused, value]);
+  }, [suggestions, hasFocused, currentValue]);
 
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -144,18 +152,22 @@ export default function AutoCompleteInput({
   }, [isOpen, filteredSuggestions, highlightedIndex, handleSelect]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
+    const newValue = e.target.value;
+    if (uncontrolled) {
+      setInternalValue(newValue);
+    }
+    onChange(newValue);
     setHighlightedIndex(-1);
-  }, [onChange]);
+  }, [onChange, uncontrolled]);
 
   const handleFocus = useCallback(() => {
     console.log('Field focused, name:', name, 'suggestions count:', suggestions.length);
     setHasFocused(true); // 포커스 상태 설정
     
     // 포커스시 항상 드롭다운 보여주기
-    if (value.length >= 1) {
+    if (currentValue.length >= 1) {
       const filtered = suggestions.filter(item => {
-        const lowerValue = value.toLowerCase();
+        const lowerValue = currentValue.toLowerCase();
         const lowerName = item.name.toLowerCase();
         const lowerEnglish = item.englishName.toLowerCase();
         
@@ -181,7 +193,7 @@ export default function AutoCompleteInput({
       setFilteredSuggestions(suggestions);
       setIsOpen(suggestions.length > 0);
     }
-  }, [value, suggestions, matchResult]);
+  }, [currentValue, suggestions, matchResult]);
 
   // 매칭 상태에 따른 스타일
   const getInputStyle = () => {
@@ -207,7 +219,7 @@ export default function AutoCompleteInput({
           ref={inputRef}
           type="text"
           name={name}
-          value={value}
+          {...(uncontrolled ? { defaultValue: defaultValue } : { value: currentValue })}
           onChange={handleInputChange}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
@@ -307,9 +319,9 @@ export default function AutoCompleteInput({
               </button>
             ))
           ) : (
-            (!matchResult || matchResult.confidence < 85) && value.trim() && (
+            (!matchResult || matchResult.confidence < 85) && currentValue.trim() && (
               <div className="px-4 py-3 text-center text-stone-500">
-                <div className="text-sm">&ldquo;{value}&rdquo; 직접 사용 가능</div>
+                <div className="text-sm">&ldquo;{currentValue}&rdquo; 직접 사용 가능</div>
                 <div className="text-xs text-stone-400 mt-1">Enter 키를 눌러 입력을 완료하세요</div>
               </div>
             )
