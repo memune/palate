@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback, memo, useMemo } from 'react';
-import { DEFAULT_RATINGS, RATING_CATEGORIES, COFFEE_COUNTRIES, COFFEE_VARIETIES, PROCESSING_METHODS, COFFEE_REGIONS, COFFEE_FARMS } from '@/constants/defaults';
+import { DEFAULT_RATINGS, RATING_CATEGORIES, COFFEE_COUNTRIES, COFFEE_VARIETIES, PROCESSING_METHODS, COFFEE_REGIONS, COFFEE_FARMS, CUP_NOTE_CATEGORIES } from '@/constants/defaults';
 import AutoCompleteInput from '@/components/ui/AutoCompleteInput';
+import { CupNoteTagSelector } from '@/components/ui/TagChip';
 import { 
   matchCountry, 
   matchVariety, 
@@ -186,6 +187,9 @@ const TastingNoteForm = memo(function TastingNoteForm({
   // 고도 관리
   const [altitudeData, setAltitudeData] = useState<AltitudeData>({ type: 'single' });
   
+  // 컵노트 태그 관리
+  const [selectedCupNoteTags, setSelectedCupNoteTags] = useState<string[]>([]);
+  
   // 지역이 변경될 때만 농장 업데이트 (국가와 무관)
   useEffect(() => {
     const regionName = formData.region;
@@ -256,6 +260,25 @@ const TastingNoteForm = memo(function TastingNoteForm({
       }
     }
   }, [initialData?.altitude, formData.altitude, altitudeData.single, altitudeData.min]);
+  
+  // 컵노트 태그를 formData.cup_notes와 동기화
+  useEffect(() => {
+    const cupNotesString = selectedCupNoteTags.join(', ');
+    if (formData.cup_notes !== cupNotesString) {
+      setFormData(prev => ({ ...prev, cup_notes: cupNotesString }));
+    }
+  }, [selectedCupNoteTags, formData.cup_notes]);
+  
+  // 초기 데이터의 cup_notes를 태그로 파싱 (edit 모드용)
+  useEffect(() => {
+    if (initialData?.cup_notes && formData.cup_notes && selectedCupNoteTags.length === 0) {
+      const tags = formData.cup_notes
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+      setSelectedCupNoteTags(tags);
+    }
+  }, [initialData?.cup_notes, formData.cup_notes, selectedCupNoteTags.length]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -484,13 +507,11 @@ const TastingNoteForm = memo(function TastingNoteForm({
           <label className="block text-sm font-medium text-stone-700 mb-2">
             컵노트 (테이스팅 노트)
           </label>
-          <input
-            type="text"
-            name="cup_notes"
-            value={formData.cup_notes}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-            placeholder="예: 초콜릿, 견과류, 오렌지 산미"
+          <CupNoteTagSelector
+            selectedTags={selectedCupNoteTags}
+            onTagsChange={setSelectedCupNoteTags}
+            categories={CUP_NOTE_CATEGORIES}
+            maxTags={8}
           />
         </div>
         <div className="mt-6">
