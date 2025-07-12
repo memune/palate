@@ -297,7 +297,16 @@ const TastingNoteForm = memo(function TastingNoteForm({
                   defaultValue={formData.farm}
                   onChange={(e) => {
                     console.log('🔴 기본 INPUT onChange:', e.target.value);
+                    alert('기본 INPUT 변경: ' + e.target.value);
                     setFormData(prev => ({ ...prev, farm: e.target.value }));
+                  }}
+                  onClick={() => {
+                    console.log('🔴 기본 INPUT 클릭');
+                    alert('기본 INPUT 클릭');
+                  }}
+                  onFocus={() => {
+                    console.log('🔴 기본 INPUT 포커스');
+                    alert('기본 INPUT 포커스');
                   }}
                   className="w-full px-2 py-1 border border-yellow-400 rounded"
                   placeholder="기본 input 테스트"
@@ -359,7 +368,18 @@ const TastingNoteForm = memo(function TastingNoteForm({
               </div>
               
               <div className="text-xs text-yellow-700">
-                현재 농장 값: <strong>{formData.farm}</strong>
+                현재 농장 값: <strong>{formData.farm}</strong><br/>
+                렌더링 시간: {new Date().toLocaleTimeString()}<br/>
+                <button 
+                  onClick={() => {
+                    console.log('🔥 버튼 클릭 테스트');
+                    alert('버튼 클릭 작동!');
+                    setFormData(prev => ({ ...prev, farm: 'BUTTON TEST' }));
+                  }}
+                  className="px-2 py-1 bg-red-500 text-white rounded text-xs"
+                >
+                  버튼 테스트
+                </button>
               </div>
             </div>
             
