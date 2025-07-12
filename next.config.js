@@ -14,7 +14,6 @@ const nextConfig = {
   
   // Bundle optimization
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['@tanstack/react-query'],
   },
   
