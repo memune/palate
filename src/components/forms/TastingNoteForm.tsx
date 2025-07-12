@@ -304,35 +304,43 @@ const TastingNoteForm = memo(function TastingNoteForm({
             <div className="bg-yellow-100 p-4 border border-yellow-400 rounded">
               <h3 className="font-bold text-yellow-800 mb-2">🔍 진단: 어떤 요소가 onChange를 차단하나?</h3>
               
-              {/* 1. 기본 input - 다양한 이벤트 테스트 */}
+              {/* 1. 기본 input - STATE 업데이트 없이 */}
               <div className="mb-3">
-                <label className="text-sm font-bold text-yellow-800">1. 기본 INPUT - 다양한 이벤트 테스트</label>
+                <label className="text-sm font-bold text-yellow-800">1. STATE 업데이트 없는 INPUT</label>
                 <input
                   type="text"
                   defaultValue={formData.farm}
                   onChange={(e) => {
-                    console.log('🔴 onChange:', e.target.value);
-                    alert('onChange: ' + e.target.value);
-                  }}
-                  onInput={(e) => {
-                    console.log('🟠 onInput:', (e.target as HTMLInputElement).value);
-                    alert('onInput: ' + (e.target as HTMLInputElement).value);
-                    setFormData(prev => ({ ...prev, farm: (e.target as HTMLInputElement).value }));
-                  }}
-                  onKeyUp={(e) => {
-                    console.log('🟡 onKeyUp:', (e.target as HTMLInputElement).value);
-                    alert('onKeyUp: ' + (e.target as HTMLInputElement).value);
-                  }}
-                  onClick={() => {
-                    console.log('🔴 onClick');
-                    alert('onClick');
+                    console.log('🔴 onChange (NO STATE UPDATE):', e.target.value);
+                    alert('onChange (STATE 업데이트 없음): ' + e.target.value);
+                    // setFormData 호출 없음!
                   }}
                   onFocus={() => {
-                    console.log('🔴 onFocus');
-                    alert('onFocus');
+                    console.log('🔴 onFocus (NO STATE)');
+                    alert('onFocus (NO STATE)');
                   }}
                   className="w-full px-2 py-1 border border-yellow-400 rounded"
-                  placeholder="다양한 이벤트 테스트"
+                  placeholder="State 업데이트 없이 테스트"
+                />
+              </div>
+              
+              {/* 2. 기본 input - STATE 업데이트 있음 */}
+              <div className="mb-3">
+                <label className="text-sm font-bold text-yellow-800">2. STATE 업데이트 있는 INPUT</label>
+                <input
+                  type="text"
+                  defaultValue={formData.farm}
+                  onChange={(e) => {
+                    console.log('🟠 onChange (WITH STATE UPDATE):', e.target.value);
+                    alert('onChange (STATE 업데이트 있음): ' + e.target.value);
+                    setFormData(prev => ({ ...prev, farm: e.target.value })); // 이것이 리렌더링 유발!
+                  }}
+                  onFocus={() => {
+                    console.log('🟠 onFocus (WITH STATE)');
+                    alert('onFocus (WITH STATE)');
+                  }}
+                  className="w-full px-2 py-1 border border-blue-400 rounded"
+                  placeholder="State 업데이트 있음 테스트"
                 />
               </div>
               
