@@ -240,20 +240,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
   return (
     <div className="space-y-8">
-      {/* FORM 바깥 테스트 */}
-      <div className="bg-green-100 p-4 border border-green-400 rounded">
-        <h3 className="font-bold text-green-800 mb-2">🌍 FORM 바깥 테스트</h3>
-        <input
-          type="text"
-          onChange={(e) => {
-            console.log('🌍 FORM 바깥 onChange:', e.target.value);
-            alert('FORM 바깥 onChange: ' + e.target.value);
-          }}
-          className="w-full px-2 py-1 border border-green-400 rounded"
-          placeholder="Form 밖부에서 onChange 테스트"
-        />
-      </div>
-      
     <form id="tasting-note-form" onSubmit={handleSubmit} className="space-y-8">
       {/* Coffee Information */}
       <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
@@ -300,122 +286,30 @@ const TastingNoteForm = memo(function TastingNoteForm({
             }
           />
           
-          <div className="space-y-4">
-            {/* 진단용 디버깅 영역 */}
-            <div className="bg-yellow-100 p-4 border border-yellow-400 rounded">
-              <h3 className="font-bold text-yellow-800 mb-2">🔍 진단: 어떤 요소가 onChange를 차단하나?</h3>
-              
-              {/* 기본 input - alert 없이 */}
-              <div className="mb-3">
-                <label className="text-sm font-bold text-yellow-800">기본 INPUT (alert 없음)</label>
-                <input
-                  type="text"
-                  defaultValue=""
-                  onChange={(e) => {
-                    console.log('🔴 onChange 작동:', e.target.value);
-                  }}
-                  className="w-full px-2 py-1 border border-yellow-400 rounded"
-                  placeholder="기본 input 테스트 (alert 없음)"
-                />
-                <div className="text-xs text-yellow-700 mt-1">
-                  콘솔에서 onChange 로그 확인하세요 (alert 대신)
-                </div>
-              </div>
-              
-              
-              {/* 2. AutoCompleteInput 기본 */}
-              <div className="mb-3">
-                <AutoCompleteInput
-                  label="2. AutoCompleteInput (기본)"
-                  name="farm-test-basic"
-                  value={formData.farm}
-                  onChange={(value) => {
-                    console.log('🔵 AutoComplete 기본 onChange:', value);
-                    setFormData(prev => ({ ...prev, farm: value }));
-                  }}
-                  placeholder="AutoComplete 기본 테스트"
-                  matcher={() => null}
-                  suggestions={[]}
-                />
-              </div>
-              
-              {/* 3. AutoCompleteInput uncontrolled */}
-              <div className="mb-3">
-                <AutoCompleteInput
-                  label="3. AutoCompleteInput (uncontrolled)"
-                  name="farm-test-uncontrolled"
-                  defaultValue={formData.farm}
-                  uncontrolled={true}
-                  onChange={(value) => {
-                    console.log('🟢 AutoComplete uncontrolled onChange:', value);
-                    setFormData(prev => ({ ...prev, farm: value }));
-                  }}
-                  placeholder="AutoComplete uncontrolled 테스트"
-                  matcher={() => null}
-                  suggestions={[]}
-                />
-              </div>
-              
-              {/* 4. AutoCompleteInput 전체 옵션 */}
-              <div className="mb-3">
-                <AutoCompleteInput
-                  label="4. AutoCompleteInput (전체 옵션)"
-                  name="farm-test-full"
-                  defaultValue={formData.farm}
-                  uncontrolled={true}
-                  onChange={(value) => {
-                    console.log('🟡 AutoComplete 전체 onChange:', value);
-                    setFormData(prev => ({ ...prev, farm: value }));
-                  }}
-                  onMatch={(match) => {
-                    console.log('🟡 AutoComplete 전체 onMatch:', match);
-                  }}
-                  placeholder="AutoComplete 전체 테스트"
-                  matcher={(input) => matchFarm(input, matchedData.region?.name)}
-                  suggestions={farmSuggestions}
-                  dropdownHeader="테스트 드롭다운"
-                />
-              </div>
-              
-              <div className="text-xs text-yellow-700">
-                현재 농장 값: <strong>{formData.farm}</strong><br/>
-                렌더링 시간: {new Date().toLocaleTimeString()}<br/>
-                <button 
-                  onClick={() => {
-                    console.log('🔥 버튼 클릭 테스트');
-                    alert('버튼 클릭 작동!');
-                    setFormData(prev => ({ ...prev, farm: 'BUTTON TEST' }));
-                  }}
-                  className="px-2 py-1 bg-red-500 text-white rounded text-xs"
-                >
-                  버튼 테스트
-                </button>
-              </div>
-            </div>
-            
-            {/* 기존 작동하는 select */}
-            <div>
-              <label className="block text-sm font-medium text-stone-700 mb-2">
-                농장 (작동하는 select)
-              </label>
-              <select
-                key={`farm-select-${matchedData.region?.name || 'no-region'}`}
-                defaultValue={formData.farm}
-                onChange={(e) => {
-                  console.log('🟢 작동하는 SELECT onChange:', e.target.value);
-                  setFormData(prev => ({ ...prev, farm: e.target.value }));
-                }}
-                className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              >
-                <option value="">🏡 농장을 선택하세요</option>
-                {farmSuggestions.map((farm) => (
-                  <option key={farm.id} value={farm.name}>
-                    {farm.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          <AutoCompleteInput
+            key={`farm-autocomplete-${selectedRegionForFarm || 'no-region'}`}
+            label={`농장${selectedRegionForFarm ? ` (${selectedRegionForFarm})` : ''}`}
+            name="farm"
+            value={formData.farm}
+            onChange={handleFarmChange}
+            onMatch={handleFarmMatch}
+            placeholder={
+              farmSuggestions.length > 0
+                ? `${selectedRegionForFarm}의 주요 농장 또는 직접 입력...`
+                : formData.region
+                ? "농장을 직접 입력해주세요..."
+                : "먼저 지역을 선택해주세요..."
+            }
+            matcher={(input) => matchFarm(input, selectedRegionForFarm)}
+            suggestions={farmSuggestions}
+            dropdownHeader={
+              farmSuggestions.length > 0
+                ? `🏡 ${selectedRegionForFarm} 주요 농장:`
+                : formData.region
+                ? "📝 직접 입력 가능:"
+                : "🌍 먼저 지역을 선택하세요"
+            }
+          />
           
           <AutoCompleteInput
             label="품종"
