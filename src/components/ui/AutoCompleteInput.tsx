@@ -34,6 +34,7 @@ export default function AutoCompleteInput({
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
   const [filteredSuggestions, setFilteredSuggestions] = useState(suggestions);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [hasFocused, setHasFocused] = useState(false); // 포커스 여부 추적
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -42,8 +43,8 @@ export default function AutoCompleteInput({
     if (value.trim().length === 0) {
       setMatchResult(null);
       setFilteredSuggestions(suggestions);
-      // 입력이 비어있어도 suggestions가 있으면 드롭다운 열기 (지역 필드의 경우)
-      setIsOpen(suggestions.length > 0);
+      // 포커스된 상태에서만 드롭다운 열기 (새로고침 시 자동으로 열리지 않도록)
+      setIsOpen(hasFocused && suggestions.length > 0);
       onMatch?.(null);
       return;
     }
@@ -76,7 +77,7 @@ export default function AutoCompleteInput({
       setFilteredSuggestions(filtered);
       setIsOpen(filtered.length > 0 && value.length >= 1);
     }
-  }, [value, matcher, suggestions, onMatch]);
+  }, [value, matcher, suggestions, onMatch, hasFocused]);
 
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -137,6 +138,8 @@ export default function AutoCompleteInput({
   }, [onChange]);
 
   const handleFocus = useCallback(() => {
+    setHasFocused(true); // 포커스 상태 설정
+    
     // 포커스시 항상 드롭다운 보여주기
     if (value.length >= 1) {
       const filtered = suggestions.filter(item => {
@@ -164,7 +167,7 @@ export default function AutoCompleteInput({
     } else {
       // 빈 입력시에는 모든 옵션 보여주기
       setFilteredSuggestions(suggestions);
-      setIsOpen(true);
+      setIsOpen(suggestions.length > 0);
     }
   }, [value, suggestions, matchResult]);
 

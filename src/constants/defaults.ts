@@ -140,12 +140,12 @@ export const COFFEE_FARMS = {
     'Finca Santa Bárbara', 'Finca La Claudina'
   ],
   // 콜롬비아 - Tolima
-  'tolima': [
+  'Tolima': [
     'Finca El Tambo', 'Finca Maravillas', 'Finca La Pradera',
     'Finca Santa Teresa', 'Finca Los Nogales'
   ],
   // 콜롬비아 - Cauca
-  'cauca': [
+  'Cauca': [
     'Finca El Tambo', 'Finca La Argentina', 'Finca Bella Vista',
     'Finca San Isidro', 'Finca El Diviso'
   ],
@@ -156,7 +156,7 @@ export const COFFEE_FARMS = {
     'Fazenda Vista Alegre', 'Fazenda Dois Irmãos', 'Fazenda Cachoeira'
   ],
   // 브라질 - Sul de Minas
-  'sul_de_minas': [
+  'Sul de Minas': [
     'Fazenda Samambaia', 'Fazenda da Grama', 'Fazenda Santa Ines',
     'Fazenda Sertão', 'Fazenda IP', 'Fazenda Carmo de Minas'
   ],
@@ -166,7 +166,7 @@ export const COFFEE_FARMS = {
     'Fazenda Santa Clara', 'Fazenda São Silvestre'
   ],
   // 브라질 - Bahia
-  'bahia': [
+  'Bahia': [
     'Fazenda Conquista', 'Fazenda Bom Jesus', 'Fazenda Café do Sítio',
     'Fazenda Mata Atlântica', 'Fazenda Duas Marias'
   ],
@@ -182,17 +182,17 @@ export const COFFEE_FARMS = {
     'Yirgacheffe Konga', 'Biloya Washing Station', 'Chelba Washing Station'
   ],
   // 에티오피아 - Harrar
-  'harrar': [
+  'Harrar': [
     'Harrar Longberry', 'Harrar Horse', 'Dire Dawa',
     'Alemaya', 'Bale Mountain'
   ],
   // 에티오피아 - Limu
-  'limu': [
+  'Limu': [
     'Limu Kossa', 'Limu Sekka', 'Bebeka Estate',
     'Tepi Estate', 'Gori Gesha Estate'
   ],
   // 에티오피아 - Djimmah
-  'djimmah': [
+  'Djimmah': [
     'Djimmah Estate', 'Agaro Estate', 'Limmu Kossa',
     'Sokoru Estate', 'Gomma Estate'
   ],
@@ -203,17 +203,17 @@ export const COFFEE_FARMS = {
     'Gatundu Estate', 'Ruiru Estate'
   ],
   // 케냐 - Nyeri
-  'nyeri': [
+  'Nyeri': [
     'Tegu Estate', 'Gaturiri Estate', 'Kagumo Estate',
     'Ichamama Estate', 'Gathaithi Estate'
   ],
   // 케냐 - Kirinyaga
-  'kirinyaga': [
+  'Kirinyaga': [
     'Kabare Estate', 'Kii Estate', 'Rungeto Estate',
     'Thumaita Estate', 'Barichu Estate'
   ],
   // 케냐 - Murang'a
-  'muranga': [
+  "Murang'a": [
     'Kanyenya-ini Estate', 'Ngandu Estate', 'Gatomboya Estate',
     'Kiamabara Estate', 'Rianjeru Estate'
   ],
@@ -224,17 +224,17 @@ export const COFFEE_FARMS = {
     'Finca Filadelfia', 'Finca Santa Clara', 'Finca La Reunion'
   ],
   // 과테말라 - Atitlan
-  'atitlan': [
+  'Atitlan': [
     'Finca San Antonio', 'Finca Los Volcanes', 'Finca Bella Vista',
     'Finca Santa Ana', 'Finca El Barretal'
   ],
   // 과테말라 - Coban
-  'coban': [
+  'Coban': [
     'Finca Santa Isabel', 'Finca Chicoj', 'Finca San Marcos',
     'Finca Boloncó', 'Finca La Providencia'
   ],
   // 과테말라 - Fraijanes
-  'fraijanes': [
+  'Fraijanes': [
     'Finca La Sabana', 'Finca El Morito', 'Finca Vista Hermosa',
     'Finca Santa Rosa', 'Finca Los Alpes'
   ],
@@ -245,17 +245,17 @@ export const COFFEE_FARMS = {
     'Hacienda Sonora', 'Finca Palmichal', 'Finca Don Mayo'
   ],
   // 코스타리카 - Central Valley
-  'central_valley': [
+  'Central Valley': [
     'Hacienda Real', 'Finca San Rafael', 'Coope San Vito',
     'Finca Tierra Madre', 'Hacienda San Pedro'
   ],
   // 코스타리카 - West Valley
-  'west_valley': [
+  'West Valley': [
     'Coopedota', 'Hacienda Miramonte', 'Finca Las Lajas',
     'Aquiares Estate', 'Finca Genesis'
   ],
   // 코스타리카 - Brunca
-  'brunca': [
+  'Brunca': [
     'Coope Llano Bonito', 'Hacienda La Amistad', 'Finca Cedral Alto',
     'Finca San Diego', 'Coope Agri'
   ],
@@ -266,12 +266,12 @@ export const COFFEE_FARMS = {
     'Finca Hartmann', 'Carmen Estate', 'Finca Don Pepe'
   ],
   // 파나마 - Volcan
-  'volcan': [
+  'Volcan': [
     'Finca Deborah', 'Finca Santa Teresa', 'Finca Janson',
     'Finca La Valentina', 'Finca Bambito'
   ],
   // 파나마 - Renacimiento
-  'renacimiento': [
+  'Renacimiento': [
     'Finca Sofia', 'Finca Nuguo', 'Finca La Estrella',
     'Finca El Salto', 'Finca Duncan'
   ],
@@ -310,23 +310,23 @@ export const COFFEE_FARMS = {
     'Kalosi Estate', 'Rantepao Estate'
   ],
   // 인도네시아 - Flores
-  'flores': [
+  'Flores': [
     'Manggarai Estate', 'Bajawa Estate', 'Ruteng Estate',
     'Ngada Estate', 'Riung Estate'
   ],
 
   // 페루 - Chanchamayo
-  'chanchamayo': [
+  'Chanchamayo': [
     'Finca La Florida', 'Cooperativa Perené', 'Villa Rica Estate',
     'Finca Tasta', 'Cooperativa Café Perú'
   ],
   // 페루 - Cusco
-  'cusco': [
+  'Cusco': [
     'Finca Machu Picchu', 'Cooperativa Huadquiña', 'Finca Ccochapata',
     'La Convención Estate', 'Quillabamba Estate'
   ],
   // 페루 - Amazonas
-  'amazonas': [
+  'Amazonas': [
     'Finca Rodriguez de Mendoza', 'Cooperativa Cenfrocafe', 'Lonya Grande Estate',
     'Bagua Estate', 'Utcubamba Estate'
   ],

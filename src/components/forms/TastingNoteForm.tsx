@@ -47,7 +47,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
   const { data: existingNotes = [] } = useTastingNotes();
   const [formData, setFormData] = useState<TastingNoteFormData>({
     title: '',
-    date: new Date().toISOString().split('T')[0],
+    date: new Date().toISOString().slice(0, 16), // 현재 날짜와 시간 (YYYY-MM-DDTHH:mm)
     country: '',
     farm: '',
     region: '',
@@ -208,38 +208,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
   return (
     <form id="tasting-note-form" onSubmit={handleSubmit} className="space-y-8">
-      {/* Basic Information */}
-      <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
-        <h2 className="text-lg font-semibold text-stone-900 mb-6">기본 정보</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              제목 <span className="text-sm text-stone-500">(선택사항 - 자동 생성됨)</span>
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="커피 정보 입력시 자동 생성됩니다"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
-              날짜
-            </label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Coffee Information */}
       <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
         <h2 className="text-lg font-semibold text-stone-900 mb-6">커피 정보</h2>
@@ -416,6 +384,38 @@ const TastingNoteForm = memo(function TastingNoteForm({
           className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
           placeholder="개인적인 감상이나 추가 메모를 입력하세요..."
         />
+      </div>
+
+      {/* Basic Information */}
+      <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
+        <h2 className="text-lg font-semibold text-stone-900 mb-6">기본 정보</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-2">
+              제목 <span className="text-sm text-stone-500">(선택사항 - 자동 생성됨)</span>
+            </label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              placeholder="커피 정보 입력시 자동 생성됩니다"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-stone-700 mb-2">
+              날짜 및 시간
+            </label>
+            <input
+              type="datetime-local"
+              name="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Spacer for floating button */}

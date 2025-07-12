@@ -155,9 +155,25 @@ export function matchFarm(input: string, regionName?: string): MatchResult | nul
   
   let farmsToSearch: readonly string[] = [];
   
-  if (regionName && regionName in COFFEE_FARMS) {
-    // 특정 지역의 농장만 검색
-    farmsToSearch = COFFEE_FARMS[regionName as keyof typeof COFFEE_FARMS];
+  if (regionName) {
+    // 지역명으로 직접 검색
+    if (regionName in COFFEE_FARMS) {
+      farmsToSearch = COFFEE_FARMS[regionName as keyof typeof COFFEE_FARMS];
+    } else {
+      // 지역명이 정확히 매칭되지 않으면 모든 지역에서 유사한 이름 찾기
+      const regionKeys = Object.keys(COFFEE_FARMS);
+      const matchingRegion = regionKeys.find(key => 
+        key.toLowerCase() === regionName.toLowerCase() ||
+        calculateSimilarity(key, regionName) >= 80
+      );
+      
+      if (matchingRegion) {
+        farmsToSearch = COFFEE_FARMS[matchingRegion as keyof typeof COFFEE_FARMS];
+      } else {
+        // 매칭되는 지역이 없으면 모든 농장에서 검색
+        farmsToSearch = Object.values(COFFEE_FARMS).flat();
+      }
+    }
   } else {
     // 모든 농장에서 검색
     farmsToSearch = Object.values(COFFEE_FARMS).flat();
