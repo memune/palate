@@ -238,27 +238,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
   }, [submitButtonText, loading, mode]);
 
   return (
-    <div className="space-y-8">
-      {/* Form 바깥 테스트 영역 */}
-      <div className="bg-red-100 p-4 border-2 border-red-500 rounded">
-        <h3 className="font-bold text-red-700 mb-2">🚨 FORM 바깥 테스트 영역</h3>
-        <select
-          value={formData.farm}
-          onChange={(e) => {
-            console.log('🚨 OUTSIDE FORM SELECT:', e.target.value);
-            alert('Form 바깥 선택: ' + e.target.value);
-            setFormData(prev => ({ ...prev, farm: e.target.value }));
-          }}
-          className="w-full px-4 py-2 border border-red-500 rounded"
-        >
-          <option value="">테스트용 농장 선택</option>
-          <option value="테스트농장1">테스트농장1</option>
-          <option value="테스트농장2">테스트농장2</option>
-          <option value="테스트농장3">테스트농장3</option>
-        </select>
-        <div className="mt-2 text-sm">현재 값: {formData.farm}</div>
-      </div>
-      
     <form id="tasting-note-form" onSubmit={handleSubmit} className="space-y-8">
       {/* Coffee Information */}
       <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
@@ -310,17 +289,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
               농장{matchedData.region ? ` (${matchedData.region.name})` : ''}
             </label>
             
-            {/* 디버깅용 상태 표시 */}
-            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs space-y-1">
-              <div><strong>🔍 농장 필드 디버깅:</strong></div>
-              <div>현재 농장 값: <strong>&ldquo;{formData.farm}&rdquo;</strong></div>
-              <div>농장 값 길이: {formData.farm.length}</div>
-              <div>지역 매칭: {matchedData.region?.name || '미선택'}</div>
-              <div>농장 suggestions: {farmSuggestions.length}개</div>
-              <div>지역 ID: {matchedData.region?.id || '없음'}</div>
-              <div>렌더링 시간: {new Date().toLocaleTimeString()}</div>
-              <div>농장 suggestions 목록: {farmSuggestions.map(f => f.name).join(', ')}</div>
-            </div>
 
             {farmSuggestions.length > 0 ? (
               <div className="space-y-2">
@@ -328,14 +296,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
                   key={`farm-select-${matchedData.region?.name || 'no-region'}`}
                   defaultValue={formData.farm}
                   onChange={(e) => {
-                    const newValue = e.target.value;
-                    console.log('🔥 FARM SELECT CHANGED:', newValue);
-                    
-                    setFormData(prev => {
-                      const updated = { ...prev, farm: newValue };
-                      console.log('🔥 Farm state updated to:', updated.farm);
-                      return updated;
-                    });
+                    setFormData(prev => ({ ...prev, farm: e.target.value }));
                   }}
                   className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 >
@@ -508,7 +469,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
       {/* Spacer for floating button */}
       <div className="h-20"></div>
     </form>
-    </div>
   );
 });
 
