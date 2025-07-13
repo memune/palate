@@ -1,16 +1,17 @@
 'use client';
 
-import { useState, useCallback, lazy, Suspense } from 'react';
+import { useState, useCallback, lazy, Suspense, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useCreateTastingNote } from '@/hooks/useTastingNotesQuery';
-import { TastingNote } from '@/types';
+import { extractCoffeeDataFromText } from '@/utils/coffeeDataExtractor';
+import { ExtractedCoffeeData } from '@/types';
 
 // Lazy load heavy components
 const Camera = lazy(() => import('@/components/camera/CameraCapture'));
 const OCRProcessor = lazy(() => import('@/components/OCRProcessor'));
-const TastingForm = lazy(() => import('@/components/TastingForm'));
+const TastingNoteForm = lazy(() => import('@/components/forms/TastingNoteForm'));
 
 // Make this page dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
@@ -19,6 +20,8 @@ function CapturePageContent() {
   const [step, setStep] = useState<'camera' | 'ocr' | 'form'>('camera');
   const [capturedImage, setCapturedImage] = useState<File | null>(null);
   const [extractedText, setExtractedText] = useState<string>('');
+  const [extractedData, setExtractedData] = useState<ExtractedCoffeeData | null>(null);
+  const [isExtracting, setIsExtracting] = useState(false);
   const router = useRouter();
   const createNoteMutation = useCreateTastingNote();
 
@@ -27,26 +30,29 @@ function CapturePageContent() {
     setStep('ocr');
   }, []);
 
-  const handleOCRComplete = useCallback((text: string) => {
+  const handleOCRComplete = useCallback(async (text: string) => {
     setExtractedText(text);
     setStep('form');
+    
+    // OCR 텍스트에서 자동으로 필드 추출
+    if (text && text.trim()) {
+      setIsExtracting(true);
+      try {
+        const extracted = await extractCoffeeDataFromText(text);
+        setExtractedData(extracted);
+      } catch (error) {
+        console.error('자동 필드 추출 실패:', error);
+      } finally {
+        setIsExtracting(false);
+      }
+    }
   }, []);
 
-  const handleFormSubmit = useCallback(async (note: Partial<TastingNote>) => {
+  const handleFormSubmit = useCallback(async (note: any) => {
     try {
       const noteData = {
         ...note,
         extracted_text: extractedText,
-        ratings: note.ratings || {
-          aroma: 5,
-          flavor: 5,
-          acidity: 5,
-          sweetness: 5,
-          body: 5,
-          aftertaste: 5,
-          balance: 5,
-          overall: 5,
-        },
       };
 
       await createNoteMutation.mutateAsync(noteData);
@@ -114,9 +120,30 @@ function CapturePageContent() {
         
         {step === 'form' && (
           <Suspense fallback={<LoadingSpinner message="폼 로딩 중..." />}>
-            <TastingForm 
-              extractedText={extractedText}
+            {isExtracting && (
+              <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-emerald-800 mr-3"></div>
+                  <span className="text-emerald-800 font-medium">🤖 AI가 커피 정보를 자동으로 추출하고 있습니다...</span>
+                </div>
+              </div>
+            )}
+            <TastingNoteForm 
+              mode="create"
+              initialData={extractedData ? {
+                title: extractedData.title || '',
+                country: extractedData.country || '',
+                farm: extractedData.farm || '',
+                region: extractedData.region || '',
+                variety: extractedData.variety || '',
+                altitude: extractedData.altitude || '',
+                process: extractedData.process || '',
+                cup_notes: extractedData.cupNotes || '',
+                store_info: extractedData.storeInfo || '',
+                notes: extractedText,
+              } : { notes: extractedText }}
               onSubmit={handleFormSubmit}
+              loading={createNoteMutation.isPending}
             />
           </Suspense>
         )}
