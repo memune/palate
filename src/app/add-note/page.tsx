@@ -72,7 +72,7 @@ function AddNotePage() {
       // 1초 후 리다이렉트
       setTimeout(() => {
         setIsSubmitting(false); // 리다이렉트 직전에 loading 상태 해제
-        router.push(`/note/${data.id}`);
+        router.push('/');
       }, 1000);
       
     } catch (error: any) {
