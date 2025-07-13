@@ -246,7 +246,8 @@ function NotePageContent() {
             <div className="mb-6">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 brand-font">Rating</h3>
               <div className="space-y-2">
-                {Object.entries(note.ratings).map(([key, value]) => (
+                {/* Detailed ratings first */}
+                {Object.entries(note.ratings).filter(([key]) => key !== 'overall').map(([key, value]) => (
                   <div key={key} className="flex justify-between items-center">
                     <span className="text-sm text-gray-700">
                       {key === 'aroma' && '향'}
@@ -256,11 +257,15 @@ function NotePageContent() {
                       {key === 'body' && '바디'}
                       {key === 'aftertaste' && '여운'}
                       {key === 'balance' && '균형'}
-                      {key === 'overall' && '전체'}
                     </span>
                     <span className="text-sm font-medium text-gray-900">{value}</span>
                   </div>
                 ))}
+                {/* Overall rating at the bottom with emphasis */}
+                <div className="flex justify-between items-center pt-1 border-t border-gray-100 mt-3">
+                  <span className="text-sm text-gray-900 font-semibold">전체</span>
+                  <span className="text-sm font-bold text-gray-900">{note.ratings.overall}</span>
+                </div>
               </div>
             </div>
 
