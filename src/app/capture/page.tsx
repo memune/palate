@@ -55,8 +55,8 @@ function CapturePageContent() {
         extracted_text: extractedText,
       };
 
-      await createNoteMutation.mutateAsync(noteData);
-      router.push('/notes');
+      const newNote = await createNoteMutation.mutateAsync(noteData);
+      router.push(`/note/${newNote.id}`);
     } catch (error) {
       console.error('노트 저장 실패:', error);
       alert('노트 저장에 실패했습니다. 다시 시도해주세요.');

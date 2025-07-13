@@ -282,7 +282,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('폼 제출 시작:', formData);
     
     // 제목이 비어있으면 자동 생성 시도
     let finalData = { ...formData };
@@ -304,7 +303,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
       }
     }
     
-    console.log('최종 데이터로 onSubmit 호출:', finalData);
     await onSubmit(finalData);
   }, [formData, onSubmit, existingNotes]);
 

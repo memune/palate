@@ -23,8 +23,8 @@ function AddNotePage() {
     if (!user) return;
 
     try {
-      await createNoteMutation.mutateAsync(formData);
-      router.push('/notes');
+      const newNote = await createNoteMutation.mutateAsync(formData);
+      router.push(`/note/${newNote.id}`);
     } catch (error) {
       showError(error, 'saveNote');
     }
