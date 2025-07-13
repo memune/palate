@@ -236,6 +236,15 @@ function HomePage() {
               사진으로 기록하기
             </Link>
             <Link 
+              href="/add-note-simple"
+              className="flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+              </svg>
+              간단 테스트
+            </Link>
+            <Link 
               href="/add-note"
               className="flex items-center justify-center bg-gray-600 text-white px-6 py-3 rounded-xl hover:bg-gray-700 transition-colors font-medium text-sm"
             >
