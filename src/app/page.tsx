@@ -192,7 +192,7 @@ function HomePage() {
         {/* Main CTA */}
         <div className="mb-12 relative">
           {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/30 via-gray-50/20 to-amber-50/30 rounded-3xl -mx-8 -my-6"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-100/70 via-stone-100/50 to-amber-100/60 rounded-3xl -mx-8 -my-6"></div>
           
           <div className="relative text-center mb-8 py-6">
             <h2 className="text-2xl font-light text-gray-900 mb-6 brand-font tracking-tight italic">
