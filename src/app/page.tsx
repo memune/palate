@@ -435,12 +435,12 @@ function UsernameForm({ currentUsername, onSuccess, onCancel, isFirstTime }: {
 
         if (insertError) {
           console.error('Error inserting profile:', insertError);
-          setError(`프로필 생성 실패: ${insertError.message}`);
+          setError(`프로필 생성 실패: ${(insertError as any)?.message || 'Unknown error'}`);
           return;
         }
       } else if (updateError) {
         console.error('Error updating profile:', updateError);
-        setError(`프로필 업데이트 실패: ${updateError.message}`);
+        setError(`프로필 업데이트 실패: ${(updateError as any)?.message || 'Unknown error'}`);
         return;
       }
 
