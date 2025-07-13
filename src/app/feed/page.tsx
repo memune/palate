@@ -38,21 +38,19 @@ function FeedPage() {
       
       console.log('Friend IDs:', friendIds);
       
-      if (friendIds.length === 0) {
-        console.log('친구가 없습니다');
-        setFeedNotes([]);
-        setLoading(false);
-        return;
-      }
+      // 내 노트와 친구들의 노트를 모두 포함할 사용자 ID 목록 생성
+      const allUserIds = [user?.id, ...friendIds].filter(Boolean) as string[];
+      
+      console.log('All user IDs for feed:', allUserIds);
 
-      // 친구들의 최신 노트 가져오기 (평점이 있는 노트만)
+      // 내 노트와 친구들의 최신 노트 가져오기 (평점이 있는 노트만)
       const { data, error } = await supabase
         .from('tasting_notes')
         .select(`
           *,
           user_profile:profiles(username, display_name)
         `)
-        .in('user_id', friendIds)
+        .in('user_id', allUserIds)
         .not('ratings', 'is', null)
         .order('created_at', { ascending: false })
         .limit(20);
@@ -121,10 +119,10 @@ function FeedPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-gray-50 border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-6 py-4">
-          <h1 className="text-xl font-light text-gray-900 tracking-tight brand-font">
-            친구들의 커피 피드
+          <h1 className="text-lg font-light text-gray-700 tracking-tight brand-font">
+            Feed
           </h1>
         </div>
       </header>
@@ -137,14 +135,22 @@ function FeedPage() {
         ) : feedNotes.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-500 mb-4 text-sm">
-              아직 친구들의 커피 기록이 없습니다
+              아직 피드에 표시할 커피 기록이 없습니다
             </div>
-            <Link 
-              href="/friends"
-              className="text-emerald-800 hover:text-emerald-900 transition-colors text-sm font-medium"
-            >
-              친구를 추가해보세요
-            </Link>
+            <div className="space-y-2">
+              <Link 
+                href="/add-note"
+                className="block text-emerald-800 hover:text-emerald-900 transition-colors text-sm font-medium"
+              >
+                첫 번째 커피를 기록해보세요
+              </Link>
+              <Link 
+                href="/friends"
+                className="block text-emerald-800 hover:text-emerald-900 transition-colors text-sm font-medium"
+              >
+                또는 친구를 추가해보세요
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="space-y-6">
@@ -180,7 +186,7 @@ function FeedPage() {
                 </div>
 
                 {/* 커피 정보 */}
-                <Link href={`/friends/${note.user_id}/notes/${note.id}`} className="block hover:bg-gray-50 -m-2 p-2 rounded-lg transition-colors">
+                <Link href={note.user_id === user?.id ? `/note/${note.id}` : `/friends/${note.user_id}/notes/${note.id}`} className="block hover:bg-gray-50 -m-2 p-2 rounded-lg transition-colors">
                   <h3 className="font-semibold text-gray-900 mb-2">
                     {note.title}
                   </h3>
