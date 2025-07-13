@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Toast from '@/components/ui/Toast';
-import { useCreateTastingNote } from '@/hooks/useTastingNotesQuery';
+import { useAuth } from '@/components/auth/AuthProvider';
+import { supabase } from '@/lib/supabase';
 import { extractCoffeeDataFromText } from '@/utils/coffeeDataExtractor';
 import { ExtractedCoffeeData } from '@/types';
 
@@ -31,7 +32,7 @@ function CapturePageContent() {
   const [errorMessage, setErrorMessage] = useState('');
   
   const router = useRouter();
-  const createNoteMutation = useCreateTastingNote();
+  const { user } = useAuth();
 
   const handleCapture = useCallback((file: File) => {
     setCapturedImage(file);
@@ -57,26 +58,56 @@ function CapturePageContent() {
   }, []);
 
   const handleFormSubmit = useCallback(async (note: any) => {
-    if (isSubmitting) return;
+    if (!user || isSubmitting) return;
 
     setIsSubmitting(true);
     setShowErrorToast(false);
 
     try {
+      // 직접 Supabase에 저장 (React Query 우회)
       const noteData = {
-        ...note,
+        user_id: user.id,
+        title: note.title || '새 테이스팅 노트',
+        date: note.date || new Date().toISOString(),
         extracted_text: extractedText,
+        country: note.country || null,
+        farm: note.farm || null,
+        region: note.region || null,
+        variety: note.variety || null,
+        altitude: note.altitude || null,
+        process: note.process || null,
+        cup_notes: note.cup_notes || null,
+        store_info: note.store_info || null,
+        ratings: note.ratings || {
+          overall: 0,
+          aroma: 0,
+          flavor: 0,
+          aftertaste: 0,
+          acidity: 0,
+          body: 0,
+          balance: 0,
+          sweetness: 0
+        },
+        notes: note.notes || null,
+        image_url: note.image_url || null,
       };
 
-      // 노트 저장
-      const newNote = await createNoteMutation.mutateAsync(noteData);
-      
+      const { data, error } = await supabase
+        .from('tasting_notes')
+        .insert([noteData])
+        .select()
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
       // 성공 토스트 표시
       setShowSuccessToast(true);
       
-      // 1초 후 리다이렉트 (사용자가 성공 메시지를 볼 수 있도록)
+      // 1초 후 리다이렉트
       setTimeout(() => {
-        router.push(`/note/${newNote.id}`);
+        router.push(`/note/${data.id}`);
       }, 1000);
       
     } catch (error: any) {
@@ -84,7 +115,7 @@ function CapturePageContent() {
       setErrorMessage(error?.message || '노트 저장에 실패했습니다. 다시 시도해주세요.');
       setShowErrorToast(true);
     }
-  }, [extractedText, router, createNoteMutation, isSubmitting]);
+  }, [extractedText, router, user, isSubmitting]);
 
   const handleBack = useCallback(() => {
     if (step === 'ocr') {
