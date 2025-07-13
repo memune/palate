@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/lib/supabase';
@@ -17,10 +17,12 @@ export const dynamic = 'force-dynamic';
 function NotePageContent() {
   const [note, setNote] = useState<TastingNote | null>(null);
   const [loading, setLoading] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
   const params = useParams();
   const noteId = params.id as string;
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user && noteId) {
@@ -28,6 +30,20 @@ function NotePageContent() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, noteId]);
+
+  // 드롭다운 외부 클릭 감지
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [dropdownOpen]);
 
   const fetchNote = async () => {
     try {
@@ -122,19 +138,36 @@ function NotePageContent() {
               뒤로
             </button>
             <h1 className="text-lg font-light text-gray-700 tracking-tight brand-font">Note</h1>
-            <div className="flex items-center space-x-3">
-              <Link
-                href={`/edit-note/${noteId}`}
-                className="text-emerald-800 hover:text-emerald-900 transition-colors text-sm font-medium"
-              >
-                수정
-              </Link>
+            <div className="relative" ref={dropdownRef}>
               <button
-                onClick={() => deleteNote(noteId, note.title)}
-                className="text-red-600 hover:text-red-700 transition-colors text-sm font-medium"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center text-gray-600 hover:text-gray-900 transition-colors p-1"
               >
-                삭제
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
               </button>
+              
+              {dropdownOpen && (
+                <div className="absolute right-0 top-full mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                  <Link
+                    href={`/edit-note/${noteId}`}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    수정
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      deleteNote(noteId, note.title);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors"
+                  >
+                    삭제
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
