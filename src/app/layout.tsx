@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import AuthProvider from '@/components/auth/AuthProvider';
 import QueryProvider from '@/components/providers/QueryProvider';
+import BottomTabNavigation from '@/components/navigation/BottomTabNavigation';
 
 // Make this layout dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
@@ -35,6 +36,7 @@ export default function RootLayout({
         <QueryProvider>
           <AuthProvider>
             {children}
+            <BottomTabNavigation />
           </AuthProvider>
         </QueryProvider>
       </body>

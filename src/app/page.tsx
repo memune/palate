@@ -122,7 +122,7 @@ function HomePage() {
   }, [showUserMenu, showUsernameModal]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20">
       {/* Top Navigation */}
       {user && (
         <nav className="bg-gray-50 border-b border-gray-200">
@@ -247,20 +247,12 @@ function HomePage() {
           </div>
         </div>
 
-        {/* Recent Notes & Friends */}
+        {/* Recent Notes */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
-            <div className="flex space-x-6">
-              <h3 className="text-lg font-light text-gray-700 brand-font">
-                Recent
-              </h3>
-              <Link 
-                href="/friends"
-                className="text-lg font-light text-gray-500 hover:text-gray-700 transition-colors brand-font"
-              >
-                Friends
-              </Link>
-            </div>
+            <h3 className="text-lg font-light text-gray-700 brand-font">
+              최근 기록
+            </h3>
             <Link 
               href="/notes"
               className="text-gray-500 hover:text-gray-700 transition-colors text-sm font-medium"

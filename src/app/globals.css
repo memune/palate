@@ -50,6 +50,11 @@ body {
     font-style: italic;
   }
 
+  /* Safe area support for mobile devices */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
   .slider::-webkit-slider-thumb {
     @apply appearance-none w-5 h-5 bg-gray-600 rounded-full cursor-pointer shadow-lg;
   }
