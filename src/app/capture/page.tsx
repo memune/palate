@@ -56,6 +56,8 @@ function CapturePageContent() {
       };
 
       const newNote = await createNoteMutation.mutateAsync(noteData);
+      console.log('생성된 노트:', newNote);
+      console.log('리다이렉트할 ID:', newNote.id);
       router.push(`/note/${newNote.id}`);
     } catch (error) {
       console.error('노트 저장 실패:', error);

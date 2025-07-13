@@ -24,6 +24,8 @@ function AddNotePage() {
 
     try {
       const newNote = await createNoteMutation.mutateAsync(formData);
+      console.log('생성된 노트:', newNote);
+      console.log('리다이렉트할 ID:', newNote.id);
       router.push(`/note/${newNote.id}`);
     } catch (error) {
       showError(error, 'saveNote');

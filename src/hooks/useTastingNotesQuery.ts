@@ -93,7 +93,9 @@ export function useCreateTastingNote() {
 
       if (error) throw error;
       
-      return transformSupabaseToTastingNote(data);
+      // Return the raw data with id for redirect, transform for cache
+      const transformedNote = transformSupabaseToTastingNote(data);
+      return { ...transformedNote, id: data.id };
     },
     onSuccess: (newNote) => {
       // Update the cache with the new note
