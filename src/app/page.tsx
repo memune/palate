@@ -192,12 +192,9 @@ function HomePage() {
         {/* Main CTA */}
         <div className="mb-12">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-light text-gray-900 mb-3 brand-font tracking-tight">
+            <h2 className="text-2xl font-light text-gray-900 mb-6 brand-font tracking-tight">
               Brewed Moments, Captured
             </h2>
-            <p className="text-gray-600 text-sm max-w-md mx-auto">
-              매장에서 받은 컵노트를 촬영하면 AI가 자동으로 분석해서 내용을 추출합니다
-            </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <Link 
