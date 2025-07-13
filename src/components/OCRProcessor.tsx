@@ -39,54 +39,40 @@ export default function OCRProcessor({ imageFile, onComplete, onError }: OCRProc
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
-      <div className="w-full max-w-md text-center space-y-8">
-        {/* Icon & Title */}
-        <div className="space-y-4">
-          <div className="mx-auto w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center">
-            <svg className="w-8 h-8 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-light text-gray-900 tracking-tight brand-font">
-            Reading Text
-          </h2>
-        </div>
+      <div className="w-full max-w-sm text-center space-y-6">
+        {/* Title */}
+        <h2 className="text-lg font-light text-gray-700 tracking-tight">
+          텍스트 인식 중
+        </h2>
         
         {/* Progress */}
-        <div className="space-y-4">
-          <div className="w-full bg-gray-100 rounded-full h-1.5">
+        <div className="space-y-3">
+          <div className="w-full bg-gray-100 rounded-full h-1">
             <div
-              className="bg-emerald-700 h-1.5 rounded-full transition-all duration-500 ease-out"
+              className="bg-emerald-700 h-1 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
-          <p className="text-gray-600 text-lg font-light">{status}</p>
+          <p className="text-gray-500 text-sm font-light">{status}</p>
         </div>
         
         {/* Loading Animation */}
         {isProcessing && (
-          <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-200 border-t-emerald-700"></div>
+          <div className="flex justify-center pt-2">
+            <div className="animate-spin rounded-full h-4 w-4 border border-gray-200 border-t-emerald-700"></div>
           </div>
         )}
         
         {/* Error Display */}
         {error && (
-          <div className="text-red-600 font-light">
+          <div className="text-red-600 text-sm font-light">
             <p>{error}</p>
           </div>
         )}
         
         {/* Success State */}
         {extractedText && !isProcessing && (
-          <div className="space-y-3">
-            <div className="w-12 h-12 bg-emerald-700 rounded-full flex items-center justify-center mx-auto">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <p className="text-emerald-700 font-medium">텍스트 인식 완료</p>
-          </div>
+          <p className="text-emerald-700 text-sm font-medium">완료</p>
         )}
       </div>
     </div>
