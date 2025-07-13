@@ -121,24 +121,18 @@ function NotePageContent() {
               </svg>
               뒤로
             </button>
-            <h1 className="text-xl font-medium text-stone-900 tracking-tight">테이스팅 노트</h1>
-            <div className="flex items-center space-x-2">
+            <h1 className="text-lg font-light text-gray-700 tracking-tight brand-font">Note</h1>
+            <div className="flex items-center space-x-3">
               <Link
                 href={`/edit-note/${noteId}`}
-                className="flex items-center bg-emerald-800 text-white px-4 py-2 rounded-xl hover:bg-emerald-900 transition-colors font-medium text-sm"
+                className="text-emerald-800 hover:text-emerald-900 transition-colors text-sm font-medium"
               >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
                 수정
               </Link>
               <button
                 onClick={() => deleteNote(noteId, note.title)}
-                className="flex items-center bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition-colors font-medium text-sm"
+                className="text-red-600 hover:text-red-700 transition-colors text-sm font-medium"
               >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
                 삭제
               </button>
             </div>
@@ -146,58 +140,57 @@ function NotePageContent() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-6 py-12">
+      <main className="max-w-2xl mx-auto px-4 py-8">
         {/* Title and Rating */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-light text-stone-900 mb-4 tracking-tight">{note.title}</h1>
-          <div className="flex items-center justify-between">
-            <p className="text-stone-500">{formatDate(note.created_at)}</p>
-            <div className="text-right">
-              <div className="text-3xl font-light text-emerald-800">{note.ratings.overall}</div>
-              <div className="text-sm text-stone-400">종합 평가</div>
+        <div className="mb-8">
+          <div className="flex items-start justify-between mb-3">
+            <h1 className="text-2xl font-light text-gray-900 tracking-tight flex-1">{note.title}</h1>
+            <div className="text-right ml-4">
+              <div className="text-2xl font-light text-emerald-800">{note.ratings.overall}</div>
             </div>
           </div>
+          <p className="text-gray-500 text-sm">{formatDate(note.created_at)}</p>
         </div>
 
         {/* Coffee Information */}
         {(note.country || note.farm || note.region || note.variety || note.altitude || note.process) && (
-          <div className="mb-12">
-            <h2 className="text-xl font-light text-stone-900 mb-6">커피 정보</h2>
-            <div className="space-y-4">
+          <div className="mb-8">
+            <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Origin</h2>
+            <div className="space-y-2 text-sm">
               {note.country && (
-                <div className="flex justify-between items-center py-2 border-b border-stone-100">
-                  <span className="text-stone-500">국가</span>
-                  <span className="text-stone-900">{note.country}</span>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-gray-500">국가</span>
+                  <span className="text-gray-900">{note.country}</span>
                 </div>
               )}
               {note.region && (
-                <div className="flex justify-between items-center py-2 border-b border-stone-100">
-                  <span className="text-stone-500">지역</span>
-                  <span className="text-stone-900">{note.region}</span>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-gray-500">지역</span>
+                  <span className="text-gray-900">{note.region}</span>
                 </div>
               )}
               {note.farm && (
-                <div className="flex justify-between items-center py-2 border-b border-stone-100">
-                  <span className="text-stone-500">농장</span>
-                  <span className="text-stone-900">{note.farm}</span>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-gray-500">농장</span>
+                  <span className="text-gray-900">{note.farm}</span>
                 </div>
               )}
               {note.variety && (
-                <div className="flex justify-between items-center py-2 border-b border-stone-100">
-                  <span className="text-stone-500">품종</span>
-                  <span className="text-stone-900">{note.variety}</span>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-gray-500">품종</span>
+                  <span className="text-gray-900">{note.variety}</span>
                 </div>
               )}
               {note.altitude && (
-                <div className="flex justify-between items-center py-2 border-b border-stone-100">
-                  <span className="text-stone-500">고도</span>
-                  <span className="text-stone-900">{note.altitude}</span>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-gray-500">고도</span>
+                  <span className="text-gray-900">{note.altitude}</span>
                 </div>
               )}
               {note.process && (
-                <div className="flex justify-between items-center py-2 border-b border-stone-100">
-                  <span className="text-stone-500">가공 방식</span>
-                  <span className="text-stone-900">{note.process}</span>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-gray-500">가공 방식</span>
+                  <span className="text-gray-900">{note.process}</span>
                 </div>
               )}
             </div>
@@ -206,19 +199,19 @@ function NotePageContent() {
 
         {/* Cup Notes */}
         {note.cup_notes && (
-          <div className="mb-12">
-            <h2 className="text-xl font-light text-stone-900 mb-6">컵노트</h2>
-            <p className="text-stone-700 leading-relaxed text-lg">{note.cup_notes}</p>
+          <div className="mb-8">
+            <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Tasting Notes</h2>
+            <p className="text-gray-700 leading-relaxed text-sm">{note.cup_notes}</p>
           </div>
         )}
 
         {/* Detailed Ratings */}
-        <div className="mb-12">
-          <h2 className="text-xl font-light text-stone-900 mb-6">세부 평가</h2>
-          <div className="space-y-3">
+        <div className="mb-8">
+          <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Rating</h2>
+          <div className="space-y-1 text-sm">
             {Object.entries(note.ratings).filter(([key]) => key !== 'overall').map(([key, value]) => (
-              <div key={key} className="flex justify-between items-center py-3 border-b border-stone-100">
-                <span className="text-stone-600">
+              <div key={key} className="flex justify-between items-center py-1">
+                <span className="text-gray-500">
                   {key === 'aroma' && '향'}
                   {key === 'flavor' && '맛'}
                   {key === 'acidity' && '산미'}
@@ -227,7 +220,7 @@ function NotePageContent() {
                   {key === 'aftertaste' && '여운'}
                   {key === 'balance' && '균형'}
                 </span>
-                <span className="text-stone-900 font-light">{value}/10</span>
+                <span className="text-gray-900 font-light">{value}</span>
               </div>
             ))}
           </div>
@@ -235,26 +228,26 @@ function NotePageContent() {
 
         {/* Additional Notes */}
         {note.notes && (
-          <div className="mb-12">
-            <h2 className="text-xl font-light text-stone-900 mb-6">추가 노트</h2>
-            <p className="text-stone-700 leading-relaxed text-lg">{note.notes}</p>
+          <div className="mb-8">
+            <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Notes</h2>
+            <p className="text-gray-700 leading-relaxed text-sm">{note.notes}</p>
           </div>
         )}
 
         {/* Store Info */}
         {note.store_info && (
-          <div className="mb-12">
-            <h2 className="text-xl font-light text-stone-900 mb-6">매장 정보</h2>
-            <p className="text-stone-700">{note.store_info}</p>
+          <div className="mb-8">
+            <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Store</h2>
+            <p className="text-gray-700 text-sm">{note.store_info}</p>
           </div>
         )}
 
         {/* Extracted Text */}
         {note.extracted_text && (
-          <div className="mb-12">
-            <h2 className="text-xl font-light text-stone-900 mb-6">추출된 텍스트</h2>
-            <div className="bg-stone-50 p-6 rounded-lg">
-              <pre className="text-stone-600 text-sm whitespace-pre-wrap font-mono leading-relaxed">{note.extracted_text}</pre>
+          <div className="mb-8">
+            <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Extracted Text</h2>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <pre className="text-gray-600 text-xs whitespace-pre-wrap font-mono leading-relaxed">{note.extracted_text}</pre>
             </div>
           </div>
         )}
