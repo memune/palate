@@ -121,9 +121,9 @@ function CapturePageContent() {
   }, [extractedText, router, user, isSubmitting]);
 
   const handleBack = useCallback(() => {
-    // 모든 단계에서 홈으로 이동
-    router.push('/');
-  }, [router]);
+    // 모든 단계에서 홈으로 이동 (강제)
+    window.location.href = '/';
+  }, []);
 
   return (
     <div className="min-h-screen bg-stone-50">
