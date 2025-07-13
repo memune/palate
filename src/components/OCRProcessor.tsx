@@ -38,46 +38,54 @@ export default function OCRProcessor({ imageFile, onComplete, onError }: OCRProc
   }, [imageFile, processImage, onComplete, onError, error]);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-8 border border-stone-100">
-      <div className="text-center space-y-6">
-        <h2 className="text-xl font-semibold text-stone-900">텍스트 인식 중</h2>
-        
-        {/* Progress Bar */}
-        <div className="w-full bg-stone-200 rounded-full h-3">
-          <div
-            className="bg-emerald-600 h-3 rounded-full transition-all duration-300 ease-out"
-            style={{ width: `${progress}%` }}
-          ></div>
+    <div className="min-h-[60vh] flex items-center justify-center px-4">
+      <div className="w-full max-w-md text-center space-y-8">
+        {/* Icon & Title */}
+        <div className="space-y-4">
+          <div className="mx-auto w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center">
+            <svg className="w-8 h-8 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-light text-gray-900 tracking-tight brand-font">
+            Reading Text
+          </h2>
         </div>
         
-        {/* Status */}
-        <p className="text-stone-600 text-lg">{status}</p>
-        
-        {/* Progress Percentage */}
-        <p className="text-stone-500 text-sm">{progress}% 완료</p>
+        {/* Progress */}
+        <div className="space-y-4">
+          <div className="w-full bg-gray-100 rounded-full h-1.5">
+            <div
+              className="bg-emerald-700 h-1.5 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+          <p className="text-gray-600 text-lg font-light">{status}</p>
+        </div>
         
         {/* Loading Animation */}
         {isProcessing && (
           <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-200 border-t-emerald-700"></div>
           </div>
         )}
         
         {/* Error Display */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-600">{error}</p>
+          <div className="text-red-600 font-light">
+            <p>{error}</p>
           </div>
         )}
         
-        {/* Extracted Text Preview */}
-        {extractedText && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-left">
-            <h3 className="text-sm font-medium text-emerald-800 mb-2">인식된 텍스트 미리보기:</h3>
-            <p className="text-emerald-700 text-sm whitespace-pre-wrap max-h-32 overflow-y-auto">
-              {extractedText.substring(0, 200)}
-              {extractedText.length > 200 && '...'}
-            </p>
+        {/* Success State */}
+        {extractedText && !isProcessing && (
+          <div className="space-y-3">
+            <div className="w-12 h-12 bg-emerald-700 rounded-full flex items-center justify-center mx-auto">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <p className="text-emerald-700 font-medium">텍스트 인식 완료</p>
           </div>
         )}
       </div>
