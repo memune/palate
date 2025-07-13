@@ -187,19 +187,8 @@ function NotePageContent() {
             </div>
           </div>
 
-          {/* Overall Score Circle */}
-          <div className="relative -mt-8 mb-6">
-            <div className="flex justify-center">
-              <div className="w-16 h-16 bg-white rounded-full shadow-lg border-4 border-emerald-100 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-2xl font-light text-emerald-800">{note.ratings.overall}</div>
-                  <div className="text-xs text-gray-500 -mt-1">/ 10</div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="px-6 pb-6">
+          <div className="px-6 py-6">
             {/* Origin Information */}
             {(note.country || note.region || note.farm || note.variety || note.altitude || note.process) && (
               <div className="mb-6">
@@ -253,22 +242,13 @@ function NotePageContent() {
               </div>
             )}
 
-            {/* Flavor Wheel */}
+            {/* Rating */}
             <div className="mb-6">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 brand-font">Flavor Profile</h3>
-              <div className="grid grid-cols-4 gap-2 text-xs">
-                {Object.entries(note.ratings).filter(([key]) => key !== 'overall').map(([key, value]) => (
-                  <div key={key} className="text-center">
-                    <div className="w-12 h-12 mx-auto mb-1 rounded-full border-2 border-gray-200 flex items-center justify-center relative">
-                      <div 
-                        className="absolute inset-1 rounded-full bg-emerald-100"
-                        style={{ 
-                          background: `conic-gradient(#065f46 ${value * 36}deg, #f3f4f6 ${value * 36}deg)` 
-                        }}
-                      ></div>
-                      <span className="relative z-10 font-medium text-gray-800">{value}</span>
-                    </div>
-                    <div className="text-gray-600 text-xs">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 brand-font">Rating</h3>
+              <div className="space-y-2">
+                {Object.entries(note.ratings).map(([key, value]) => (
+                  <div key={key} className="flex justify-between items-center">
+                    <span className="text-sm text-gray-700">
                       {key === 'aroma' && '향'}
                       {key === 'flavor' && '맛'}
                       {key === 'acidity' && '산미'}
@@ -276,7 +256,9 @@ function NotePageContent() {
                       {key === 'body' && '바디'}
                       {key === 'aftertaste' && '여운'}
                       {key === 'balance' && '균형'}
-                    </div>
+                      {key === 'overall' && '전체'}
+                    </span>
+                    <span className="text-sm font-medium text-gray-900">{value}</span>
                   </div>
                 ))}
               </div>
