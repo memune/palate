@@ -64,7 +64,12 @@ export function useFriends() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as Friend[];
+      return (data || []).map(item => ({
+        ...item,
+        friend_profile: Array.isArray(item.friend_profile) 
+          ? item.friend_profile[0] 
+          : item.friend_profile
+      })) as Friend[];
     },
     enabled: !!user,
   });
@@ -98,7 +103,12 @@ export function useSentFriendRequests() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as FriendRequest[];
+      return (data || []).map(item => ({
+        ...item,
+        receiver_profile: Array.isArray(item.receiver_profile) 
+          ? item.receiver_profile[0] 
+          : item.receiver_profile
+      })) as FriendRequest[];
     },
     enabled: !!user,
   });
@@ -133,7 +143,12 @@ export function useReceivedFriendRequests() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as FriendRequest[];
+      return (data || []).map(item => ({
+        ...item,
+        sender_profile: Array.isArray(item.sender_profile) 
+          ? item.sender_profile[0] 
+          : item.sender_profile
+      })) as FriendRequest[];
     },
     enabled: !!user,
   });

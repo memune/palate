@@ -28,6 +28,7 @@ function FriendNotePageContent() {
     if (friendId && noteId) {
       fetchNote();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendId, noteId]);
 
   const fetchNote = async () => {

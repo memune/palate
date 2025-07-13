@@ -368,7 +368,7 @@ function FriendsPageContent() {
 
             {searchTerm && searchResults.length === 0 && searchUsersData.length === 0 && (
               <div className="text-center py-8">
-                <p className="text-gray-500 text-sm">"{searchTerm}"에 해당하는 사용자를 찾을 수 없습니다</p>
+                <p className="text-gray-500 text-sm">&ldquo;{searchTerm}&rdquo;에 해당하는 사용자를 찾을 수 없습니다</p>
               </div>
             )}
           </div>
