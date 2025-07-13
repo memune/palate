@@ -282,6 +282,9 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('=== 폼 제출 시작 ===');
+    console.log('formData:', formData);
+    console.log('onSubmit:', onSubmit);
     
     // 제목이 비어있으면 자동 생성 시도
     let finalData = { ...formData };
@@ -303,7 +306,14 @@ const TastingNoteForm = memo(function TastingNoteForm({
       }
     }
     
-    await onSubmit(finalData);
+    console.log('최종 데이터로 onSubmit 호출:', finalData);
+    try {
+      await onSubmit(finalData);
+      console.log('onSubmit 완료');
+    } catch (error) {
+      console.error('onSubmit 에러:', error);
+      throw error;
+    }
   }, [formData, onSubmit, existingNotes]);
 
   const getSubmitButtonText = useCallback(() => {
@@ -649,6 +659,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
         <button
           type="submit"
           disabled={loading}
+          onClick={() => console.log('저장 버튼 클릭됨!')}
           className="w-full bg-emerald-800 hover:bg-emerald-900 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:cursor-not-allowed"
         >
           {getSubmitButtonText()}

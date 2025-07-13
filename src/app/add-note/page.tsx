@@ -20,14 +20,25 @@ function AddNotePage() {
   const createNoteMutation = useCreateTastingNote();
 
   const handleSubmit = useCallback(async (formData: any) => {
-    if (!user) return;
+    console.log('=== add-note handleSubmit 호출됨 ===');
+    console.log('user:', user);
+    console.log('formData:', formData);
+    
+    if (!user) {
+      console.log('user가 없어서 리턴');
+      return;
+    }
 
     try {
+      console.log('createNoteMutation.mutateAsync 호출 시작');
       const newNote = await createNoteMutation.mutateAsync(formData);
       console.log('생성된 노트:', newNote);
       console.log('리다이렉트할 ID:', newNote.id);
+      console.log('router.push 호출:', `/note/${newNote.id}`);
       router.push(`/note/${newNote.id}`);
+      console.log('router.push 완료');
     } catch (error) {
+      console.error('에러 발생:', error);
       showError(error, 'saveNote');
     }
   }, [user, router, createNoteMutation]);
