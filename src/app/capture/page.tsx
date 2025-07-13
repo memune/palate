@@ -121,15 +121,9 @@ function CapturePageContent() {
   }, [extractedText, router, user, isSubmitting]);
 
   const handleBack = useCallback(() => {
-    if (step === 'ocr') {
-      setStep('camera');
-      setCapturedImage(null);
-    } else if (step === 'form') {
-      setStep('ocr');
-    } else {
-      router.push('/');
-    }
-  }, [step, router]);
+    // 모든 단계에서 홈으로 이동
+    router.push('/');
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-stone-50">
@@ -141,9 +135,9 @@ function CapturePageContent() {
               className="flex items-center text-stone-600 hover:text-stone-900 transition-colors"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m0 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10M9 21h6" />
               </svg>
-              뒤로
+              홈
             </button>
             <h1 className="text-xl font-medium text-stone-900 tracking-tight">
               {step === 'camera' && '사진 촬영'}
