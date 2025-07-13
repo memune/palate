@@ -190,16 +190,13 @@ function HomePage() {
         <div className="max-w-4xl mx-auto">
 
         {/* Main CTA */}
-        <div className="mb-12 relative">
-          {/* Subtle gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-100/70 via-stone-100/50 to-amber-100/60 rounded-3xl -mx-8 -my-6"></div>
-          
-          <div className="relative text-center mb-8 py-6">
+        <div className="mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-2xl font-light text-gray-900 mb-6 brand-font tracking-tight italic">
               Brewed Moments, Captured
             </h2>
           </div>
-          <div className="relative flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <Link 
               href="/capture"
               className="flex items-center justify-center bg-emerald-800 text-white px-6 py-3 rounded-xl hover:bg-emerald-900 transition-colors font-medium text-sm"
