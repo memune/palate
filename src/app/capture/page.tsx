@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Toast from '@/components/ui/Toast';
+import OptimizedTastingNoteForm from '@/components/forms/OptimizedTastingNoteForm';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/lib/supabase';
 import { extractCoffeeDataFromText } from '@/utils/coffeeDataExtractor';
@@ -13,7 +14,6 @@ import { ExtractedCoffeeData } from '@/types';
 // Lazy load heavy components
 const Camera = lazy(() => import('@/components/camera/CameraCapture'));
 const OCRProcessor = lazy(() => import('@/components/OCRProcessor'));
-const TastingNoteForm = lazy(() => import('@/components/forms/TastingNoteForm'));
 
 // Make this page dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
@@ -182,7 +182,7 @@ function CapturePageContent() {
                 </div>
               </div>
             )}
-            <TastingNoteForm 
+            <OptimizedTastingNoteForm 
               mode="create"
               initialData={extractedData ? {
                 title: extractedData.title || '',
@@ -198,7 +198,6 @@ function CapturePageContent() {
               } : { notes: extractedText }}
               onSubmit={handleFormSubmit}
               loading={isSubmitting}
-              submitButtonText={isSubmitting ? '저장 중...' : '테이스팅 노트 저장'}
             />
           </Suspense>
         )}

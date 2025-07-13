@@ -1,16 +1,12 @@
 'use client';
 
-import { useState, useCallback, lazy, Suspense } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Toast from '@/components/ui/Toast';
-import { showError } from '@/lib/error-handler';
+import OptimizedTastingNoteForm from '@/components/forms/OptimizedTastingNoteForm';
 import { supabase } from '@/lib/supabase';
-
-// Lazy load form components
-const TastingNoteForm = lazy(() => import('@/components/forms/TastingNoteForm'));
 
 // Make this page dynamic to avoid SSR issues
 export const dynamic = 'force-dynamic';
@@ -105,14 +101,11 @@ function AddNotePage() {
       </header>
       
       <main className="max-w-4xl mx-auto px-6 py-8">
-        <Suspense fallback={<LoadingSpinner message="폼 로딩 중..." />}>
-          <TastingNoteForm
-            mode="create"
-            onSubmit={handleSubmit}
-            loading={isSubmitting}
-            submitButtonText={isSubmitting ? '저장 중...' : '테이스팅 노트 저장'}
-          />
-        </Suspense>
+        <OptimizedTastingNoteForm
+          mode="create"
+          onSubmit={handleSubmit}
+          loading={isSubmitting}
+        />
       </main>
 
       {/* 토스트 메시지들 */}
