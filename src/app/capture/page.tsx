@@ -102,14 +102,16 @@ function CapturePageContent() {
         throw error;
       }
 
+      // 즉시 loading 상태 해제
+      setIsSubmitting(false);
+      
       // 성공 토스트 표시
       setShowSuccessToast(true);
       
-      // 1초 후 리다이렉트
+      // 즉시 리다이렉트 (강제)
       setTimeout(() => {
-        setIsSubmitting(false); // 리다이렉트 직전에 loading 상태 해제
-        router.push('/');
-      }, 1000);
+        window.location.href = '/';
+      }, 500);
       
     } catch (error: any) {
       setIsSubmitting(false);
