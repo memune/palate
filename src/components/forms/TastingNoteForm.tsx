@@ -52,6 +52,10 @@ const TastingNoteForm = memo(function TastingNoteForm({
   loading = false,
   submitButtonText 
 }: TastingNoteFormProps) {
+  console.log('=== TastingNoteForm 렌더링됨 ===');
+  console.log('mode:', mode);
+  console.log('onSubmit:', onSubmit);
+  console.log('loading:', loading);
   const { data: existingNotes = [] } = useTastingNotes();
   const [formData, setFormData] = useState<TastingNoteFormData>({
     title: '',

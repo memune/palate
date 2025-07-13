@@ -18,6 +18,10 @@ function AddNotePage() {
   const { user } = useAuth();
   const router = useRouter();
   const createNoteMutation = useCreateTastingNote();
+  
+  console.log('=== AddNotePage 렌더링됨 ===');
+  console.log('user:', user);
+  console.log('createNoteMutation:', createNoteMutation);
 
   const handleSubmit = useCallback(async (formData: any) => {
     console.log('=== add-note handleSubmit 호출됨 ===');
@@ -76,6 +80,17 @@ function AddNotePage() {
 }
 
 export default function AddNote() {
+  console.log('=== AddNote 컴포넌트 렌더링 ===');
+  
+  // 글로벌 에러 캐칭
+  window.addEventListener('error', (e) => {
+    console.error('글로벌 JavaScript 에러:', e.error);
+  });
+  
+  window.addEventListener('unhandledrejection', (e) => {
+    console.error('처리되지 않은 Promise 거부:', e.reason);
+  });
+  
   return (
     <ProtectedRoute>
       <AddNotePage />
