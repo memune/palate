@@ -33,14 +33,26 @@ function FeedPage() {
 
   const fetchFeedNotes = async () => {
     try {
+      // 먼저 친구 ID 목록 가져오기
+      const friendIds = await getFriendIds();
+      
+      console.log('Friend IDs:', friendIds);
+      
+      if (friendIds.length === 0) {
+        console.log('친구가 없습니다');
+        setFeedNotes([]);
+        setLoading(false);
+        return;
+      }
+
       // 친구들의 최신 노트 가져오기 (평점이 있는 노트만)
       const { data, error } = await supabase
         .from('tasting_notes')
         .select(`
           *,
-          user_profile:profiles!inner(username, display_name)
+          user_profile:profiles(username, display_name)
         `)
-        .in('user_id', await getFriendIds())
+        .in('user_id', friendIds)
         .not('ratings', 'is', null)
         .order('created_at', { ascending: false })
         .limit(20);
@@ -48,10 +60,15 @@ function FeedPage() {
       if (error) {
         console.error('Error fetching feed notes:', error);
       } else {
-        const transformedNotes = (data || []).map(note => ({
-          ...transformSupabaseToTastingNote(note),
-          user_profile: note.user_profile
-        })) as FeedNote[];
+        console.log('Raw feed data:', data);
+        const transformedNotes = (data || [])
+          .filter(note => note.user_profile)
+          .map(note => ({
+            ...transformSupabaseToTastingNote(note),
+            user_profile: note.user_profile,
+            user_id: note.user_id
+          })) as FeedNote[];
+        console.log('Transformed notes:', transformedNotes);
         setFeedNotes(transformedNotes);
       }
     } catch (error) {
@@ -63,6 +80,8 @@ function FeedPage() {
 
   const getFriendIds = async (): Promise<string[]> => {
     try {
+      console.log('Fetching friends for user:', user?.id);
+      
       const { data, error } = await supabase
         .from('friends')
         .select('friend_id')
@@ -73,7 +92,9 @@ function FeedPage() {
         return [];
       }
 
-      return (data || []).map(friend => friend.friend_id);
+      const friendIds = (data || []).map(friend => friend.friend_id);
+      console.log('Found friend IDs:', friendIds);
+      return friendIds;
     } catch (error) {
       console.error('Error fetching friend IDs:', error);
       return [];
