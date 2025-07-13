@@ -58,6 +58,7 @@ function HomePage() {
 
   const createUserProfile = async () => {
     try {
+      console.log('Creating profile for user:', user?.id, user?.email);
       const { data, error } = await supabase
         .from('profiles')
         .insert({
@@ -69,8 +70,10 @@ function HomePage() {
 
       if (error) {
         console.error('Error creating profile:', error);
+        console.error('Error details:', error.message, error.details, error.hint);
         setUserProfile({ username: null });
       } else {
+        console.log('Profile created successfully:', data);
         setUserProfile(data);
         setShowUsernameModal(true);
       }
@@ -372,13 +375,25 @@ function UsernameForm({ currentUsername, onSuccess, onCancel, isFirstTime }: {
   const checkUsernameAvailability = async (value: string) => {
     if (value === currentUsername) return true;
     
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('username', value)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', value)
+        .maybeSingle();
 
-    return error?.code === 'PGRST116'; // No rows returned means available
+      // If there's an error other than "no rows", something went wrong
+      if (error) {
+        console.error('Error checking username availability:', error);
+        return false;
+      }
+
+      // If data exists, username is taken; if null, it's available
+      return data === null;
+    } catch (error) {
+      console.error('Error in username check:', error);
+      return false;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -401,22 +416,38 @@ function UsernameForm({ currentUsername, onSuccess, onCancel, isFirstTime }: {
     }
 
     try {
-      const { error } = await supabase
+      // First try to update existing profile
+      const { data: updateData, error: updateError } = await supabase
         .from('profiles')
-        .upsert({
-          id: user?.id,
-          username: username,
-          display_name: user?.email,
-        });
+        .update({ username: username })
+        .eq('id', user?.id)
+        .select();
 
-      if (error) {
-        console.error('Error updating username:', error);
-        setError('닉네임 설정 중 오류가 발생했습니다.');
-      } else {
-        onSuccess(username);
+      if (updateError || !updateData || updateData.length === 0) {
+        console.log('Profile not found, creating new one');
+        // If update failed, try to insert new profile
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user?.id,
+            username: username,
+            display_name: user?.email,
+          });
+
+        if (insertError) {
+          console.error('Error inserting profile:', insertError);
+          setError(`프로필 생성 실패: ${insertError.message}`);
+          return;
+        }
+      } else if (updateError) {
+        console.error('Error updating profile:', updateError);
+        setError(`프로필 업데이트 실패: ${updateError.message}`);
+        return;
       }
+
+      onSuccess(username);
     } catch (error) {
-      console.error('Error updating username:', error);
+      console.error('Error with username operation:', error);
       setError('닉네임 설정 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
