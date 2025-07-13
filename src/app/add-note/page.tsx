@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import Toast from '@/components/ui/Toast';
 import { showError } from '@/lib/error-handler';
 import { useCreateTastingNote } from '@/hooks/useTastingNotesQuery';
 
@@ -19,33 +20,36 @@ function AddNotePage() {
   const router = useRouter();
   const createNoteMutation = useCreateTastingNote();
   
-  console.log('=== AddNotePage 렌더링됨 ===');
-  console.log('user:', user);
-  console.log('createNoteMutation:', createNoteMutation);
+  // 새로운 상태 관리
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = useCallback(async (formData: any) => {
-    console.log('=== add-note handleSubmit 호출됨 ===');
-    console.log('user:', user);
-    console.log('formData:', formData);
-    
-    if (!user) {
-      console.log('user가 없어서 리턴');
-      return;
-    }
+    if (!user || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setShowErrorToast(false);
 
     try {
-      console.log('createNoteMutation.mutateAsync 호출 시작');
+      // 노트 저장
       const newNote = await createNoteMutation.mutateAsync(formData);
-      console.log('생성된 노트:', newNote);
-      console.log('리다이렉트할 ID:', newNote.id);
-      console.log('router.push 호출:', `/note/${newNote.id}`);
-      router.push(`/note/${newNote.id}`);
-      console.log('router.push 완료');
-    } catch (error) {
-      console.error('에러 발생:', error);
-      showError(error, 'saveNote');
+      
+      // 성공 토스트 표시
+      setShowSuccessToast(true);
+      
+      // 1초 후 리다이렉트 (사용자가 성공 메시지를 볼 수 있도록)
+      setTimeout(() => {
+        router.push(`/note/${newNote.id}`);
+      }, 1000);
+      
+    } catch (error: any) {
+      setIsSubmitting(false);
+      setErrorMessage(error?.message || '노트 저장에 실패했습니다. 다시 시도해주세요.');
+      setShowErrorToast(true);
     }
-  }, [user, router, createNoteMutation]);
+  }, [user, router, createNoteMutation, isSubmitting]);
 
   return (
     <div className="min-h-screen bg-stone-50">
@@ -71,26 +75,33 @@ function AddNotePage() {
           <TastingNoteForm
             mode="create"
             onSubmit={handleSubmit}
-            loading={createNoteMutation.isPending}
+            loading={isSubmitting}
+            submitButtonText={isSubmitting ? '저장 중...' : '테이스팅 노트 저장'}
           />
         </Suspense>
       </main>
+
+      {/* 토스트 메시지들 */}
+      <Toast
+        message="노트가 성공적으로 저장되었습니다!"
+        type="success"
+        show={showSuccessToast}
+        onClose={() => setShowSuccessToast(false)}
+        duration={2000}
+      />
+      
+      <Toast
+        message={errorMessage}
+        type="error"
+        show={showErrorToast}
+        onClose={() => setShowErrorToast(false)}
+        duration={4000}
+      />
     </div>
   );
 }
 
 export default function AddNote() {
-  console.log('=== AddNote 컴포넌트 렌더링 ===');
-  
-  // 글로벌 에러 캐칭
-  window.addEventListener('error', (e) => {
-    console.error('글로벌 JavaScript 에러:', e.error);
-  });
-  
-  window.addEventListener('unhandledrejection', (e) => {
-    console.error('처리되지 않은 Promise 거부:', e.reason);
-  });
-  
   return (
     <ProtectedRoute>
       <AddNotePage />

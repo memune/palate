@@ -4,6 +4,7 @@ import { useState, useCallback, lazy, Suspense, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import Toast from '@/components/ui/Toast';
 import { useCreateTastingNote } from '@/hooks/useTastingNotesQuery';
 import { extractCoffeeDataFromText } from '@/utils/coffeeDataExtractor';
 import { ExtractedCoffeeData } from '@/types';
@@ -22,6 +23,13 @@ function CapturePageContent() {
   const [extractedText, setExtractedText] = useState<string>('');
   const [extractedData, setExtractedData] = useState<ExtractedCoffeeData | null>(null);
   const [isExtracting, setIsExtracting] = useState(false);
+  
+  // 새로운 상태 관리
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  
   const router = useRouter();
   const createNoteMutation = useCreateTastingNote();
 
@@ -49,21 +57,34 @@ function CapturePageContent() {
   }, []);
 
   const handleFormSubmit = useCallback(async (note: any) => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setShowErrorToast(false);
+
     try {
       const noteData = {
         ...note,
         extracted_text: extractedText,
       };
 
+      // 노트 저장
       const newNote = await createNoteMutation.mutateAsync(noteData);
-      console.log('생성된 노트:', newNote);
-      console.log('리다이렉트할 ID:', newNote.id);
-      router.push(`/note/${newNote.id}`);
-    } catch (error) {
-      console.error('노트 저장 실패:', error);
-      alert('노트 저장에 실패했습니다. 다시 시도해주세요.');
+      
+      // 성공 토스트 표시
+      setShowSuccessToast(true);
+      
+      // 1초 후 리다이렉트 (사용자가 성공 메시지를 볼 수 있도록)
+      setTimeout(() => {
+        router.push(`/note/${newNote.id}`);
+      }, 1000);
+      
+    } catch (error: any) {
+      setIsSubmitting(false);
+      setErrorMessage(error?.message || '노트 저장에 실패했습니다. 다시 시도해주세요.');
+      setShowErrorToast(true);
     }
-  }, [extractedText, router, createNoteMutation]);
+  }, [extractedText, router, createNoteMutation, isSubmitting]);
 
   const handleBack = useCallback(() => {
     if (step === 'ocr') {
@@ -145,11 +166,29 @@ function CapturePageContent() {
                 notes: extractedText,
               } : { notes: extractedText }}
               onSubmit={handleFormSubmit}
-              loading={createNoteMutation.isPending}
+              loading={isSubmitting}
+              submitButtonText={isSubmitting ? '저장 중...' : '테이스팅 노트 저장'}
             />
           </Suspense>
         )}
       </main>
+
+      {/* 토스트 메시지들 */}
+      <Toast
+        message="노트가 성공적으로 저장되었습니다!"
+        type="success"
+        show={showSuccessToast}
+        onClose={() => setShowSuccessToast(false)}
+        duration={2000}
+      />
+      
+      <Toast
+        message={errorMessage}
+        type="error"
+        show={showErrorToast}
+        onClose={() => setShowErrorToast(false)}
+        duration={4000}
+      />
     </div>
   );
 }

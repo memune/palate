@@ -52,10 +52,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
   loading = false,
   submitButtonText 
 }: TastingNoteFormProps) {
-  console.log('=== TastingNoteForm 렌더링됨 ===');
-  console.log('mode:', mode);
-  console.log('onSubmit:', onSubmit);
-  console.log('loading:', loading);
   const { data: existingNotes = [] } = useTastingNotes();
   const [formData, setFormData] = useState<TastingNoteFormData>({
     title: '',
@@ -286,9 +282,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('=== 폼 제출 시작 ===');
-    console.log('formData:', formData);
-    console.log('onSubmit:', onSubmit);
     
     // 제목이 비어있으면 자동 생성 시도
     let finalData = { ...formData };
@@ -310,14 +303,7 @@ const TastingNoteForm = memo(function TastingNoteForm({
       }
     }
     
-    console.log('최종 데이터로 onSubmit 호출:', finalData);
-    try {
-      await onSubmit(finalData);
-      console.log('onSubmit 완료');
-    } catch (error) {
-      console.error('onSubmit 에러:', error);
-      throw error;
-    }
+    await onSubmit(finalData);
   }, [formData, onSubmit, existingNotes]);
 
   const getSubmitButtonText = useCallback(() => {
@@ -663,19 +649,6 @@ const TastingNoteForm = memo(function TastingNoteForm({
         <button
           type="submit"
           disabled={loading}
-          onClick={(e) => {
-            console.log('저장 버튼 클릭됨!');
-            console.log('버튼 disabled 상태:', loading);
-            console.log('폼 요소:', document.getElementById('tasting-note-form'));
-            // 폼 제출이 안될 경우를 대비해 수동으로도 트리거
-            if (!loading) {
-              const form = document.getElementById('tasting-note-form') as HTMLFormElement;
-              if (form) {
-                console.log('수동으로 폼 제출 시도');
-                form.requestSubmit();
-              }
-            }
-          }}
           className="w-full bg-emerald-800 hover:bg-emerald-900 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:cursor-not-allowed"
         >
           {getSubmitButtonText()}
