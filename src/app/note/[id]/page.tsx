@@ -173,117 +173,138 @@ function NotePageContent() {
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        {/* Title and Rating */}
-        <div className="mb-8">
-          <div className="flex items-start justify-between mb-3">
-            <h1 className="text-2xl font-light text-gray-900 tracking-tight flex-1">{note.title}</h1>
-            <div className="text-right ml-4">
-              <div className="text-2xl font-light text-emerald-800">{note.ratings.overall}</div>
-            </div>
-          </div>
-          <p className="text-gray-500 text-sm">{formatDate(note.created_at)}</p>
-        </div>
-
-        {/* Coffee Information */}
-        {(note.country || note.farm || note.region || note.variety || note.altitude || note.process) && (
-          <div className="mb-8">
-            <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Origin</h2>
-            <div className="space-y-2 text-sm">
-              {note.country && (
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-gray-500">국가</span>
-                  <span className="text-gray-900">{note.country}</span>
-                </div>
-              )}
-              {note.region && (
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-gray-500">지역</span>
-                  <span className="text-gray-900">{note.region}</span>
-                </div>
-              )}
-              {note.farm && (
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-gray-500">농장</span>
-                  <span className="text-gray-900">{note.farm}</span>
-                </div>
-              )}
-              {note.variety && (
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-gray-500">품종</span>
-                  <span className="text-gray-900">{note.variety}</span>
-                </div>
-              )}
-              {note.altitude && (
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-gray-500">고도</span>
-                  <span className="text-gray-900">{note.altitude}</span>
-                </div>
-              )}
-              {note.process && (
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-gray-500">가공 방식</span>
-                  <span className="text-gray-900">{note.process}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Cup Notes */}
-        {note.cup_notes && (
-          <div className="mb-8">
-            <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Tasting Notes</h2>
-            <p className="text-gray-700 leading-relaxed text-sm">{note.cup_notes}</p>
-          </div>
-        )}
-
-        {/* Detailed Ratings */}
-        <div className="mb-8">
-          <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Rating</h2>
-          <div className="space-y-1 text-sm">
-            {Object.entries(note.ratings).filter(([key]) => key !== 'overall').map(([key, value]) => (
-              <div key={key} className="flex justify-between items-center py-1">
-                <span className="text-gray-500">
-                  {key === 'aroma' && '향'}
-                  {key === 'flavor' && '맛'}
-                  {key === 'acidity' && '산미'}
-                  {key === 'sweetness' && '단맛'}
-                  {key === 'body' && '바디'}
-                  {key === 'aftertaste' && '여운'}
-                  {key === 'balance' && '균형'}
-                </span>
-                <span className="text-gray-900 font-light">{value}</span>
+      <main className="max-w-md mx-auto px-4 py-8">
+        {/* Tasting Card */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          {/* Card Header */}
+          <div className="bg-gradient-to-r from-emerald-800 to-emerald-700 px-6 py-8 text-white">
+            <div className="text-center">
+              <h1 className="text-xl font-light tracking-wide mb-2 brand-font">{note.title}</h1>
+              <div className="flex items-center justify-center space-x-4 text-sm opacity-90">
+                <span>{formatDate(note.created_at)}</span>
+                {note.store_info && <span>• {note.store_info}</span>}
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Additional Notes */}
-        {note.notes && (
-          <div className="mb-8">
-            <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Notes</h2>
-            <p className="text-gray-700 leading-relaxed text-sm">{note.notes}</p>
-          </div>
-        )}
-
-        {/* Store Info */}
-        {note.store_info && (
-          <div className="mb-8">
-            <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Store</h2>
-            <p className="text-gray-700 text-sm">{note.store_info}</p>
-          </div>
-        )}
-
-        {/* Extracted Text */}
-        {note.extracted_text && (
-          <div className="mb-8">
-            <h2 className="text-base font-medium text-gray-900 mb-4 brand-font">Extracted Text</h2>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <pre className="text-gray-600 text-xs whitespace-pre-wrap font-mono leading-relaxed">{note.extracted_text}</pre>
             </div>
           </div>
-        )}
+
+          {/* Overall Score Circle */}
+          <div className="relative -mt-8 mb-6">
+            <div className="flex justify-center">
+              <div className="w-16 h-16 bg-white rounded-full shadow-lg border-4 border-emerald-100 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-2xl font-light text-emerald-800">{note.ratings.overall}</div>
+                  <div className="text-xs text-gray-500 -mt-1">/ 10</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="px-6 pb-6">
+            {/* Origin Information */}
+            {(note.country || note.region || note.farm || note.variety || note.altitude || note.process) && (
+              <div className="mb-6">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 brand-font">Origin</h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  {note.country && (
+                    <div>
+                      <div className="text-xs text-gray-500">Country</div>
+                      <div className="font-medium text-gray-900">{note.country}</div>
+                    </div>
+                  )}
+                  {note.region && (
+                    <div>
+                      <div className="text-xs text-gray-500">Region</div>
+                      <div className="font-medium text-gray-900">{note.region}</div>
+                    </div>
+                  )}
+                  {note.farm && (
+                    <div>
+                      <div className="text-xs text-gray-500">Farm</div>
+                      <div className="font-medium text-gray-900">{note.farm}</div>
+                    </div>
+                  )}
+                  {note.variety && (
+                    <div>
+                      <div className="text-xs text-gray-500">Variety</div>
+                      <div className="font-medium text-gray-900">{note.variety}</div>
+                    </div>
+                  )}
+                  {note.altitude && (
+                    <div>
+                      <div className="text-xs text-gray-500">Altitude</div>
+                      <div className="font-medium text-gray-900">{note.altitude}</div>
+                    </div>
+                  )}
+                  {note.process && (
+                    <div>
+                      <div className="text-xs text-gray-500">Process</div>
+                      <div className="font-medium text-gray-900">{note.process}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Tasting Notes */}
+            {note.cup_notes && (
+              <div className="mb-6">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 brand-font">Tasting Notes</h3>
+                <p className="text-sm text-gray-700 leading-relaxed">{note.cup_notes}</p>
+              </div>
+            )}
+
+            {/* Flavor Wheel */}
+            <div className="mb-6">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 brand-font">Flavor Profile</h3>
+              <div className="grid grid-cols-4 gap-2 text-xs">
+                {Object.entries(note.ratings).filter(([key]) => key !== 'overall').map(([key, value]) => (
+                  <div key={key} className="text-center">
+                    <div className="w-12 h-12 mx-auto mb-1 rounded-full border-2 border-gray-200 flex items-center justify-center relative">
+                      <div 
+                        className="absolute inset-1 rounded-full bg-emerald-100"
+                        style={{ 
+                          background: `conic-gradient(#065f46 ${value * 36}deg, #f3f4f6 ${value * 36}deg)` 
+                        }}
+                      ></div>
+                      <span className="relative z-10 font-medium text-gray-800">{value}</span>
+                    </div>
+                    <div className="text-gray-600 text-xs">
+                      {key === 'aroma' && '향'}
+                      {key === 'flavor' && '맛'}
+                      {key === 'acidity' && '산미'}
+                      {key === 'sweetness' && '단맛'}
+                      {key === 'body' && '바디'}
+                      {key === 'aftertaste' && '여운'}
+                      {key === 'balance' && '균형'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Personal Notes */}
+            {note.notes && (
+              <div className="mb-6">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 brand-font">Personal Notes</h3>
+                <p className="text-sm text-gray-700 leading-relaxed italic">{note.notes}</p>
+              </div>
+            )}
+
+            {/* Extracted Text - Minimized */}
+            {note.extracted_text && (
+              <div className="border-t border-gray-100 pt-4 mt-6">
+                <details className="group">
+                  <summary className="text-xs text-gray-400 cursor-pointer hover:text-gray-600 transition-colors">
+                    OCR Text Data ▼
+                  </summary>
+                  <div className="mt-2 bg-gray-50 p-3 rounded-lg">
+                    <pre className="text-xs text-gray-600 whitespace-pre-wrap font-mono leading-relaxed">{note.extracted_text}</pre>
+                  </div>
+                </details>
+              </div>
+            )}
+          </div>
+        </div>
       </main>
     </div>
   );
