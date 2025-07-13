@@ -80,7 +80,16 @@ export function useCreateTastingNote() {
         process: note.process || null,
         cup_notes: note.cup_notes || null,
         store_info: note.store_info || null,
-        ratings: note.ratings,
+        ratings: note.ratings || {
+          overall: 0,
+          aroma: 0,
+          flavor: 0,
+          aftertaste: 0,
+          acidity: 0,
+          body: 0,
+          balance: 0,
+          sweetness: 0
+        },
         notes: note.notes || null,
         image_url: note.image_url || null,
       };

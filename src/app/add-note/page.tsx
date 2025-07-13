@@ -27,43 +27,24 @@ function AddNotePage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = useCallback(async (formData: any) => {
-    console.log('=== handleSubmit 호출됨 ===');
-    console.log('user 존재:', !!user);
-    console.log('isSubmitting:', isSubmitting);
-    
-    if (!user || isSubmitting) {
-      console.log('조건 불만족으로 리턴');
-      return;
-    }
+    if (!user || isSubmitting) return;
 
-    console.log('저장 프로세스 시작');
     setIsSubmitting(true);
     setShowErrorToast(false);
 
     try {
-      console.log('=== 저장 시작 ===');
-      console.log('formData:', formData);
+      // 노트 저장
+      const newNote = await createNoteMutation.mutateAsync(formData);
       
-      // 노트 저장 - 간단한 테스트
-      console.log('createNoteMutation 상태:', createNoteMutation);
+      // 성공 토스트 표시
+      setShowSuccessToast(true);
       
-      // 임시로 간단한 데이터만 저장해보기
-      const testData = {
-        title: formData.title || '테스트 노트',
-        country: formData.country || '',
-        notes: formData.notes || '테스트 내용'
-      };
-      console.log('테스트 데이터:', testData);
-      
-      const newNote = await createNoteMutation.mutateAsync(testData);
-      console.log('저장 성공:', newNote);
-      
-      // 즉시 리다이렉트 (토스트 없이 테스트)
-      console.log('즉시 리다이렉트:', `/note/${newNote.id}`);
-      router.push(`/note/${newNote.id}`);
+      // 1초 후 리다이렉트 (사용자가 성공 메시지를 볼 수 있도록)
+      setTimeout(() => {
+        router.push(`/note/${newNote.id}`);
+      }, 1000);
       
     } catch (error: any) {
-      console.error('저장 실패:', error);
       setIsSubmitting(false);
       setErrorMessage(error?.message || '노트 저장에 실패했습니다. 다시 시도해주세요.');
       setShowErrorToast(true);
