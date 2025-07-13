@@ -34,14 +34,14 @@ function HomePage() {
         .from('profiles')
         .select('*')
         .eq('id', user?.id)
-        .single();
+        .maybeSingle(); // Use maybeSingle instead of single to handle no rows
 
       console.log('프로필 조회 결과:', { data, error });
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error('Error fetching profile:', error);
-        // profiles 테이블이 없는 경우 빈 프로필로 설정
-        setUserProfile({ username: null });
+        // Create profile if it doesn't exist
+        await createUserProfile();
       } else {
         setUserProfile(data || { username: null });
         // If user doesn't have a username, show setup modal
@@ -52,7 +52,32 @@ function HomePage() {
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
+      await createUserProfile();
+    }
+  };
+
+  const createUserProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .insert({
+          id: user?.id,
+          display_name: user?.email,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating profile:', error);
+        setUserProfile({ username: null });
+      } else {
+        setUserProfile(data);
+        setShowUsernameModal(true);
+      }
+    } catch (error) {
+      console.error('Error creating profile:', error);
       setUserProfile({ username: null });
+      setShowUsernameModal(true);
     }
   };
 
