@@ -120,13 +120,16 @@ export default function AutoCompleteInput({
   }, []);
 
   const handleSelect = useCallback((item: { id: string; name: string; englishName: string }) => {
-    console.log('handleSelect called with:', item);
-    console.log('onChange function:', onChange);
+    // uncontrolled 모드일 때 내부 상태도 업데이트
+    if (uncontrolled) {
+      setInternalValue(item.name);
+    }
+    
     onChange(item.name);
     setIsOpen(false);
     setHighlightedIndex(-1);
     inputRef.current?.blur();
-  }, [onChange]);
+  }, [onChange, uncontrolled]);
 
   // 키보드 네비게이션
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
@@ -168,7 +171,6 @@ export default function AutoCompleteInput({
   }, [onChange, uncontrolled]);
 
   const handleFocus = useCallback(() => {
-    console.log('Field focused, name:', name, 'suggestions count:', suggestions.length);
     setHasFocused(true); // 포커스 상태 설정
     
     // 포커스시 항상 드롭다운 보여주기
@@ -270,16 +272,11 @@ export default function AutoCompleteInput({
       )}
 
       {/* 드롭다운 제안 목록 */}
-      {(() => {
-        console.log('Dropdown render check - name:', name, 'isOpen:', isOpen, 'suggestions:', filteredSuggestions.length);
-        return null;
-      })()}
       {isOpen && filteredSuggestions.length > 0 && (
         <div
           ref={dropdownRef}
           className="absolute w-full mt-1 bg-white border border-stone-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
           style={{ zIndex: 9999, pointerEvents: 'auto' }}
-          onClick={() => console.log('Dropdown clicked')}
         >
           {/* 헤더 - 매칭 상태에 따라 다르게 표시 */}
           {matchResult && matchResult.confidence >= 85 && (
@@ -305,13 +302,11 @@ export default function AutoCompleteInput({
                   key={item.id}
                   type="button"
                   onClick={(e) => {
-                    console.log('Button clicked!', item.name);
                     e.preventDefault();
                     e.stopPropagation();
                     handleSelect(item);
                   }}
                   onMouseDown={(e) => {
-                    console.log('Button mouse down!', item.name);
                     e.preventDefault();
                     e.stopPropagation();
                   }}
@@ -332,6 +327,10 @@ export default function AutoCompleteInput({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
+                  // uncontrolled 모드일 때 내부 상태도 업데이트
+                  if (uncontrolled) {
+                    setInternalValue(currentValue);
+                  }
                   // 현재 입력값을 그대로 사용
                   onChange(currentValue);
                   setIsOpen(false);
@@ -351,6 +350,10 @@ export default function AutoCompleteInput({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
+                  // uncontrolled 모드일 때 내부 상태도 업데이트
+                  if (uncontrolled) {
+                    setInternalValue(currentValue);
+                  }
                   onChange(currentValue);
                   setIsOpen(false);
                   setHighlightedIndex(-1);
