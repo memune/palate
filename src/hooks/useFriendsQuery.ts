@@ -287,9 +287,14 @@ export function useFriendTastingNotes(friendId: string) {
         .select('id')
         .eq('user_id', user.id)
         .eq('friend_id', friendId)
-        .single();
+        .maybeSingle();
 
-      if (friendshipError || !friendship) {
+      if (friendshipError) {
+        console.error('Error checking friendship:', friendshipError);
+        throw new Error('Error checking friendship');
+      }
+
+      if (!friendship) {
         throw new Error('Not friends with this user');
       }
 
