@@ -148,6 +148,7 @@ function HomePage() {
                       {userProfile?.username ? (
                         <>
                           <p className="text-base font-medium text-gray-900">@{userProfile.username}</p>
+                          <p className="text-sm text-gray-500 truncate">{user.email}</p>
                         </>
                       ) : (
                         <>
