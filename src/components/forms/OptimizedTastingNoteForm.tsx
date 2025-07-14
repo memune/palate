@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, memo } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
-import { DEFAULT_RATINGS, RATING_CATEGORIES, COFFEE_COUNTRIES, COFFEE_VARIETIES, PROCESSING_METHODS, COFFEE_REGIONS, COFFEE_FARMS, CUP_NOTE_CATEGORIES } from '@/constants/defaults';
+import { DEFAULT_RATINGS, RATING_CATEGORIES, RATING_GUIDES, COFFEE_COUNTRIES, COFFEE_VARIETIES, PROCESSING_METHODS, COFFEE_REGIONS, COFFEE_FARMS, CUP_NOTE_CATEGORIES } from '@/constants/defaults';
 import AutoCompleteInput from '@/components/ui/AutoCompleteInput';
 import { CupNoteTagSelector } from '@/components/ui/TagChip';
 import { 
@@ -560,35 +560,60 @@ const OptimizedTastingNoteForm = memo(function OptimizedTastingNoteForm({
           Rating
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {RATING_CATEGORIES.map((category) => (
-            <div key={category.key} className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-900">
-                  {category.label}
-                </label>
+          {RATING_CATEGORIES.map((category) => {
+            const guide = RATING_GUIDES[category.key as keyof typeof RATING_GUIDES];
+            return (
+              <div key={category.key} className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-gray-900">
+                    {category.label}
+                  </label>
+                  <div className="group relative">
+                    <button
+                      type="button"
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                      aria-label={`${category.label} 도움말`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </button>
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 w-64">
+                      <div className="font-medium mb-1">{guide.title}</div>
+                      <div className="mb-2">{guide.description}</div>
+                      <div className="text-gray-300 text-xs">
+                        <strong>테이스팅 방법:</strong> {guide.howToTaste}
+                      </div>
+                      <div className="text-gray-300 text-xs mt-1">
+                        <strong>팁:</strong> {guide.tips}
+                      </div>
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* 점수 선택 버튼들 */}
+                <div className="grid grid-cols-10 gap-1">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
+                    <button
+                      key={score}
+                      type="button"
+                      onClick={() => handleRatingChange(category.key, score)}
+                      className={`
+                        aspect-square flex items-center justify-center text-xs font-medium rounded transition-all
+                        ${formData.ratings[category.key as keyof typeof formData.ratings] >= score
+                          ? 'bg-emerald-800 text-white shadow-sm'
+                          : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                        }
+                      `}
+                    >
+                      {score}
+                    </button>
+                  ))}
+                </div>
               </div>
-              
-              {/* 점수 선택 버튼들 */}
-              <div className="grid grid-cols-10 gap-1">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
-                  <button
-                    key={score}
-                    type="button"
-                    onClick={() => handleRatingChange(category.key, score)}
-                    className={`
-                      aspect-square flex items-center justify-center text-xs font-medium rounded transition-all
-                      ${formData.ratings[category.key as keyof typeof formData.ratings] >= score
-                        ? 'bg-emerald-800 text-white shadow-sm'
-                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                      }
-                    `}
-                  >
-                    {score}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

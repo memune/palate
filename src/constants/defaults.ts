@@ -22,6 +22,98 @@ export const RATING_CATEGORIES = [
   { key: 'overall', label: '전체 (Overall)' },
 ] as const;
 
+// 평점 항목별 설명 가이드
+export const RATING_GUIDES = {
+  aroma: {
+    title: '향 (Aroma)',
+    description: '커피를 마시기 전 코로 느끼는 냄새',
+    howToTaste: '커피를 코에 가까이 대고 깊게 들이마셔보세요',
+    examples: {
+      low: '향이 약하거나 불쾌한 냄새',
+      medium: '은은하고 적당한 향',
+      high: '풍부하고 매력적인 향'
+    },
+    tips: '갓 우린 커피일 때 가장 향이 강합니다'
+  },
+  flavor: {
+    title: '맛 (Flavor)',
+    description: '입안에서 느끼는 전체적인 맛의 느낌',
+    howToTaste: '커피를 한 모금 마시고 혀 전체로 느껴보세요',
+    examples: {
+      low: '맛이 밋밋하거나 불쾌한 맛',
+      medium: '적당하고 균형 잡힌 맛',
+      high: '풍부하고 복합적인 맛'
+    },
+    tips: '첫 번째 모금보다 두 번째 모금에서 더 정확하게 느껴집니다'
+  },
+  acidity: {
+    title: '산미 (Acidity)',
+    description: '커피의 상큼하고 밝은 느낌',
+    howToTaste: '커피를 마신 후 입안이 상쾌해지는 느낌을 확인하세요',
+    examples: {
+      low: '산미가 거의 없어 밋밋한 느낌',
+      medium: '적당히 상쾌한 산미',
+      high: '레몬이나 사과처럼 밝고 상쾌한 산미'
+    },
+    tips: '좋은 산미는 불쾌하지 않고 상쾌해야 합니다'
+  },
+  sweetness: {
+    title: '단맛 (Sweetness)',
+    description: '설탕을 넣지 않아도 느껴지는 자연스러운 단맛',
+    howToTaste: '커피를 삼킨 후 혀끝에서 느껴지는 단맛을 확인하세요',
+    examples: {
+      low: '쓴맛이 강하고 단맛이 거의 없음',
+      medium: '은은하고 자연스러운 단맛',
+      high: '꿀이나 과일처럼 뚜렷한 단맛'
+    },
+    tips: '좋은 커피는 설탕 없이도 자연스러운 단맛을 가집니다'
+  },
+  body: {
+    title: '바디 (Body)',
+    description: '입안에서 느끼는 커피의 무게감과 질감',
+    howToTaste: '커피를 입에 머금고 혀로 느껴지는 농도와 질감을 확인하세요',
+    examples: {
+      low: '물처럼 가볍고 얇은 느낌',
+      medium: '적당한 농도와 부드러운 질감',
+      high: '크림처럼 진하고 묵직한 느낌'
+    },
+    tips: '전유와 탈지유의 차이를 생각하면 이해하기 쉽습니다'
+  },
+  aftertaste: {
+    title: '후미 (Aftertaste)',
+    description: '커피를 마신 후 입안에 남는 여운',
+    howToTaste: '커피를 삼킨 후 30초 정도 후에 입안에 남는 느낌을 확인하세요',
+    examples: {
+      low: '뒷맛이 불쾌하거나 빨리 사라짐',
+      medium: '깔끔하고 적당한 여운',
+      high: '오래도록 지속되는 좋은 여운'
+    },
+    tips: '좋은 커피는 마신 후에도 기분 좋은 여운이 남습니다'
+  },
+  balance: {
+    title: '균형 (Balance)',
+    description: '향, 맛, 산미, 단맛 등이 조화롭게 어우러진 정도',
+    howToTaste: '각 요소들이 서로 잘 어울리는지 전체적으로 평가하세요',
+    examples: {
+      low: '특정 맛이 너무 강하거나 약해서 부조화',
+      medium: '대체로 균형 잡힌 맛',
+      high: '모든 요소가 완벽하게 조화로운 맛'
+    },
+    tips: '어떤 한 가지 맛이 너무 튀지 않고 조화로워야 합니다'
+  },
+  overall: {
+    title: '전체 (Overall)',
+    description: '모든 것을 고려한 전반적인 만족도',
+    howToTaste: '다시 마시고 싶은 정도를 생각하며 종합적으로 평가하세요',
+    examples: {
+      low: '다시 마시고 싶지 않은 커피',
+      medium: '괜찮은 커피, 가끔 마실 만함',
+      high: '정말 맛있어서 계속 마시고 싶은 커피'
+    },
+    tips: '가격과 상관없이 순수하게 맛만 고려해서 평가하세요'
+  }
+} as const;
+
 // 평점 범위
 export const RATING_CONFIG = {
   min: 1,
