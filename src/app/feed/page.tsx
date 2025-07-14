@@ -16,7 +16,7 @@ interface FeedNote extends TastingNote {
     username: string;
     display_name: string;
   };
-  user_id: string; // user_id 추가
+  user_id: string;
 }
 
 function FeedPage() {
@@ -51,12 +51,7 @@ function FeedPage() {
         return;
       }
 
-      // Try multiple query strategies for better debugging
-      
-      // Skip Strategy 1 (function doesn't exist yet)
-      console.log('🔄 Starting with direct query approach');
-
-      // Strategy 1: Simple query without profile join first
+      // Simple query without profile join first
       console.log('🔍 Executing simple query with user IDs:', allUserIds);
       let { data, error } = await supabase
         .from('tasting_notes')
@@ -91,7 +86,6 @@ function FeedPage() {
         
         setFeedNotes([]);
         return;
-        
       }
 
       // If we have data, try to get profiles separately
@@ -119,68 +113,35 @@ function FeedPage() {
       console.log(`📊 Found ${data?.length || 0} notes`);
       
       const transformedNotes = (data || [])
-          .map(note => {
-            console.log('🔍 Processing note:', {
-              id: note.id,
-              title: note.title,
-              user_id: note.user_id,
-              user_profile: note.user_profile,
-              ratings: note.ratings
-            });
-            
-            // Handle missing profile gracefully
-            const userProfile = note.user_profile || {
-              username: `user_${note.user_id?.substring(0, 8) || 'unknown'}`,
-              display_name: 'Unknown User'
-            };
-            
-            return {
-              ...transformSupabaseToTastingNote(note),
-              user_profile: userProfile,
-              user_id: note.user_id
-            };
-          }) as FeedNote[];
-        
-        console.log('✅ Strategy 2 - Transformed notes:', transformedNotes);
-        console.log(`✅ Final feed contains ${transformedNotes.length} notes`);
-        setFeedNotes(transformedNotes);
-      }
-
-      // Strategy 3: Debug query if no results
-      if ((!data || data.length === 0) && !error) {
-        console.log('🔍 Strategy 3: Debug queries');
-        
-        // Check user's own notes
-        const { data: userNotes, error: userError } = await supabase
-          .from('tasting_notes')
-          .select('id, title, created_at, ratings')
-          .eq('user_id', user?.id);
+        .map(note => {
+          console.log('🔍 Processing note:', {
+            id: note.id,
+            title: note.title,
+            user_id: note.user_id,
+            user_profile: note.user_profile,
+            ratings: note.ratings
+          });
           
-        console.log('👤 User notes debug:', { count: userNotes?.length, error: userError, notes: userNotes });
-
-        // Check friends
-        const { data: friendsDebug, error: friendsDebugError } = await supabase
-          .from('friends')
-          .select('*')
-          .eq('user_id', user?.id);
+          // Handle missing profile gracefully
+          const userProfile = note.user_profile || {
+            username: `user_${note.user_id?.substring(0, 8) || 'unknown'}`,
+            display_name: 'Unknown User'
+          };
           
-        console.log('👥 Friends debug:', { count: friendsDebug?.length, error: friendsDebugError, friends: friendsDebug });
-
-        // Check RLS policies
-        const { data: policies, error: policiesError } = await supabase
-          .rpc('show_tasting_notes_policies');
-          
-        console.log('🔒 RLS policies debug:', { error: policiesError, policies });
-
-        // Run debug function if available
-        const { data: debugData, error: debugError } = await supabase
-          .rpc('debug_user_feed');
-          
-        console.log('🔧 Debug feed function:', { error: debugError, data: debugData });
-      }
+          return {
+            ...transformSupabaseToTastingNote(note),
+            user_profile: userProfile,
+            user_id: note.user_id
+          };
+        }) as FeedNote[];
+      
+      console.log('✅ Transformed notes:', transformedNotes);
+      console.log(`✅ Final feed contains ${transformedNotes.length} notes`);
+      setFeedNotes(transformedNotes);
 
     } catch (error) {
       console.error('💥 Unexpected error fetching feed notes:', error);
+      setFeedNotes([]);
     } finally {
       setLoading(false);
     }
