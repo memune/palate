@@ -53,36 +53,14 @@ function FeedPage() {
 
       // Try multiple query strategies for better debugging
       
-      // Strategy 1: Use the helper function if available
-      console.log('🔄 Attempting query strategy 1: Helper function');
-      const { data: functionData, error: functionError } = await supabase
-        .rpc('get_feed_notes', { user_limit: 20 });
+      // Skip Strategy 1 (function doesn't exist yet)
+      console.log('🔄 Starting with direct query approach');
 
-      if (!functionError && functionData && functionData.length > 0) {
-        console.log('✅ Strategy 1 success - Function data:', functionData);
-        const transformedNotes = functionData.map((note: any) => ({
-          ...transformSupabaseToTastingNote(note),
-          user_profile: {
-            username: note.username,
-            display_name: note.display_name
-          },
-          user_id: note.user_id
-        })) as FeedNote[];
-        setFeedNotes(transformedNotes);
-        return;
-      }
-
-      console.log('🔄 Strategy 1 failed, attempting strategy 2: Direct query');
-      console.log('Function error:', functionError);
-
-      // Strategy 2: Direct query with left join
-      console.log('🔍 Executing query with user IDs:', allUserIds);
-      const { data, error } = await supabase
+      // Strategy 1: Simple query without profile join first
+      console.log('🔍 Executing simple query with user IDs:', allUserIds);
+      let { data, error } = await supabase
         .from('tasting_notes')
-        .select(`
-          *,
-          user_profile:profiles(username, display_name)
-        `)
+        .select('*')
         .in('user_id', allUserIds)
         .not('ratings', 'is', null)
         .order('created_at', { ascending: false })
@@ -92,7 +70,7 @@ function FeedPage() {
       console.log('📊 Query result - Error:', error);
 
       if (error) {
-        console.error('❌ Strategy 2 error fetching feed notes:', error);
+        console.error('❌ Simple query failed:', error);
         console.error('Error details:', {
           message: error.message,
           details: error.details,
@@ -100,22 +78,47 @@ function FeedPage() {
           code: error.code
         });
         
-        // Strategy 3: Try without any filters to see if data exists
-        console.log('🔄 Strategy 3: Testing basic query without filters...');
-        const { data: basicData, error: basicError } = await supabase
+        // Fallback: Try just my notes
+        console.log('🔄 Fallback: Testing just my notes...');
+        const { data: myData, error: myError } = await supabase
           .from('tasting_notes')
           .select('id, title, user_id, ratings')
           .eq('user_id', user?.id)
           .limit(5);
         
-        console.log('🔍 Basic query result:', basicData);
-        console.log('🔍 Basic query error:', basicError);
+        console.log('🔍 My notes result:', myData);
+        console.log('🔍 My notes error:', myError);
         
-      } else {
-        console.log('📊 Strategy 2 - Raw feed data:', data);
-        console.log(`📊 Found ${data?.length || 0} notes before filtering`);
+        setFeedNotes([]);
+        return;
         
-        const transformedNotes = (data || [])
+      }
+
+      // If we have data, try to get profiles separately
+      if (data && data.length > 0) {
+        console.log('✅ Got notes, fetching profiles separately...');
+        const userIds = [...new Set(data.map(note => note.user_id))];
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, username, display_name')
+          .in('id', userIds);
+
+        console.log('👤 Profiles fetched:', profiles);
+
+        // Attach profiles to notes
+        data = data.map(note => ({
+          ...note,
+          user_profile: profiles?.find(p => p.id === note.user_id) || {
+            username: `user_${note.user_id.substring(0, 8)}`,
+            display_name: 'Unknown User'
+          }
+        }));
+      }
+
+      console.log('📊 Final data before transform:', data);
+      console.log(`📊 Found ${data?.length || 0} notes`);
+      
+      const transformedNotes = (data || [])
           .map(note => {
             console.log('🔍 Processing note:', {
               id: note.id,
