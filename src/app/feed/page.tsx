@@ -33,17 +33,50 @@ function FeedPage() {
 
   const fetchFeedNotes = async () => {
     try {
+      console.log('🔍 Starting feed fetch for user:', user?.id);
+      
       // 먼저 친구 ID 목록 가져오기
       const friendIds = await getFriendIds();
       
-      console.log('Friend IDs:', friendIds);
+      console.log('📋 Friend IDs:', friendIds);
       
       // 내 노트와 친구들의 노트를 모두 포함할 사용자 ID 목록 생성
       const allUserIds = [user?.id, ...friendIds].filter(Boolean) as string[];
       
-      console.log('All user IDs for feed:', allUserIds);
+      console.log('👥 All user IDs for feed:', allUserIds);
 
-      // 내 노트와 친구들의 최신 노트 가져오기 (평점이 있는 노트만)
+      if (allUserIds.length === 0) {
+        console.warn('⚠️ No user IDs to query');
+        setFeedNotes([]);
+        return;
+      }
+
+      // Try multiple query strategies for better debugging
+      
+      // Strategy 1: Use the helper function if available
+      console.log('🔄 Attempting query strategy 1: Helper function');
+      const { data: functionData, error: functionError } = await supabase
+        .rpc('get_feed_notes', { user_limit: 20 });
+
+      if (!functionError && functionData && functionData.length > 0) {
+        console.log('✅ Strategy 1 success - Function data:', functionData);
+        const transformedNotes = functionData.map(note => ({
+          ...transformSupabaseToTastingNote(note),
+          user_profile: {
+            username: note.username,
+            display_name: note.display_name
+          },
+          user_id: note.user_id
+        })) as FeedNote[];
+        setFeedNotes(transformedNotes);
+        return;
+      }
+
+      console.log('🔄 Strategy 1 failed, attempting strategy 2: Direct query');
+      console.log('Function error:', functionError);
+
+      // Strategy 2: Direct query with left join
+      console.log('🔍 Executing query with user IDs:', allUserIds);
       const { data, error } = await supabase
         .from('tasting_notes')
         .select(`
@@ -54,23 +87,97 @@ function FeedPage() {
         .not('ratings', 'is', null)
         .order('created_at', { ascending: false })
         .limit(20);
+      
+      console.log('📊 Query result - Data:', data);
+      console.log('📊 Query result - Error:', error);
 
       if (error) {
-        console.error('Error fetching feed notes:', error);
+        console.error('❌ Strategy 2 error fetching feed notes:', error);
+        console.error('Error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        
+        // Strategy 3: Try without any filters to see if data exists
+        console.log('🔄 Strategy 3: Testing basic query without filters...');
+        const { data: basicData, error: basicError } = await supabase
+          .from('tasting_notes')
+          .select('id, title, user_id, ratings')
+          .eq('user_id', user?.id)
+          .limit(5);
+        
+        console.log('🔍 Basic query result:', basicData);
+        console.log('🔍 Basic query error:', basicError);
+        
       } else {
-        console.log('Raw feed data:', data);
+        console.log('📊 Strategy 2 - Raw feed data:', data);
+        console.log(`📊 Found ${data?.length || 0} notes before filtering`);
+        
         const transformedNotes = (data || [])
-          .filter(note => note.user_profile)
-          .map(note => ({
-            ...transformSupabaseToTastingNote(note),
-            user_profile: note.user_profile,
-            user_id: note.user_id
-          })) as FeedNote[];
-        console.log('Transformed notes:', transformedNotes);
+          .map(note => {
+            console.log('🔍 Processing note:', {
+              id: note.id,
+              title: note.title,
+              user_id: note.user_id,
+              user_profile: note.user_profile,
+              ratings: note.ratings
+            });
+            
+            // Handle missing profile gracefully
+            const userProfile = note.user_profile || {
+              username: `user_${note.user_id?.substring(0, 8) || 'unknown'}`,
+              display_name: 'Unknown User'
+            };
+            
+            return {
+              ...transformSupabaseToTastingNote(note),
+              user_profile: userProfile,
+              user_id: note.user_id
+            };
+          }) as FeedNote[];
+        
+        console.log('✅ Strategy 2 - Transformed notes:', transformedNotes);
+        console.log(`✅ Final feed contains ${transformedNotes.length} notes`);
         setFeedNotes(transformedNotes);
       }
+
+      // Strategy 3: Debug query if no results
+      if ((!data || data.length === 0) && !error) {
+        console.log('🔍 Strategy 3: Debug queries');
+        
+        // Check user's own notes
+        const { data: userNotes, error: userError } = await supabase
+          .from('tasting_notes')
+          .select('id, title, created_at, ratings')
+          .eq('user_id', user?.id);
+          
+        console.log('👤 User notes debug:', { count: userNotes?.length, error: userError, notes: userNotes });
+
+        // Check friends
+        const { data: friendsDebug, error: friendsDebugError } = await supabase
+          .from('friends')
+          .select('*')
+          .eq('user_id', user?.id);
+          
+        console.log('👥 Friends debug:', { count: friendsDebug?.length, error: friendsDebugError, friends: friendsDebug });
+
+        // Check RLS policies
+        const { data: policies, error: policiesError } = await supabase
+          .rpc('show_tasting_notes_policies');
+          
+        console.log('🔒 RLS policies debug:', { error: policiesError, policies });
+
+        // Run debug function if available
+        const { data: debugData, error: debugError } = await supabase
+          .rpc('debug_user_feed');
+          
+        console.log('🔧 Debug feed function:', { error: debugError, data: debugData });
+      }
+
     } catch (error) {
-      console.error('Error fetching feed notes:', error);
+      console.error('💥 Unexpected error fetching feed notes:', error);
     } finally {
       setLoading(false);
     }
