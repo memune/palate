@@ -60,7 +60,7 @@ function FeedPage() {
 
       if (!functionError && functionData && functionData.length > 0) {
         console.log('✅ Strategy 1 success - Function data:', functionData);
-        const transformedNotes = functionData.map(note => ({
+        const transformedNotes = functionData.map((note: any) => ({
           ...transformSupabaseToTastingNote(note),
           user_profile: {
             username: note.username,
